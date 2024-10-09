@@ -1,5 +1,5 @@
 {
-  description = "chikoyeat's Nixos Flake configuration";
+  description = "chikoyeat's Home Manager configuration";
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
@@ -9,19 +9,16 @@
     };
   };
 
-  outputs = { self, nixpkgs, home-manager, ... }@inputs: {
-    nixosConfigurations."nixos" = nixpkgs.lib.nixosSystem {
+  outputs = { self, nixpkgs, home-manager, ... }: 
+    let
       system = "x86_64-linux";
-      modules = [
-        ./configuration.nix
-        home-manager.nixosModules.home-manager
-        {
-          home-manager.useGlobalPkgs = true;
-          home-manager.useUserPackages = true;
-          home-manager.users.chikoyeat = import ./home.nix;
-        }
-      ];
-      specialArgs = { inherit inputs; };
+      pkgs = nixpkgs.legacyPackages.${system};
+    in {
+      homeConfigurations."chikoyeat" = home-manager.lib.homeManagerConfiguration {
+        inherit pkgs;
+        modules = [ ./home.nix ];
+        # Optionally, use extraSpecialArgs to pass additional arguments to home.nix
+        # extraSpecialArgs = { };
+      };
     };
-  };
 }
