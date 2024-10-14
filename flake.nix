@@ -9,16 +9,14 @@
     };
   };
 
-  outputs = { self, nixpkgs, home-manager, ... }: 
-    let
+  outputs = { self, nixpkgs, home-manager }: { 
+	nixosConfigurations = {
+nixos = nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
-      pkgs = nixpkgs.legacyPackages.${system};
-    in {
-      homeConfigurations."chikoyeat" = home-manager.lib.homeManagerConfiguration {
-        inherit pkgs;
-        modules = [ ./home.nix ];
+        modules = [ ./configuration.nix ];
         # Optionally, use extraSpecialArgs to pass additional arguments to home.nix
         # extraSpecialArgs = { };
       };
     };
+};
 }
