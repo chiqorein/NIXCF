@@ -40,18 +40,8 @@
     xkb.variant = "";
     
     desktopManager.xterm.enable = false;
-    windowManager.i3 = {
-      enable = true;
-      extraPackages = with pkgs; [
-        dmenu
-        i3status
-        i3lock
-        i3blocks
-      ];
-    };
   };
   
-  services.displayManager.defaultSession = "none+i3";
   # Enable CUPS to print documents.
   services.printing.enable = true;
 
@@ -102,7 +92,6 @@ xdg.portal.config.common.default = "*";
   environment.systemPackages = with pkgs; [
     neovim
     alacritty
-    i3
     dmenu
     (lua.withPackages(ps: with ps; [ busted luafilesystem ]))
     git
@@ -135,8 +124,9 @@ android-studio
 pkgs.lshw
     bun
 obs-studio
-    zed
     unzip
+eww
+waybar
 pkgs.libsForQt5.kdenlive
     brightnessctl
     neofetch
@@ -189,6 +179,9 @@ kitty
 spotifyd
 yazi
   appimagekit
+wezterm
+polybar
+grimblast
     pkgs.ungoogled-chromium
 pkgs.davinci-resolve
     eog
@@ -216,5 +209,17 @@ virtualisation.docker.enable = true;
   # settings for stateful data, like file locations and database versions
   # on your system were taken. It's perfectly fine and recommended to leave
   # this value at the release version of the first install of this system.
-  system.stateVersion = "24.05"; # Did you read the comment?
+system.stateVersion = "24.05"; # Did you read the comment?
+
+  fonts.fonts = with pkgs; [
+    (nerdfonts.override { fonts = [ "Iosevka" ]; })
+    ibm-plex
+    material-design-icons
+  ];
+
+  fonts.fontconfig.defaultFonts = {
+    monospace = [ "Iosevka Nerd Font" "IBM Plex Mono" ];
+    sansSerif = [ "IBM Plex Sans" ];
+    serif = [ "IBM Plex Serif" ];
+  };
 }
