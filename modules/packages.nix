@@ -17,6 +17,17 @@
     maim
     xclip
     xdotool
+  xorg.libX11
+  xorg.libXcursor
+  xorg.libXrandr
+  xorg.libXi
+  vulkan-loader
+  wayland
+    gtk4
+    glib   
+    pango
+graphene
+  libxkbcommon
     polkit_gnome
     pulseaudioFull
     mkdocs
@@ -34,21 +45,42 @@
     zellij
     android-studio
     curl
-    zed-editor
     unrar
+    zed-editor
+    lutris
+    git-credential-manager
+    helix
     lshw
+    networkmanager
+    yambar-hyprland-wses
+    yambar
+    qemu
     bun
     obs-studio
+    brave
     unzip
     eww
     waybar
+    iosevka-comfy.comfy
     libsForQt5.kdenlive
     brightnessctl
     neofetch
+    vimPlugins.zenbones-nvim
     zsh
+    c3c
+    opentabletdriver
     oh-my-zsh
+    opam
+    ocamlPackages.utop
+    simulide
+    ghdl
+    pkgs.nushell
     zsh-completions
+    starship
     zsh-powerlevel10k
+    carapace
+    legcord
+    gleam
     zsh-syntax-highlighting
     libreoffice-qt
     hunspell
@@ -64,12 +96,10 @@
     rustc
     nodejs_22
     pacman
-    python311Packages.pip
     docker
     cargo
     gccgo14
     pkg-config
-    gtk3
     davinci-resolve
     ngspice
     nvtopPackages.nvidia
@@ -104,4 +134,8 @@
     davinci-resolve
     eog
   ];
+
+  environment.shells = with pkgs; [ nushell ];
+  
 }
+

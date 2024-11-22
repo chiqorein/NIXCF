@@ -7,6 +7,10 @@
       (import ./modules/packages.nix { inherit config pkgs pkgs-unstable; })
     ];
 
+   nixpkgs.config.permittedInsecurePackages = [
+    "python-2.7.18.8-env"
+  ];
+
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
@@ -77,24 +81,29 @@
     isNormalUser = true;
     description = "Manav";
     extraGroups = [ "networkmanager" "wheel" ];
-    shell = pkgs.zsh;
+    shell = pkgs.nushell;
   };
 
   # Enable Firefox
   programs.firefox.enable = true;
+
+
 
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
 
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
-  programs.zsh = {
-    enable = true;
-    ohMyZsh = {
-      enable = true;
-      plugins = [ "git" "zsh-history-substring-search" ];
-    };    
-  };
+
+  environment.etc = {
+    "gitconfig".text = ''
+      [user]
+        name = chikoYEAT
+        email = manavrj.07@gmail.com
+      [core]
+        editor = vim
+    '';
+  }; 
 
   # Enable Thunar file manager
   programs.thunar.enable = true;
@@ -104,18 +113,23 @@
   hardware.bluetooth.enable = true;
 
   system.stateVersion = "24.05"; 
+	fonts = {
+	    packages = with pkgs; [
+	      ibm-plex
+	      material-design-icons
+	      noto-fonts-cjk-sans
+	      pkgs.iosevka-comfy.comfy  # Use the installed package
+	    ];
 
-  # Updated fonts configuration
-  fonts.packages = with pkgs; [
-    (nerdfonts.override { fonts = [ "Iosevka" ]; })
-    ibm-plex
-    material-design-icons
-    noto-fonts-cjk-sans
-  ];
+	    enableDefaultPackages = true;
 
-  fonts.fontconfig.defaultFonts = {
-    monospace = [ "Iosevka Nerd Font" "IBM Plex Mono" ];
-    sansSerif = [ "IBM Plex Sans" ];
-    serif = [ "IBM Plex Serif" ];
-  };
+	    fontconfig = {
+	      enable = true;
+	      defaultFonts = {
+		monospace = [ "Iosevka Comfy" "IBM Plex Mono" ];
+		sansSerif = [ "IBM Plex Sans" ];
+		serif = [ "IBM Plex Serif" ];
+	      };
+	    };
+	  };
 }
