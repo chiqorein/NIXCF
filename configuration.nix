@@ -1,14 +1,17 @@
-{ config, pkgs, ... }:
+{ config, pkgs, pkgs-unstable, ... }:
 
 {
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
+      (import ./modules/packages.nix { inherit config pkgs pkgs-unstable; })
     ];
 
+   nixpkgs.config.permittedInsecurePackages = [
+    "python-2.7.18.8-env"
+  ];
 
   # Bootloader.
-
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
@@ -32,6 +35,33 @@
     LC_TELEPHONE = "en_US.UTF-8";
     LC_TIME = "en_US.UTF-8";
   };
+
+  hardware.graphics = {
+    enable = true;
+  };
+
+  # Load nvidia driver for Xorg and Wayland
+  services.xserver.videoDrivers = ["nvidia"];
+  
+  hardware.nvidia.modesetting.enable = true;
+  hardware.nvidia.powerManagement.enable = false;
+  hardware.nvidia.powerManagement.finegrained = false;
+  hardware.nvidia.open = false;
+  hardware.nvidia.nvidiaSettings = true;
+  
+  hardware.nvidia = {
+    package = config.boot.kernelPackages.nvidiaPackages.stable;
+  }; 
+
+  hardware.nvidia.prime = {
+  		offload = {
+			enable = true;
+			enableOffloadCmd = true;
+		};
+		# Make sure to use the correct Bus ID values for your system!
+		intelBusId = "PCI:0:2:0";
+		nvidiaBusId = "PCI:1:0:0";
+	};
 
   # Configure keymap in X11
   services.xserver = {
@@ -68,7 +98,7 @@
   # Syncthing configuration
   services.syncthing = {
     enable = true;
-    user = "chikoyeat";  # Changed from "myusername" to match your actual username
+    user = "chikoyeat";
     dataDir = "/home/chikoyeat/Documents";
     configDir = "/home/chikoyeat/Documents/.config/syncthing";
   };
@@ -78,8 +108,7 @@
     wlr.enable = true;
   };  
 
-xdg.portal.config.common.default = "*";
-
+  xdg.portal.config.common.default = "*";
 
   # Enable Flatpak
   services.flatpak.enable = true;
@@ -89,132 +118,58 @@ xdg.portal.config.common.default = "*";
     isNormalUser = true;
     description = "Manav";
     extraGroups = [ "networkmanager" "wheel" ];
-    shell = pkgs.zsh;
+    shell = pkgs.nushell;
   };
 
   # Enable Firefox
   programs.firefox.enable = true;
 
+
+
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
 
-  # System packages
-  environment.systemPackages = with pkgs; [
-    neovim
-    alacritty
-    i3
-    dmenu
-    (lua.withPackages(ps: with ps; [ busted luafilesystem ]))
-    git
-pkgs.gnome-keyring
-cudatoolkit 
-    nerdfonts
-    networkmanagerapplet
-    nitrogen
-    pasystray
-    picom
-    maim
-    xclip
-    xdotool
-    polkit_gnome
-    pulseaudioFull
-mkdocs
-zip
-maven
-iosevka
-pkgs.libngspice
-    vscode
-    rofi
-pkgs.deno
-octaveFull
-home-manager
-    vim
-android-studio
-    curl
-    unrar
-pkgs.lshw
-    bun
-obs-studio
-    zed
-    unzip
-pkgs.libsForQt5.kdenlive
-    brightnessctl
-    neofetch
-    zsh
-    oh-my-zsh
-    zsh-completions
-    zsh-powerlevel10k
-    zsh-syntax-highlighting
-    libreoffice-qt
-    hunspell
-    hunspellDicts.uk_UA
-    hunspellDicts.th_TH
-pkgs.libngspice
-pkgs.gwe
+  nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
-pkgs.go
-    zsh-history-substring-search
-    dunst
-cargo-tauri
-tree
-rustc
-nodejs_22
-pacman
-python311Packages.pip
-docker
-cargo
-pkgs.gccgo14
-  pkg-config
-  gtk3
-pkgs.davinci-resolve
-pkgs.ngspice
-pkgs.nvtopPackages.nvidia
-pkgs.mongodb-compass
-pkgs.postman
- pkgs.geeqie
-pkgs.viewnior
-    pkgs.vlc
-  webkitgtk
-pkgs.cairo
-rustup
-pkgs.atk
-pkgs.pkg-config
-pkgs.discord
-python3
-  openssl
-  librsvg
-tmux
-kitty
-    ranger
-spotifyd
-yazi
-  appimagekit
-    pkgs.ungoogled-chromium
-pkgs.davinci-resolve
-    eog
-  ];
 
-nix.settings.experimental-features = [ "nix-command" "flakes" ];
-  # ZSH configuration
-  programs.zsh = {
-    enable = true;
-    ohMyZsh = {
-      enable = true;
-      plugins = [ "git" "zsh-history-substring-search" ];
-    };    
-  };
+  environment.etc = {
+    "gitconfig".text = ''
+      [user]
+        name = chikoYEAT
+        email = manavrj.07@gmail.com
+      [core]
+        editor = vim
+    '';
+  }; 
 
   # Enable Thunar file manager
   programs.thunar.enable = true;
   programs.dconf.enable = true;
 
-virtualisation.docker.enable = true;
-  # Enable Bluetooth
+  virtualisation.docker.enable = true;
   hardware.bluetooth.enable = true;
 
-  # This value determines the NixOS release from which the default
-  # settings for stateful data, like file locations and database versions
-  # on your system were taken. It's perfectly fine and recommended to leave
-  # this value at the release version of the first install of this system.
-  system.stateVersion = "24.05"; # Did you read the comment?
+  system.stateVersion = "24.05"; 
+  fonts = {
+	    packages = with pkgs; [
+	      ibm-plex
+        sarasa-gothic
+	      material-design-icons
+	      noto-fonts-cjk-sans
+	      iosevka  # Use the installed package
+	    ];
+
+	    enableDefaultPackages = true;
+
+	    fontconfig = {
+	      enable = true;
+	      defaultFonts = {
+		monospace = [ "Sarasa Gothic" ];
+		sansSerif = [ "IBM Plex Sans" ];
+		serif = [ "IBM Plex Serif" ];
+	      };
+	    };
+	  };  
 }
+  
+  
