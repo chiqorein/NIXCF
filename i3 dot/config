@@ -1,0 +1,133 @@
+# set modifier
+set $super Mod4
+set $alt Mod1
+
+# set font
+font pango:Ionicons 12, Poppins Regular 9
+
+# use mouse+$super to drag floating windows to their wanted position
+floating_modifier $super
+
+# autostart
+exec --no-startup-id hsetroot -center ~/Downloads/pic.jpg
+
+# start a terminal
+bindsym $super+Return exec kitty
+
+# start dmenu (a program launcher)
+bindsym $super+d exec rofi -show drun
+
+
+# Define a variable for the screenshot directory and file name format
+set $screenshot_dir /home/$USER/Pictures
+set $screenshot_format png
+set $screenshot_date $(date -u +'%Y%m%d-%H%M%SZ')
+# Screenshot commands for clipboard
+exec --no-startup-id maim --format=$screenshot_format | xclip -selection clipboard -t image/$screenshot_format
+exec --no-startup-id maim --format=$screenshot_format --window $(xdotool getactivewindow) | xclip -selection clipboard -t image/$screenshot_format
+exec --no-startup-id maim --format=$screenshot_format --select | xclip -selection clipboard -t image/$screenshot_format
+# Bindings for screenshots in clipboard
+bindsym Ctrl+$super+Print exec --no-startup-id maim --format=$screenshot_format --window $(xdotool getactivewindow) | xclip -selection clipboard -t image/$screenshot_format
+bindsym Ctrl+Shift+S exec --no-startup-id maim --format=$screenshot_format --select | xclip -selection clipboard -t image/$screenshot_format
+
+
+bindsym $super+l exec i3lock -i ~/.lock.png
+bindsym $super+s layout stacking
+bindsym $super+w layout tabbed
+bindsym $super+e layout toggle split
+
+
+# change volume and brightness
+bindsym XF86AudioRaiseVolume exec pactl set-sink-volume 0 +5% #increase sound volume
+bindsym XF86AudioLowerVolume exec pactl set-sink-volume 0 -5% #decrease sound volume
+bindsym XF86AudioMute exec pactl set-sink-mute 0 toggle # mute sound
+
+bindsym XF86MonBrightnessUp exec --no-startup-id brightnessctl set +5% && ~/light.sh
+bindsym XF86MonBrightnessDown exec --no-startup-id brightnessctl set 5%- && ~/light.sh
+# kill focused window
+bindsym $super+Shift+Q kill
+bindsym $alt+F4 kill
+
+# change focus
+bindsym $super+Left focus left
+bindsym $super+Down focus down
+bindsym $super+Up focus up
+bindsym $super+Right focus right
+
+# move focused window
+bindsym $super+Shift+Left move left
+bindsym $super+Shift+Down move down
+bindsym $super+Shift+Up move up
+bindsym $super+Shift+Right move right
+
+# split in horizontal or vertical orientation
+bindsym $super+h split h
+bindsym $super+v split v
+
+# enter fullscreen mode for the focused container
+bindsym $super+f fullscreen toggle
+
+
+# toggle tiling / floating
+bindsym $super+space floating toggle
+
+# change focus between tiling / floating windows
+bindsym $super+Shift+space focus mode_toggle
+
+# switch to workspace
+bindsym $super+Control+Right workspace next
+bindsym $super+Control+Left workspace prev
+bindsym $super+1 workspace 1
+bindsym $super+2 workspace 2
+bindsym $super+3 workspace 3
+bindsym $super+4 workspace 4
+bindsym $super+5 workspace 5
+bindsym $super+6 workspace 6
+
+# move focused container to workspace
+bindsym $super+Shift+1 move container to workspace 1
+bindsym $super+Shift+2 move container to workspace 2
+bindsym $super+Shift+3 move container to workspace 3
+bindsym $super+Shift+4 move container to workspace 4
+bindsym $super+Shift+5 move container to workspace 5
+bindsym $super+Shift+6 move container to workspace 6
+
+# restart i3 inplace (preserves your layout/session, can be used to upgrade i3)
+bindsym $super+BackSpace exec "i3-msg restart"
+
+# exit i3
+bindsym $super+q exec "i3-nagbar -t warning -m 'Really, exit?' \
+-b 'Yes' 'i3-msg exit'"
+
+# resize window (you can also use the mouse for that)
+mode "resize" {
+	bindsym Left resize shrink width 5 px or 5 ppt
+	bindsym Down resize grow height 5 px or 5 ppt
+	bindsym Up resize shrink height 5 px or 5 ppt
+	bindsym Right resize grow width 5 px or 5 ppt
+	bindsym Return mode "default"
+	}
+bindsym $super+r mode "resize"
+
+
+
+# class                 border  bground text    indicator child_border
+client.focused          #4C7899 #1A374F #FFFFFF #2E9EF4   #285577
+client.focused_inactive #333333 #404547 #FFFFFF #484E50   #5F676A
+client.unfocused        #333333 #222222 #888888 #292D2E   #222222
+client.urgent           #2F343A #900000 #FFFFFF #900000   #900000
+client.placeholder      #000000 #0C0C0C #FFFFFF #000000   #0C0C0C
+
+client.background       #FFFFFF
+
+bar {
+        status_command i3status
+}
+
+# window rules, you can find the window class using xprop
+for_window [class=Eog|Sxiv|feh|mpv|Vlc|File-roller|Xarchiver] floating enable
+for_window [class=Eog|Sxiv|feh|mpv|Vlc|File-roller|Xarchiver] focus
+for_window [class=".*"] border pixel 4
+hide_edge_borders smart
+gaps inner 0
+
