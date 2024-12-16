@@ -1,5 +1,4 @@
-{ config, pkgs, pkgs-unstable, ... }:
-
+{ config, pkgs, ... }:
 {
   environment.systemPackages = with pkgs; [
     neovim
@@ -8,30 +7,63 @@
     (lua.withPackages(ps: with ps; [ busted luafilesystem ]))
     gnumake
     itch
+    libgda
+    zed-editor
+    ihaskell
+    ghc
+    xarchiver
+    emacsPackages.doom
+    nodePackages.prisma
+    nodePackages.npm
+    p7zip
+    sbclPackages.cl-cffi-gtk-gdk-pixbuf
+    pangolin
+    atk
+    gdk-pixbuf
+    appimage-run
     zlib
+    sqlite
     git
+    ani-cli
+    ubuntu-sans
     mdcat
+    xscreensaver
     gnome-keyring
-    gimp
+    haskellPackages.xmonad
+    haskellPackages.xmobar
+    xmonad-with-packages
+    acpi
+    pkgs.haskellPackages.xmonad-contrib
     cudatoolkit 
     gtkwave
+    haskellPackages.webkit2gtk3-javascriptcore
     vhdl-ls
+    gtk3-x11
+    haskellPackages.gi-atk
+    pkgs.atkmm
     go-sct
+      ubuntu-sans
+      libsoup
+  mononoki
     nerdfonts
+    font-awesome
+    scrot
     okular
+    gnomeExtensions.color-picker
     tt
     networkmanagerapplet
     markdown-oxide
     marksman
     zls
     lldb
+    haskellPackages.jsaddle-webkit2gtk
     nitrogen
     pasystray
     picom
     ghdl-llvm
     maim
-    nvtop
     htop
+    nvtopPackages.full
     steam
     xclip
     xdotool
@@ -44,6 +76,7 @@
     gtk4
     glib   
     pango
+    gobject-introspection
 graphene
   libxkbcommon
     polkit_gnome
@@ -64,7 +97,6 @@ graphene
     android-studio
     curl
     unrar
-    zed-editor
     lutris
     git-credential-manager
     helix

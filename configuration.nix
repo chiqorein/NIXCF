@@ -64,25 +64,43 @@
 	};
 
   # Configure keymap in X11
+  services.autorandr.enable = true;
   services.xserver = {
     enable = true;
-    xkb.layout = "us";
-    xkb.variant = "";
-    
-    desktopManager.xterm.enable = false;
-    windowManager.i3 = {
-      enable = true;
-      extraPackages = with pkgs; [
-        dmenu
-        i3status
-        i3lock
-        i3blocks
-      ];
+    autorun = true;
+    xkb.layout = "us,no";
+    xkb.model = "pc105";
+    xkb.options = "eurosign:e, compose:menu, grp:caps_toggle";
+    xrandrHeads = [{output = "HDMI-0";primary = true;}{output = "VGA-0";}];
+    windowManager = {
+      xmonad = {
+        enable = true;
+        enableContribAndExtras = true;
+        extraPackages = hpkgs: [
+          hpkgs.xmobar
+         ];
+      };
     };
   };
   
-  services.displayManager.defaultSession = "none+i3";
-  # Enable CUPS to print documents.
+  services.displayManager.defaultSession = "none+xmonad";
+  services.xserver.displayManager = {
+      lightdm = {
+      greeters.enso = {
+        enable = true;
+        blur = true;
+        extraConfig = ''
+          default-wallpaper=/usr/share/streets_of_gruvbox.png
+        '';
+      };
+    };
+    sessionCommands = ''
+      xrandr --output VGA-0 --mode 1400x900 --pos 2560x336 --rotate normal --output DVI-D-0 --off --output HDMI-0 --primary --mode 2560x1440 --pos 0x0 --rotate normal
+      ./.fehbg
+      '';
+  };
+
+    # Enable CUPS to print documents.
   services.printing.enable = true;
 
   # Enable sound with pipewire.
@@ -156,6 +174,7 @@
         sarasa-gothic
 	      material-design-icons
 	      noto-fonts-cjk-sans
+        dejavu_fonts
 	      iosevka  # Use the installed package
 	    ];
 
