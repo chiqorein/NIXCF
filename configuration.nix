@@ -1,16 +1,15 @@
-{ config, pkgs, pkgs-unstable, ... }:
+{ config, pkgs, pkgs-unstable, ghostty, ... }:
 
 {
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
-      (import ./modules/packages.nix { inherit config pkgs pkgs-unstable; })
+      (import ./modules/packages.nix { inherit config pkgs pkgs-unstable ghostty; })
     ];
 
    nixpkgs.config.permittedInsecurePackages = [
     "python-2.7.18.8-env"
   ];
-
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
@@ -45,6 +44,8 @@
     desktopManager.xterm.enable = false;
   };
   
+  services.upower.enable = true;
+
   # Enable CUPS to print documents.
   services.printing.enable = true;
 
@@ -65,6 +66,7 @@
     dataDir = "/home/chikoyeat/Documents";
     configDir = "/home/chikoyeat/Documents/.config/syncthing";
   };
+
   
   xdg.portal = {
     enable = true;
@@ -113,12 +115,14 @@
   hardware.bluetooth.enable = true;
 
   system.stateVersion = "24.05"; 
-	fonts = {
+  fonts = {
 	    packages = with pkgs; [
 	      ibm-plex
+        sarasa-gothic
 	      material-design-icons
 	      noto-fonts-cjk-sans
-	      pkgs.iosevka-comfy.comfy  # Use the installed package
+        dejavu_fonts
+	      iosevka  # Use the installed package
 	    ];
 
 	    enableDefaultPackages = true;
@@ -126,10 +130,12 @@
 	    fontconfig = {
 	      enable = true;
 	      defaultFonts = {
-		monospace = [ "Iosevka Comfy" "IBM Plex Mono" ];
+		monospace = [ "Sarasa Gothic" ];
 		sansSerif = [ "IBM Plex Sans" ];
 		serif = [ "IBM Plex Serif" ];
 	      };
 	    };
-	  };
+	  };  
 }
+  
+  
