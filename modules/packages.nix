@@ -1,37 +1,102 @@
-{ config, pkgs, pkgs-unstable, ... }:
-
+{ config, pkgs, ghostty, ... }:
 {
   environment.systemPackages = with pkgs; [
     neovim
+    upower
     alacritty
+    cachix
     dmenu
+    swift
     (lua.withPackages(ps: with ps; [ busted luafilesystem ]))
     gnumake
+    niri
     itch
+    # libgda
+    nix-search
+    krita
+    bluez
+    bluez-tools
+    nushell
+    sway
+    nixfmt-rfc-style
+    tiny8086
+    starship
+    ripgrep
+    nix-prefetch-git
+    warp-terminal
+    emacs
+    zed-editor
+    sassc
+    nixpkgs-review
+    ags
+    ihaskell
+    ghc
+    xarchiver
+    pipewire
+    networkmanager
+    hyprshade
+    hyprpicker
+    swww
+    imagemagick
+    libgtop
+    emacsPackages.doom
+    nodePackages.prisma
+    nodePackages.npm
+    p7zip
+    sbclPackages.cl-cffi-gtk-gdk-pixbuf
+    python312Packages.pip
+    fontconfig    # Essential font management package
+  cantarell-fonts  # Example of a TTF font package
+  dejavu_fonts  # Another example of a TTF font package
+    pangolin
+    atk
+    gdk-pixbuf
+    ghostty.packages.x86_64-linux.default
+    pkgs.hyprpanel
+    # appimage-run
     zlib
+    sqlite
     git
+    ani-cli
+    ubuntu-sans
     mdcat
+    xscreensaver
     gnome-keyring
-    gimp
+    nixfmt-rfc-style
+    haskellPackages.xmonad
+    haskellPackages.xmobar
+    xmonad-with-packages
+    acpi
+    pkgs.haskellPackages.xmonad-contrib
     cudatoolkit 
     gtkwave
+    haskellPackages.webkit2gtk3-javascriptcore
     vhdl-ls
+    gtk3-x11
+    haskellPackages.gi-atk
+    pkgs.atkmm
     go-sct
-    nerdfonts
+    ubuntu-sans
+    libsoup_2_4
+    mononoki
+    font-awesome
+    scrot
     okular
+    gnomeExtensions.color-picker
     tt
     networkmanagerapplet
     markdown-oxide
     marksman
     zls
     lldb
+    haskellPackages.jsaddle-webkit2gtk
     nitrogen
     pasystray
     picom
     ghdl-llvm
     maim
-    nvtop
     htop
+    nvtopPackages.full
     steam
     xclip
     xdotool
@@ -44,6 +109,7 @@
     gtk4
     glib   
     pango
+    gobject-introspection
 graphene
   libxkbcommon
     polkit_gnome
@@ -64,7 +130,6 @@ graphene
     android-studio
     curl
     unrar
-    zed-editor
     lutris
     git-credential-manager
     helix
@@ -91,7 +156,6 @@ graphene
     ocamlPackages.utop
     simulide
     ghdl
-    pkgs.nushell
     zsh-completions
     starship
     zsh-powerlevel10k
@@ -139,7 +203,7 @@ graphene
     ranger
     spotifyd
     yazi
-    appimagekit
+    # appimagekit
     wezterm
     polybar
     grimblast

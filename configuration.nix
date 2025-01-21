@@ -1,15 +1,16 @@
-{ config, pkgs, pkgs-unstable, ... }:
+{ config, pkgs, pkgs-unstable, ghostty, ... }:
 
 {
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
-      (import ./modules/packages.nix { inherit config pkgs pkgs-unstable; })
+      (import ./modules/packages.nix { inherit config pkgs pkgs-unstable ghostty; })
     ];
 
    nixpkgs.config.permittedInsecurePackages = [
     "python-2.7.18.8-env"
   ];
+
 
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
@@ -36,33 +37,6 @@
     LC_TIME = "en_US.UTF-8";
   };
 
-  hardware.graphics = {
-    enable = true;
-  };
-
-  # Load nvidia driver for Xorg and Wayland
-  services.xserver.videoDrivers = ["nvidia"];
-  
-  hardware.nvidia.modesetting.enable = true;
-  hardware.nvidia.powerManagement.enable = false;
-  hardware.nvidia.powerManagement.finegrained = false;
-  hardware.nvidia.open = false;
-  hardware.nvidia.nvidiaSettings = true;
-  
-  hardware.nvidia = {
-    package = config.boot.kernelPackages.nvidiaPackages.stable;
-  }; 
-
-  hardware.nvidia.prime = {
-  		offload = {
-			enable = true;
-			enableOffloadCmd = true;
-		};
-		# Make sure to use the correct Bus ID values for your system!
-		intelBusId = "PCI:0:2:0";
-		nvidiaBusId = "PCI:1:0:0";
-	};
-
   # Configure keymap in X11
   services.xserver = {
     enable = true;
@@ -79,9 +53,11 @@
         i3blocks
       ];
     };
-  };
-  
-  services.displayManager.defaultSession = "none+i3";
+  };  
+
+services.displayManager.defaultSession = "none+i3";
+  services.upower.enable = true;
+
   # Enable CUPS to print documents.
   services.printing.enable = true;
 
@@ -102,6 +78,7 @@
     dataDir = "/home/chikoyeat/Documents";
     configDir = "/home/chikoyeat/Documents/.config/syncthing";
   };
+
   
   xdg.portal = {
     enable = true;
@@ -147,7 +124,10 @@
   programs.dconf.enable = true;
 
   virtualisation.docker.enable = true;
-  hardware.bluetooth.enable = true;
+
+  hardware.bluetooth = {
+    enable = true;
+  };
 
   system.stateVersion = "24.05"; 
   fonts = {
@@ -156,6 +136,7 @@
         sarasa-gothic
 	      material-design-icons
 	      noto-fonts-cjk-sans
+        dejavu_fonts
 	      iosevka  # Use the installed package
 	    ];
 
